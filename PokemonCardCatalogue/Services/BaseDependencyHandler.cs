@@ -65,6 +65,7 @@ namespace PokemonCardCatalogue.Services
             _dependencyContainer.Register<CardViewModel>();
             _dependencyContainer.Register<SettingsViewModel>();
             _dependencyContainer.Register<CollectionSetsViewModel>();
+            _dependencyContainer.Register<CollectionCardListViewModel>();
         }
     }
 }

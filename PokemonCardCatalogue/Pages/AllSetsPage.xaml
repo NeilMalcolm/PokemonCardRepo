@@ -3,20 +3,29 @@
              x:Class="PokemonCardCatalogue.Pages.AllSetsPage"
              xmlns:pages="clr-namespace:PokemonCardCatalogue.Pages"
              xmlns:ff="clr-namespace:FFImageLoading.Forms;assembly=FFImageLoading.Forms"
-             x:Name="ThisPage">
-    <Shell.TitleView>
-        <ContentView HorizontalOptions="Fill"
-                     VerticalOptions="Fill">
-            <Label Text="{Binding Title}"
-               Style="{StaticResource LargeTitleViewLabelStyle}"/>
-        </ContentView>
-    </Shell.TitleView>
+             x:Name="ThisPage"
+             Shell.NavBarIsVisible="False">
     <pages:BaseContentPage.Content>
         <CollectionView ItemsSource="{Binding Sets}">
             <CollectionView.ItemsLayout>
                 <LinearItemsLayout Orientation="Vertical"
                                    ItemSpacing="0"/>
             </CollectionView.ItemsLayout>
+            <CollectionView.Header>
+                <StackLayout Orientation="Vertical"
+                             Margin="0"
+                             Spacing="10"
+                             Padding="10, 20">
+                    <Label Text="All Sets"
+                           Style="{StaticResource LargeTitleViewLabelStyle}"
+                           FontAttributes="Bold"
+                           Margin="0"/>
+                    <Label Text="A list of all English language Pokémon sets which have been released as of XX/YY/ZZ."
+                           HorizontalOptions="Center"
+                           HorizontalTextAlignment="Center"
+                           Margin="0"/>
+                </StackLayout>
+            </CollectionView.Header>
             <CollectionView.ItemTemplate>
                 <DataTemplate>
                     <ContentView>

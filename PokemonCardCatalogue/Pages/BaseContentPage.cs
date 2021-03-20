@@ -1,4 +1,5 @@
 ﻿using PokemonCardCatalogue.ViewModels;
+using System.Threading.Tasks;
 using Xamarin.Forms;
 
 namespace PokemonCardCatalogue.Pages
@@ -15,8 +16,11 @@ namespace PokemonCardCatalogue.Pages
             {
                 if (baseViewModel.ReloadDataOnAppearing || !hasLoadedData)
                 {
-                    await baseViewModel.LoadAsync();
-                    hasLoadedData = true;
+                    Task.Run(async () => 
+                    { 
+                        await baseViewModel.LoadAsync();
+                        hasLoadedData = true;
+                    });
                 }
             }
         }

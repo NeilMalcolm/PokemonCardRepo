@@ -28,6 +28,7 @@ namespace PokemonCardCatalogue.Droid
             base.OnCreate(savedInstanceState);
             FFImageLoading.Forms.Platform.CachedImageRenderer.Init(enableFastRenderer: true);
 
+            global::Xamarin.Forms.Forms.SetFlags("Brush_Experimental");
             global::Xamarin.Forms.Forms.SetFlags("SwipeView_Experimental");
             Xamarin.Essentials.Platform.Init(this, savedInstanceState);
             global::Xamarin.Forms.Forms.Init(this, savedInstanceState);

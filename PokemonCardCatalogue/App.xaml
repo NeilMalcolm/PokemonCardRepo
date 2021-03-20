@@ -9,8 +9,28 @@
         <ResourceDictionary>
 
             <!-- Colors -->
-            <Color x:Key="Primary">#2196F3</Color>
+            <Color x:Key="LightPrimary">#2196F3</Color>
+            <Color x:Key="DarkPrimary">#2196F3</Color>
 
+            <Color x:Key="LightShellBackgroundColor">#FBFCFF</Color>
+            <Color x:Key="DarkShellBackgroundColor">#000000</Color>
+
+            <Color x:Key="LightShellTabBackgroundColor">#F3F6FD</Color>
+            <Color x:Key="DarkShellTabBackgroundColor">#0E0E0F</Color>
+
+            <Color x:Key="LightShellForegroundColor">#393A3F</Color>
+            <Color x:Key="DarkShellForegroundColor">#E6EBF3</Color>
+
+            <Color x:Key="LightShellTitleColor">#393A3F</Color>
+            <Color x:Key="DarkShellTitleColor">#E6EBF3</Color>
+
+            <Color x:Key="LightShellTabBarUnselectedColor">#797979</Color>
+            <Color x:Key="DarkShellTabBarUnselectedColor">#838390</Color>
+
+            <Color x:Key="LightShellTabBarTitleColor">#313131</Color>
+            <Color x:Key="DarkShellTabBarTitleColor">#E6EBF3</Color>
+
+            
             <Color x:Key="LightPageBackgroundColor">#FBFCFF</Color>
             <Color x:Key="DarkPageBackgroundColor">#000000</Color>
 
@@ -49,7 +69,7 @@
             
             <!-- Ints  -->
             
-            <x:Int32 x:Key="LargeTitleViewLabelSize">28</x:Int32>
+            <x:Int32 x:Key="LargeTitleViewLabelSize">24</x:Int32>
             <x:Int32 x:Key="SetCardTitleLabelSize">17</x:Int32>
             <x:Int32 x:Key="SetCardSubtitleLabelSize">13</x:Int32>
             <x:Int32 x:Key="SettingGroupHeaderTitleLabelSize">25</x:Int32>
@@ -68,8 +88,6 @@
                 <Setter Property="FontSize"
                         Value="{StaticResource LargeTitleViewLabelSize}"/>
                 <Setter Property="HorizontalOptions"
-                        Value="CenterAndExpand"/>
-                <Setter Property="VerticalOptions"
                         Value="CenterAndExpand"/>
                 <Setter Property="TextColor"
                         Value="{AppThemeBinding Light={StaticResource LightLargeTitleViewLabelColor},

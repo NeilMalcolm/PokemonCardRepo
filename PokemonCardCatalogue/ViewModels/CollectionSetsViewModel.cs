@@ -1,5 +1,6 @@
 ﻿using PokemonCardCatalogue.Logic.Interfaces;
 using PokemonCardCatalogue.Models;
+using PokemonCardCatalogue.Pages;
 using PokemonCardCatalogue.Services.Interfaces;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
@@ -16,7 +17,7 @@ namespace PokemonCardCatalogue.ViewModels
         private readonly ICollectionLogic _collectionLogic;
         private readonly IAlertService _alertService;
 
-        private bool _canDeleteSet = true;
+        private bool _canGoToSet = true;
 
         private ObservableCollection<SetItem> _setItems;
         public ObservableCollection<SetItem> SetItems
@@ -32,6 +33,7 @@ namespace PokemonCardCatalogue.ViewModels
         List<SetItem> _deletingSetItems { get; set; } = new List<SetItem>();
 
         public ICommand DeleteSetCommand { get; set; }
+        public ICommand GoToSetCommand { get; set; } 
 
         public CollectionSetsViewModel(INavigationService navigationService,
             ICollectionLogic collectionLogic,
@@ -46,6 +48,7 @@ namespace PokemonCardCatalogue.ViewModels
         {
             RefreshCommand = new Command(async () => await OnLoadAsync(), () => !IsLoading);
             DeleteSetCommand = new Command<SetItem>(async (setItem) => await ConfirmDeleteSet(setItem), (setItem) => CanDeleteSet(setItem));
+            GoToSetCommand = new Command<SetItem>(async (setItem) => await GoToSetAsync(setItem), (setItem) => _canGoToSet);
         }
 
         protected override async Task OnLoadAsync()
@@ -71,6 +74,13 @@ namespace PokemonCardCatalogue.ViewModels
             await DeleteSet(setItem);
         }
 
+        private async Task GoToSetAsync(SetItem item)
+        {
+            _canGoToSet = false;
+            await NavigationService.GoToAsync<CollectionCardListPage>(item.Set.Id);
+            _canGoToSet = true;
+        }
+
         private async Task DeleteSet(SetItem setItem)
         {
             _deletingSetItems.Add(setItem);
@@ -78,6 +88,7 @@ namespace PokemonCardCatalogue.ViewModels
             _deletingSetItems.Remove(setItem);
             SetItems.Remove(setItem);
         }
+
 
         private bool CanDeleteSet(SetItem setItem)
         {

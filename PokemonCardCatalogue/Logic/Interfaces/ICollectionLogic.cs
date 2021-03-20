@@ -10,5 +10,7 @@ namespace PokemonCardCatalogue.Logic.Interfaces
         Task<bool> AddSetAndCardsToCollection(Set set);
         Task<List<SetItem>> GetAllSets(bool withCount = true);
         Task<int> DeleteSetAsync(Set setToDelete);
+        Task<List<CardItem>> GetCardsForSetAsync(string setId);
+        Task<int> SetOwnedCountForCard(CardItem cardItem);
     }
 }

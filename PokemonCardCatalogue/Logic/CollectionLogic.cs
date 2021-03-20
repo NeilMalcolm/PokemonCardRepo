@@ -54,5 +54,15 @@ namespace PokemonCardCatalogue.Logic
         {
             return _cardCollection.DeleteSetAndCardsAsync(setToDelete);
         }
+
+        public Task<List<CardItem>> GetCardsForSetAsync(string setId)
+        {
+            return _cardCollection.GetCardItemsAsync(setId);
+        }
+
+        public Task<int> SetOwnedCountForCard(CardItem cardItem)
+        {
+            return _cardCollection.SetOwnedCountForCard(cardItem.Card.Id, cardItem.OwnedCount);
+        }
     }
 }

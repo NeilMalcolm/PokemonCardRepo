@@ -16,5 +16,6 @@ namespace PokemonCardCatalogue.Services.Interfaces
         Task<int> AddSetAsync(Set set);
         Task<List<SetItem>> GetSetItemsAsync(bool withOwnedCount = true); 
         Task<int> DeleteSetAndCardsAsync(Set set);
+        Task<int> SetOwnedCountForCard(string cardId, int count);
     }
 }

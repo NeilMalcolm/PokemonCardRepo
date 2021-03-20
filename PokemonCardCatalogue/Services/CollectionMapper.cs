@@ -152,6 +152,7 @@ namespace PokemonCardCatalogue.Services
         {
             return new CardItem
             {
+                CacheId = collectionCard.CacheId,
                 OwnedCount =  collectionCard.OwnedCount,
                 Card = new Card
                 {

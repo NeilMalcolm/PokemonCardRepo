@@ -15,7 +15,7 @@
                      cs.LogoImage,
                      cs.SymbolImage,
                      cs.DateAdded,
-                     cs.OwnedCount
+                     count(cc.OwnedCount <> 0) as OwnedCount
             FROM CollectionSet cs
             LEFT JOIN CollectionCard cc 
 	            ON cc.SetId = cs.Id

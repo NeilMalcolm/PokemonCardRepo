@@ -42,9 +42,11 @@ namespace PokemonCardCatalogue
 
             viewModelResolver.Register<AppShell, AppShellViewModel>();
             viewModelResolver.Register<AllSetsPage, AllSetsViewModel>();
-            viewModelResolver.Register<CollectionSetsPage, CollectionSetsViewModel>();
             viewModelResolver.Register<SetListPage, SetListViewModel>();
             viewModelResolver.Register<CardPage, CardViewModel>();
+            viewModelResolver.Register<CollectionSetsPage, CollectionSetsViewModel>();
+            viewModelResolver.Register<CollectionCardListPage, CollectionCardListViewModel>();
+
             viewModelResolver.Register<SettingsPage, SettingsViewModel>();
         }
     }

@@ -128,6 +128,13 @@ namespace PokemonCardCatalogue.Services
             return result;
         }
 
+        public async Task<int> SetOwnedCountForCard(string cardId, int count)
+        {
+            var result = await _collectionConnection.ExecuteAsync("UPDATE CollectionCard SET OwnedCount = ? WHERE Id = ?", count, cardId);
+            var countFromDb = await _collectionConnection.ExecuteScalarAsync<int>("SELECT OwnedCount FROM CollectionCard WHERE Id = ?", cardId);
+            return result;
+        }
+
         private Task<CollectionCard> GetCardCollectionById(string cardId)
         {
             return _collectionConnection.Table<CollectionCard>()
