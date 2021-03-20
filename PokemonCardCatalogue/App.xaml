@@ -1,0 +1,244 @@
+﻿<Application xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:droid="clr-namespace:Xamarin.Forms.PlatformConfiguration.AndroidSpecific;assembly=Xamarin.Forms.Core"
+             x:Class="PokemonCardCatalogue.App">
+    <!--
+        Define global resources and styles here, that apply to all pages in your app.
+    -->
+    <Application.Resources>
+        <ResourceDictionary>
+
+            <!-- Colors -->
+            <Color x:Key="Primary">#2196F3</Color>
+
+            <Color x:Key="LightPageBackgroundColor">#FBFCFF</Color>
+            <Color x:Key="DarkPageBackgroundColor">#000000</Color>
+
+            <Color x:Key="LightLargeTitleViewLabelColor">#494E5C</Color>
+            <Color x:Key="DarkLargeTitleViewLabelColor">#E6EBF3</Color>
+
+            <Color x:Key="LightSetCardBackgroundColor">#FBFBFB</Color>
+            <Color x:Key="DarkSetCardBackgroundColor">#000</Color>
+
+            <Color x:Key="LightSetCardTitleLabelColor">#494E5C</Color>
+            <Color x:Key="DarkSetCardTitleLabelColor">#E6EBF3</Color>
+
+            <Color x:Key="LightSetCardSubtitleLabelColor">#666666</Color>
+            <Color x:Key="DarkSetCardSubtitleLabelColor">#767B86</Color>
+
+            <Color x:Key="LightSetCardYearLabelColor">#939393</Color>
+            <Color x:Key="DarkSetCardYearLabelColor">#5E6371</Color>
+
+            <Color x:Key="LightSetCardCountBackgroundColor">#E7E9ED</Color>
+            <Color x:Key="DarkSetCardCountBackgroundColor">#27292F</Color>
+
+            <Color x:Key="LightSetCardCountLabelColor">#A0A0A0</Color>
+            <Color x:Key="DarkSetCardCountLabelColor">#6E727C</Color>
+
+            <Color x:Key="LightSetCardAddButtonTextColor">#E6EBF3</Color>
+            <Color x:Key="DarkSetCardAddButtonTextColor">#E6EBF3</Color>
+
+            <Color x:Key="LightSetCardAddButtonBackgroundColor">#C1247C</Color>
+            <Color x:Key="DarkSetCardAddButtonBackgroundColor">#C1247C</Color>
+
+            <Color x:Key="LightSettingTitleLabelColor">#494E5C</Color>
+            <Color x:Key="DarkSettingTitleLabelColor">#E6EBF3</Color>
+
+            <Color x:Key="LightDestructiveColor">#db1a41</Color>
+            <Color x:Key="DarkDestructiveColor">#bf1d3e</Color>
+            
+            <!-- Ints  -->
+            
+            <x:Int32 x:Key="LargeTitleViewLabelSize">28</x:Int32>
+            <x:Int32 x:Key="SetCardTitleLabelSize">17</x:Int32>
+            <x:Int32 x:Key="SetCardSubtitleLabelSize">13</x:Int32>
+            <x:Int32 x:Key="SettingGroupHeaderTitleLabelSize">25</x:Int32>
+            <x:Int32 x:Key="SettingTitleLabelSize">17</x:Int32>
+
+            <Style TargetType="Page"
+                   ApplyToDerivedTypes="True">
+                <Setter Property="BackgroundColor"
+                        Value="{AppThemeBinding Light={StaticResource LightPageBackgroundColor},
+                                                Dark={StaticResource DarkPageBackgroundColor}}"/>
+
+            </Style>
+            
+            <Style TargetType="Label"
+                   x:Key="LargeTitleViewLabelStyle">
+                <Setter Property="FontSize"
+                        Value="{StaticResource LargeTitleViewLabelSize}"/>
+                <Setter Property="HorizontalOptions"
+                        Value="CenterAndExpand"/>
+                <Setter Property="VerticalOptions"
+                        Value="CenterAndExpand"/>
+                <Setter Property="TextColor"
+                        Value="{AppThemeBinding Light={StaticResource LightLargeTitleViewLabelColor},
+                                                Dark={StaticResource DarkLargeTitleViewLabelColor}}"/>
+            </Style>
+
+            <!-- All Sets Page -->
+            
+            <Style TargetType="Label"
+                   x:Key="SetCardTitleStyle">
+                <Setter Property="FontSize"
+                        Value="{StaticResource SetCardTitleLabelSize}"/>
+                <Setter Property="FontAttributes"
+                        Value="Bold"/>
+                <Setter Property="TextColor"
+                        Value="{AppThemeBinding Light={StaticResource LightSetCardTitleLabelColor},
+                                                Dark={StaticResource DarkSetCardTitleLabelColor}}"/>
+                <Setter  Property="MaxLines"
+                         Value="1"/>
+                <Setter Property="LineBreakMode"
+                        Value="TailTruncation"/>
+            </Style>
+
+            <Style TargetType="Label"
+                   x:Key="SetCardSubtitleStyle">
+                <Setter Property="FontSize"
+                        Value="{StaticResource SetCardSubtitleLabelSize}"/>
+                <Setter Property="TextColor"
+                        Value="{AppThemeBinding Light={StaticResource LightSetCardSubtitleLabelColor},
+                                                Dark={StaticResource DarkSetCardSubtitleLabelColor}}"/>
+            </Style>
+
+            <Style TargetType="Label"
+                   x:Key="SetCardYearLabelStyle">
+                <Setter Property="FontSize"
+                        Value="11"/>
+                <Setter Property="TextColor"
+                        Value="{AppThemeBinding Light={StaticResource LightSetCardYearLabelColor},
+                                                Dark={StaticResource DarkSetCardYearLabelColor}}"/>
+            </Style>
+
+            <Style TargetType="Frame"
+                   x:Key="SetCardTotalBackgroundFrameStyle">
+                <Setter Property="Padding"
+                        Value="10, 0"/>
+                <Setter Property="CornerRadius"
+                        Value="20"/>
+                <Setter Property="BackgroundColor"
+                        Value="{AppThemeBinding Light={StaticResource LightSetCardCountBackgroundColor},
+                                                Dark={StaticResource DarkSetCardCountBackgroundColor}}"/>
+                <Setter Property="HasShadow"
+                        Value="False"/>
+            </Style>
+
+            <Style TargetType="Frame"
+                   x:Key="SetCardFrameStyle">
+                <Setter Property="CornerRadius"
+                        Value="16"/>
+                <Setter Property="Margin"
+                        Value="15, 3.5, 10, 12.5"/>
+                <Setter Property="Padding"
+                        Value="10, 16, 10, 16"/>
+                <Setter Property="droid:VisualElement.Elevation"
+                        Value="7"/>
+                <Setter Property="BackgroundColor"
+                        Value="{AppThemeBinding Light={StaticResource LightSetCardBackgroundColor},
+                                                Dark={StaticResource DarkSetCardBackgroundColor}}"/>
+                <Setter Property="HasShadow"
+                        Value="True"/>
+            </Style>
+
+            <Style TargetType="Button"
+                   x:Key="SetCardAddButtonStyle">
+                <Setter Property="TextColor"
+                        Value="{AppThemeBinding Light={StaticResource LightSetCardAddButtonTextColor},
+                                                Dark={StaticResource DarkSetCardAddButtonTextColor}}"/>
+                <Setter Property="CornerRadius"
+                        Value="30"/>
+                <Setter Property="Padding"
+                        Value="0"/>
+                <Setter Property="HeightRequest"
+                        Value="25"/>
+                <Setter Property="VerticalOptions"
+                        Value="End"/>
+                <Setter Property="HorizontalOptions"
+                        Value="End"/>
+                <Setter Property="TextTransform"
+                        Value="None"/>
+                <Setter Property="BackgroundColor"
+                        Value="{AppThemeBinding Light={StaticResource LightSetCardAddButtonBackgroundColor},
+                                                Dark={StaticResource DarkSetCardAddButtonBackgroundColor}}"/>
+            </Style>
+
+            <!-- End of All Sets Page -->
+
+            <!-- Set List Page -->
+
+            <Style TargetType="Frame"
+                   x:Key="SetListCardFrameStyle"
+                   BasedOn="{StaticResource SetCardFrameStyle}">
+                <Setter Property="CornerRadius"
+                        Value="8"/>
+                <Setter Property="Padding"
+                        Value="5, 8, 5, 8"/>
+            </Style>
+
+            <Style TargetType="Span"
+                   x:Key="SetListCardTitleSpanStyle">
+                <Setter Property="FontSize"
+                        Value="{StaticResource SetCardTitleLabelSize}"/>
+                <Setter Property="FontAttributes"
+                        Value="Bold"/>
+                <Setter Property="TextColor"
+                        Value="{AppThemeBinding Light={StaticResource LightSetCardTitleLabelColor},
+                                                Dark={StaticResource DarkSetCardTitleLabelColor}}"/>
+            </Style>
+
+            <Style TargetType="Frame"
+                   x:Key="SetListCardRarityBackgroundFrameStyle"
+                   BasedOn="{StaticResource SetCardTotalBackgroundFrameStyle}">
+            </Style>
+            
+            <!-- End of Set List Page -->
+            
+            <!-- Settings Page -->
+
+            <Style TargetType="Label"
+                   x:Key="SettingsGroupHeaderLabelStyle">
+                <Setter Property="FontSize"
+                        Value="{StaticResource SettingGroupHeaderTitleLabelSize}"/>
+                <Setter Property="FontAttributes"
+                        Value="Bold"/>
+                <Setter Property="TextColor"
+                        Value="{AppThemeBinding Light={StaticResource LightSettingTitleLabelColor},
+                                                Dark={StaticResource DarkSettingTitleLabelColor}}"/>
+                <Setter  Property="MaxLines"
+                         Value="1"/>
+                <Setter Property="LineBreakMode"
+                        Value="TailTruncation"/>
+            </Style>
+
+            <Style TargetType="Label"
+                   x:Key="SettingTitleStyle">
+                <Setter Property="FontSize"
+                        Value="{StaticResource SettingTitleLabelSize}"/>
+                <Setter Property="TextColor"
+                        Value="{AppThemeBinding Light={StaticResource LightSettingTitleLabelColor},
+                                                Dark={StaticResource DarkSettingTitleLabelColor}}"/>
+                <Setter  Property="MaxLines"
+                         Value="1"/>
+                <Setter Property="LineBreakMode"
+                        Value="TailTruncation"/>
+            </Style>
+
+            <!-- End of Settings Page -->
+            
+            <!-- Collection Sets Page -->
+
+
+            <Style TargetType="Frame"
+                   x:Key="CollectionSetListCardFrameStyle"
+                   BasedOn="{StaticResource SetCardFrameStyle}">
+                <Setter Property="CornerRadius"
+                        Value="8"/>
+                <Setter Property="Padding"
+                        Value="0"/>
+            </Style>
+
+            <!-- End of Collection Sets Page -->
+        </ResourceDictionary>        
+    </Application.Resources>
+</Application>

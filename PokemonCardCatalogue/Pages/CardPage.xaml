@@ -1,0 +1,23 @@
+﻿<pages:BaseContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:pages="clr-namespace:PokemonCardCatalogue.Pages"
+             xmlns:ff="clr-namespace:FFImageLoading.Forms;assembly=FFImageLoading.Forms"
+             x:Class="PokemonCardCatalogue.Pages.CardPage">
+    <pages:BaseContentPage.Content>
+        <Grid BackgroundColor="#F7F8FC">
+            <Grid.RowDefinitions>
+                <RowDefinition />
+            </Grid.RowDefinitions>
+
+            <ff:CachedImage Source="{Binding ThisCard.Images.Large}"
+                   DownsampleToViewSize="True"
+                   LoadingPlaceholder="{Binding ThisCard.Images.Small}"
+                   Grid.RowSpan="2"/>
+            
+            <!-- Row 1 -->
+            <Label Text="{Binding ThisCard.Name}"
+                   Grid.Row="1"
+                   Grid.Column="1"/>
+        </Grid>
+    </pages:BaseContentPage.Content>
+</pages:BaseContentPage>

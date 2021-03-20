@@ -1,0 +1,12 @@
+﻿<DataTemplate xmlns="http://xamarin.com/schemas/2014/forms" 
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="PokemonCardCatalogue.Views.Settings.ActionSettingDataTemplate">
+ 
+    <Label Text="{Binding Name}"
+           Style="{StaticResource SettingTitleStyle}"
+           Padding="15, 10">
+        <Label.GestureRecognizers>
+            <TapGestureRecognizer Command="{Binding Command}"/>
+        </Label.GestureRecognizers>
+    </Label>
+</DataTemplate>

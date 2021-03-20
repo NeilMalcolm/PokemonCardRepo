@@ -1,0 +1,22 @@
+﻿<pages:BaseContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:pages="clr-namespace:PokemonCardCatalogue.Pages"
+             xmlns:dts="clr-namespace:PokemonCardCatalogue.TemplateSelector"
+             x:Class="PokemonCardCatalogue.Pages.SettingsPage">
+    <pages:BaseContentPage.Resources>
+        <dts:SettingTemplateSelector x:Key="SettingDataTemplateSelector"/>
+    </pages:BaseContentPage.Resources>
+    <pages:BaseContentPage.Content>
+        <CollectionView ItemsSource="{Binding SettingsGroups}"
+                        IsGrouped="True"
+                        ItemTemplate="{StaticResource SettingDataTemplateSelector}">
+            <CollectionView.GroupHeaderTemplate>
+                <DataTemplate>
+                    <Label Text="{Binding Title}"
+                           Style="{StaticResource SettingsGroupHeaderLabelStyle}"
+                           Padding="15, 10, 0, 0"/>
+                </DataTemplate>
+            </CollectionView.GroupHeaderTemplate>
+        </CollectionView>
+    </pages:BaseContentPage.Content>
+</pages:BaseContentPage>
