@@ -2,7 +2,7 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="PokemonCardCatalogue.Pages.CollectionSetsPage"
              xmlns:pages="clr-namespace:PokemonCardCatalogue.Pages"
-             xmlns:views="clr-namespace:PokemonCardCatalogue.Views.Sets"
+             xmlns:ff="clr-namespace:FFImageLoading.Forms;assembly=FFImageLoading.Forms"
              x:Name="ThisPage">
     <Shell.TitleView>
         <ContentView HorizontalOptions="Fill"
@@ -21,7 +21,84 @@
                 </CollectionView.ItemsLayout>
                 <CollectionView.ItemTemplate>
                     <DataTemplate>
-                        <views:AllSetsCardView BindingContext="{Binding .}"/>
+                        <ContentView>
+                            <Frame Style="{StaticResource CollectionSetListCardFrameStyle}">
+                                    <Frame.GestureRecognizers>
+                                        <TapGestureRecognizer Command="{Binding Source={x:Reference ThisPage}, 
+                                                                        Path=BindingContext.GoToSetCommand}"
+                                                      CommandParameter="{Binding .}"/>
+                                    </Frame.GestureRecognizers>
+                                <SwipeView>
+                                    <SwipeView.RightItems>
+                                        <SwipeItems>
+                                            <SwipeItem Text="Delete"
+                                           IsDestructive="True"
+                                           Command="{Binding Source={x:Reference ThisPage}, 
+                                                                        Path=BindingContext.DeleteSetCommand}"
+                                           CommandParameter="{Binding .}"
+                                           BackgroundColor="{AppThemeBinding Light={StaticResource LightDestructiveColor},
+                                                                             Dark={StaticResource DarkDestructiveColor}}"/>
+                                        </SwipeItems>
+                                    </SwipeView.RightItems>
+                                    <Grid ColumnSpacing="15"
+                                          RowSpacing="2.5"
+                                          Padding="5, 8, 5, 8">
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="105"/>
+                                            <ColumnDefinition Width="*"/>
+                                            <ColumnDefinition Width="80"/>
+                                        </Grid.ColumnDefinitions>
+                                        <Grid.RowDefinitions>
+                                            <RowDefinition Height="22"/>
+                                            <RowDefinition Height="18"/>
+                                            <RowDefinition Height="18"/>
+                                        </Grid.RowDefinitions>
+                                        <ff:CachedImage Source="{Binding Set.Images.Logo}"
+                                       Aspect="AspectFit"
+                                       DownsampleToViewSize="True"
+                                       Grid.RowSpan="3"/>
+
+                                        <!-- First Row -->
+                                        <Label x:Name="TitleLabel"
+                                       Text="{Binding Set.Name}"
+                                       Style="{StaticResource SetCardTitleStyle}"
+                                       Grid.Column="1"/>
+
+                                        <Frame x:Name="TotalBackgroundFrame"
+                                       Style="{StaticResource SetCardTotalBackgroundFrameStyle}"
+                                       HorizontalOptions="End"
+                                       VerticalOptions="Center"
+                                       Grid.Column="2">
+                                            <Label x:Name="TotalLabel"
+                                           FontSize="11"
+                                           VerticalOptions="Center">
+                                                <Label.FormattedText>
+                                                    <FormattedString>
+                                                        <Span Text="{Binding OwnedCount}"/>
+                                                        <Span Text="/"/>
+                                                        <Span Text="{Binding Set.Total}"/>
+                                                    </FormattedString>
+                                                </Label.FormattedText>
+                                            </Label>
+                                        </Frame>
+
+                                        <!-- Second Row -->
+                                        <Label x:Name="SubtitleLabel"
+                                       Text="{Binding Set.Series}"
+                                       Style="{StaticResource SetCardSubtitleStyle}"
+                                       Grid.Row="1"
+                                       Grid.Column="1"/>
+
+                                        <!-- Bottom Row  -->
+                                        <Label Text="{Binding Set.ReleaseDate, 
+                                                          StringFormat='{0:yyyy}'}"
+                                       Style="{StaticResource SetCardYearLabelStyle}"
+                                       Grid.Row="2"
+                                       Grid.Column="1"/>
+                                    </Grid>
+                                </SwipeView>
+                            </Frame>
+                        </ContentView>
                     </DataTemplate>
                 </CollectionView.ItemTemplate>
             </CollectionView>

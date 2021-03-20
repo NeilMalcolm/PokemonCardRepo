@@ -35,7 +35,6 @@ namespace PokemonCardCatalogue.ViewModels
             : base(navigationService)
         {
             _setListLogic = setListLogic;
-            ReloadDataOnAppearing = true;
         }
 
         public override void Init(object parameter)
