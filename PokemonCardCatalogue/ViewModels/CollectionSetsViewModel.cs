@@ -19,6 +19,8 @@ namespace PokemonCardCatalogue.ViewModels
 
         private bool _canGoToSet = true;
 
+        private SetItem _previouslyNavigatedToSetItem;
+
         private ObservableCollection<SetItem> _setItems;
         public ObservableCollection<SetItem> SetItems
         {
@@ -42,6 +44,7 @@ namespace PokemonCardCatalogue.ViewModels
         {
             _collectionLogic = collectionLogic;
             _alertService = alertService;
+            ReloadDataOnAppearing = true;
         }
 
         protected override void SetUpCommands()
@@ -53,7 +56,21 @@ namespace PokemonCardCatalogue.ViewModels
 
         protected override async Task OnLoadAsync()
         {
-            SetItems = new ObservableCollection<SetItem>(await _collectionLogic.GetAllSets(withCount: true));
+            var allSets = await _collectionLogic.GetAllSets(withCount: true);
+
+            if (allSets.Count != SetItems?.Count)
+            {
+                SetItems = new ObservableCollection<SetItem>(allSets);
+            }
+            else if (DoPreviouslyNavigatedSetAndSetFromDbHaveDifferentOwnedCounts(allSets, _previouslyNavigatedToSetItem))
+            {
+                var item = allSets?.FirstOrDefault(x => x.Set.Id == _previouslyNavigatedToSetItem.Set.Id);
+                var index = SetItems.IndexOf(item);
+                SetItems.RemoveAt(index);
+                SetItems.Insert(index, item);
+            }
+
+            _previouslyNavigatedToSetItem = null;
         }
 
         private async Task ConfirmDeleteSet(SetItem setItem)
@@ -77,6 +94,7 @@ namespace PokemonCardCatalogue.ViewModels
         private async Task GoToSetAsync(SetItem item)
         {
             _canGoToSet = false;
+            _previouslyNavigatedToSetItem = item;
             await NavigationService.GoToAsync<CollectionCardListPage>(item.Set.Id);
             _canGoToSet = true;
         }
@@ -89,10 +107,31 @@ namespace PokemonCardCatalogue.ViewModels
             SetItems.Remove(setItem);
         }
 
-
         private bool CanDeleteSet(SetItem setItem)
         {
             return !_deletingSetItems.Any(s => s.Set.Id == setItem.Set.Id);
         }
+
+        private bool DoPreviouslyNavigatedSetAndSetFromDbHaveDifferentOwnedCounts(List<SetItem> setItems, SetItem previouslyNavigated)
+        {
+            if (setItems?.Count == 0 || previouslyNavigated is null)
+            {
+                return true;
+            }
+
+            var matchingItem = setItems?.FirstOrDefault(x => x.Set.Id == previouslyNavigated.Set.Id);
+            if (matchingItem is null)
+            {
+                return true;
+            }
+
+            if (previouslyNavigated.OwnedCount != matchingItem.OwnedCount)
+            {
+                return true;
+            }
+
+            return false;
+        }
+
     }
 }

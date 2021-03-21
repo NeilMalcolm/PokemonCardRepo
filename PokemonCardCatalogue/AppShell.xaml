@@ -32,7 +32,7 @@
 
                 <Setter Property="Shell.TabBarUnselectedColor" Value="{AppThemeBinding Light={StaticResource LightShellTabBarUnselectedColor},
                                                                                        Dark={StaticResource DarkShellTabBarUnselectedColor}}" />
-                
+
                 <Setter Property="Shell.TabBarTitleColor" Value="{AppThemeBinding Light={StaticResource LightShellTabBarTitleColor},
                                                                                        Dark={StaticResource DarkShellTabBarTitleColor}}" />
             </Style>
@@ -41,18 +41,24 @@
         </ResourceDictionary>
     </Shell.Resources>
 
-    <TabBar>
-        <ShellContent Title="All Sets" 
+    <TabBar Route="tabbar">
+        <ShellContent x:Name="HomeTab" 
+                      Title="All Sets" 
                       Icon="icon_feed.png" 
                       ContentTemplate="{DataTemplate pages:AllSetsPage}"
+                      Route="home"
                       BindingContext="{Binding AllSetsContext}"/>
 
-        <ShellContent Title="Collection" 
+        <ShellContent x:Name="CollectionTab" 
+                      Title="Collection" 
                       ContentTemplate="{DataTemplate pages:CollectionSetsPage}"
+                      Route="collection"
                       BindingContext="{Binding CollectionSetsContext}"/>
-        
-        <ShellContent Title="Settings" 
+
+        <ShellContent x:Name="SettingsTab" 
+                      Title="Settings" 
                       ContentTemplate="{DataTemplate pages:SettingsPage}"
+                      Route="settings"
                       BindingContext="{Binding SettingsContext}"/>
     </TabBar>
 </Shell>

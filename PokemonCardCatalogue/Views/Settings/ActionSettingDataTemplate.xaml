@@ -1,12 +1,23 @@
 ﻿<DataTemplate xmlns="http://xamarin.com/schemas/2014/forms" 
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="PokemonCardCatalogue.Views.Settings.ActionSettingDataTemplate">
- 
-    <Label Text="{Binding Name}"
-           Style="{StaticResource SettingTitleStyle}"
-           Padding="15, 10">
-        <Label.GestureRecognizers>
+    <StackLayout Padding="15, 5">
+        <StackLayout.GestureRecognizers>
             <TapGestureRecognizer Command="{Binding Command}"/>
-        </Label.GestureRecognizers>
-    </Label>
+        </StackLayout.GestureRecognizers>
+        <Label Text="{Binding Name}"
+               Style="{StaticResource SettingTitleStyle}"
+               >
+            <Label.Triggers>
+                <DataTrigger Binding="{Binding IsDestructive}"
+                             TargetType="Label">
+                    <Setter Property="TextColor"
+                            Value="{AppThemeBinding Light={StaticResource LightDestructiveColor},
+                                                    Dark={StaticResource DarkDestructiveColor}}"/>
+                </DataTrigger>
+            </Label.Triggers>
+        </Label>
+        <Label Text="{Binding Description}"
+               FontAttributes="Italic"/>
+    </StackLayout>
 </DataTemplate>

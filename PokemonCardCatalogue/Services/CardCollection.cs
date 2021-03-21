@@ -18,7 +18,7 @@ namespace PokemonCardCatalogue.Services
 
         SQLiteAsyncConnection _collectionConnection;
 
-        private string collectionDbPath
+        private readonly string collectionDbPath
             = Path.Combine
             (
                 Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments),
@@ -115,7 +115,6 @@ namespace PokemonCardCatalogue.Services
             return await _collectionConnection.UpdateAsync(cardCollection);
         }
 
-
         public async Task<int> DeleteSetAndCardsAsync(Set set)
         {
             int result = 0;
@@ -135,11 +134,23 @@ namespace PokemonCardCatalogue.Services
             return result;
         }
 
+        public Task<List<T>> QueryAsync<T>(string query) where T : new()
+        {
+            return _collectionConnection.QueryAsync<T>(query);
+        }
+
+        public async Task DeleteAllDataAsync()
+        {
+            await _collectionConnection.DeleteAllAsync<CollectionCard>();
+            await _collectionConnection.DeleteAllAsync<CollectionSet>();
+        }
+
         private Task<CollectionCard> GetCardCollectionById(string cardId)
         {
             return _collectionConnection.Table<CollectionCard>()
                 .FirstOrDefaultAsync(x => x.Id == cardId);
         }
+
         private Task<List<CollectionCard>> GetCardCollectionsBySetId(string setId)
         {
             return _collectionConnection.Table<CollectionCard>()

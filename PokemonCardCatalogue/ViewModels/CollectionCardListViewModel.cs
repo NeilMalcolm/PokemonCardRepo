@@ -25,14 +25,14 @@ namespace PokemonCardCatalogue.ViewModels
         private readonly ICollectionLogic _collectionLogic;
 
         private int _offset = 0;
-        private int _limit = 39;
+        private readonly int _limit = 39;
 
         private bool _canNavigateToCard = true;
         private string _setId;
         private int _allCardsCount;
         private IEnumerable<CardItem> _allCardItems;
 
-        private SemaphoreSlim semaphore = new SemaphoreSlim(1, 1);
+        private readonly SemaphoreSlim semaphore = new SemaphoreSlim(1, 1);
 
         private List<KeyValuePair<SortOrder, string>> _sortModes;
         public List<KeyValuePair<SortOrder, string>> SortModes
@@ -67,16 +67,33 @@ namespace PokemonCardCatalogue.ViewModels
             {
                 if (_currentSortOrder.Key != value.Key)
                 {
-                    HandleSortOrderChange(value.Key);
+                    SetDisplayList(value, _searchText);
+                    _currentSortOrder = value;
+                    OnPropertyChanged();
                 }
-                _currentSortOrder = value;
-                OnPropertyChanged();
+            }
+        }
+
+        private string _searchText;
+
+        public string SearchText
+        {
+            get => _searchText;
+            set
+            {
+                if (value != _searchText && string.IsNullOrWhiteSpace(value))
+                {
+                    SetDisplayList(CurrentSortOrder, value);
+                }
+
+                _searchText = value;
             }
         }
 
         public ICommand GoToCardCommand { get; set; }
         public ICommand AddCommand { get; set; }
         public ICommand LoadMoreCardItemsCommand { get; set; }
+        public ICommand SearchCardsCommand { get; set; }
 
         public CollectionCardListViewModel
             (
@@ -105,6 +122,7 @@ namespace PokemonCardCatalogue.ViewModels
             );
             AddCommand = new Command<CardItem>(async (cardItem) => await AddAsync(cardItem));
             LoadMoreCardItemsCommand = new Command(LoadMore);
+            SearchCardsCommand = new Command<string>((searchText) => SetDisplayList(CurrentSortOrder, searchText));
         }
 
         protected override async Task OnLoadAsync()
@@ -112,23 +130,79 @@ namespace PokemonCardCatalogue.ViewModels
             _allCardItems = await _collectionLogic.GetCardsForSetAsync(_setId);
             _allCardsCount = _allCardItems.Count();
 
-            CurrentSortOrder = SortModes.FirstOrDefault();
+            SetDisplayList(SortModes.FirstOrDefault());
         }
 
-        private void SetCardItemList()
+        private void SetDisplayList(KeyValuePair<SortOrder, string> mode, string searchText = null)
+        {
+            Device.BeginInvokeOnMainThread(() => 
+            {
+                CardItemList?.Clear();
+                IsLoading = true; 
+            });
+
+            var cards = GetCardItemsForOrderAndSearchText(mode, searchText);
+            Task.Run(async () =>
+            {
+                await Task.Delay(500);
+                Device.BeginInvokeOnMainThread(async () =>
+                {
+                    await SetCardItemList(cards);
+                    IsLoading = false;
+                });
+            });
+        }
+
+        private Task SetCardItemList(IEnumerable<CardItem> cardItems)
         {
             ResetOffset();
-            CardItemList?.Clear();
-            CardItemList = new ObservableList<CardItem>(_allCardItems
+            CardItemList = new ObservableList<CardItem>(cardItems
                 .Take(_limit));
 
             _offset += _limit;
+
+            return Task.CompletedTask;
+        }
+
+        private IEnumerable<CardItem> GetCardItemsForOrderAndSearchText(KeyValuePair<SortOrder, string> mode, string searchText)
+        {
+            var newSortOrder = mode.Key;
+            var cards = _allCardItems;
+
+            if (!string.IsNullOrEmpty(searchText))
+            {
+                cards = cards
+                    .Where(x => x.Card.Name.Contains(searchText, System.StringComparison.OrdinalIgnoreCase));
+            }
+
+            switch (newSortOrder)
+            {
+                case SortOrder.Rarity:
+                    cards = cards.OrderBy(x => x.Card.Rarity)
+                        .ThenBy(x => x.CacheId);
+                    break;
+                case SortOrder.NumericDescending:
+                    cards = cards.OrderByDescending(x => x.CacheId);
+                    break;
+                default:
+                case SortOrder.NumericAscending:
+                    cards = cards.OrderBy(x => x.CacheId);
+                    break;
+            }
+
+            return cards;
         }
 
         private void LoadMore()
         {
+            if (IsLoading)
+            {
+                return;
+            }
+
+            var getAllCardsForOrderAndSearchText = GetCardItemsForOrderAndSearchText(CurrentSortOrder, SearchText);
             var currentCount = CardItemList.Count;
-            var maxCount = _allCardsCount;
+            var maxCount = getAllCardsForOrderAndSearchText.Count();
 
             if (currentCount == maxCount)
             {
@@ -143,7 +217,7 @@ namespace PokemonCardCatalogue.ViewModels
 
             CardItemList.AddRange
             (
-                _allCardItems.Skip(_offset)
+                getAllCardsForOrderAndSearchText.Skip(_offset)
                     .Take(limit)
             );
 
@@ -177,32 +251,6 @@ namespace PokemonCardCatalogue.ViewModels
             }
         }
 
-        private void HandleSortOrderChange(SortOrder newSortOrder)
-        {
-            var currentSortOrder = CurrentSortOrder.Key;
-            if (newSortOrder == currentSortOrder)
-            {
-                return;
-            }
-
-            switch (newSortOrder)
-            {
-                case SortOrder.Rarity:
-                    _allCardItems = _allCardItems.OrderBy(x => x.Card.Rarity)
-                        .ThenBy(x => x.CacheId);
-                    break;
-                case SortOrder.NumericDescending:
-                    _allCardItems = _allCardItems.OrderByDescending(x => x.CacheId);
-                    break;
-                default:
-                case SortOrder.NumericAscending:
-                    _allCardItems = _allCardItems.OrderBy(x => x.CacheId);
-                    break;
-            }
-
-            SetCardItemList();
-        }
-
         private void ResetOffset()
         {
             _offset = 0;
@@ -211,7 +259,7 @@ namespace PokemonCardCatalogue.ViewModels
 
     public class ObservableList<T> : IList<T>, INotifyCollectionChanged
     {
-        private List<T> _internalList = new List<T>();
+        private readonly List<T> _internalList = new List<T>();
 
         public event NotifyCollectionChangedEventHandler CollectionChanged;
 
@@ -283,9 +331,11 @@ namespace PokemonCardCatalogue.ViewModels
 
         public void AddRange(IEnumerable<T> items)
         {
-            _internalList.AddRange(items);
+            var itemsToAdd = items.ToList();
+            var count = itemsToAdd.Count;
+            _internalList.AddRange(itemsToAdd);
 
-            InvokeCollectionChanged(new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Add, items));
+            InvokeCollectionChanged(new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Add, itemsToAdd, count));
         }
 
         IEnumerator IEnumerable.GetEnumerator()

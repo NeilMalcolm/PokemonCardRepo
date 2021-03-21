@@ -68,7 +68,7 @@ namespace PokemonCardCatalogue.Services
         {
             return new SetItem
             {
-                OwnedCount = collectionSet.OwnedCount,
+                OwnedCount = collectionSet.OwnedCardsCount,
                 Set = new Set
                 {
                     Id = collectionSet.Id,

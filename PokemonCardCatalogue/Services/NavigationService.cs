@@ -32,6 +32,12 @@ namespace PokemonCardCatalogue.Services
             return PopAsync();
         }
 
+        public Task SwitchTab(string tabRoute)
+        {
+            Shell.Current.CurrentItem.CurrentItem = AppShell.Tabs[tabRoute];
+            return Task.CompletedTask;
+        }
+
         private Page GetPageAndViewModel<T>(object parameter = null) where T : Page
         {
             var viewModel = _viewModelResolver.Get<T>();

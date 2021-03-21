@@ -8,5 +8,6 @@ namespace PokemonCardCatalogue.Services.Interfaces
         Page GetMainPage();
         Task GoToAsync<T>(object parameter = null) where T : Page;
         Task PopAsync();
+        Task SwitchTab(string tabRoute);
     }
 }

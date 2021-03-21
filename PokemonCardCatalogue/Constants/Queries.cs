@@ -6,6 +6,7 @@
             @"SELECT cs.Id,
                      cs.Name,
                      cs.Series,
+                     cs.PrintedTotal,
                      cs.Total,
                      cs.ExpandedLegality,
                      cs.UnlimitedLegality,
@@ -15,14 +16,18 @@
                      cs.LogoImage,
                      cs.SymbolImage,
                      cs.DateAdded,
-                     count(cc.OwnedCount <> 0) as OwnedCount
+                     count(cc.OwnedCount > 0) as OwnedCardsCount
             FROM CollectionSet cs
             LEFT JOIN CollectionCard cc 
 	            ON cc.SetId = cs.Id
-            GROUP BY cs.id";
+            GROUP BY cs.Id";
 
         public static string DeleteAllCardsForSet =
             @"DELETE FROM CollectionCard
               WHERE SetId = ?";
+
+        public static string GetAllSetIdsInCollection =
+            @"SELECT Id 
+              FROM CollectionSet";
     }
 }

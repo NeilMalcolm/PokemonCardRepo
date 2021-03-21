@@ -25,9 +25,13 @@ namespace PokemonCardCatalogue.iOS
         public override bool FinishedLaunching(UIApplication app, NSDictionary options)
         {
             FFImageLoading.Forms.Platform.CachedImageRenderer.Init();
-            global::Xamarin.Forms.Forms.SetFlags("Brush_Experimental");
-            global::Xamarin.Forms.Forms.SetFlags("SwipeView_Experimental");
-            global::Xamarin.Forms.Forms.SetFlags("CollectionView_Experimental");
+
+            global::Xamarin.Forms.Forms.SetFlags(new string[] {
+                "Brush_Experimental",
+                "SwipeView_Experimental",
+                "CollectionView_Experimental"
+            });
+
             global::Xamarin.Forms.Forms.Init();
             LoadApplication(new App(new DependencyHandler_iOS(new DependencyContainer())));
             

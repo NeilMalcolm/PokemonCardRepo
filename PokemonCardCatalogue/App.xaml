@@ -1,6 +1,7 @@
 ﻿<Application xmlns="http://xamarin.com/schemas/2014/forms"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:droid="clr-namespace:Xamarin.Forms.PlatformConfiguration.AndroidSpecific;assembly=Xamarin.Forms.Core"
+             xmlns:ios="clr-namespace:Xamarin.Forms.PlatformConfiguration.iOSSpecific;assembly=Xamarin.Forms.Core"
              x:Class="PokemonCardCatalogue.App">
     <!--
         Define global resources and styles here, that apply to all pages in your app.
@@ -12,7 +13,7 @@
             <Color x:Key="LightPrimary">#2196F3</Color>
             <Color x:Key="DarkPrimary">#2196F3</Color>
 
-            <Color x:Key="LightShellBackgroundColor">#FBFCFF</Color>
+            <Color x:Key="LightShellBackgroundColor">#f5f7fc</Color>
             <Color x:Key="DarkShellBackgroundColor">#000000</Color>
 
             <Color x:Key="LightShellTabBackgroundColor">#F3F6FD</Color>
@@ -66,7 +67,7 @@
 
             <Color x:Key="LightDestructiveColor">#db1a41</Color>
             <Color x:Key="DarkDestructiveColor">#bf1d3e</Color>
-            
+
             <!-- Ints  -->
             
             <x:Int32 x:Key="LargeTitleViewLabelSize">24</x:Int32>
@@ -75,6 +76,54 @@
             <x:Int32 x:Key="SettingGroupHeaderTitleLabelSize">25</x:Int32>
             <x:Int32 x:Key="SettingTitleLabelSize">17</x:Int32>
 
+            
+            <!-- Platform-specific values  -->
+
+            <Color x:Key="LightFrameShadowiOS">#80A3A9BF</Color>
+            <Color x:Key="DarkFrameShadowiOS">Transparent</Color>
+
+            <OnPlatform x:Key="ButtonPadding" 
+                        x:TypeArguments="Thickness" 
+                        iOS="10" 
+                        Android="0"/>
+
+            <OnPlatform x:Key="PillPadding" 
+                        x:TypeArguments="Thickness" 
+                        iOS="10, 0" 
+                        Android="0"/>
+
+            <OnPlatform x:Key="FrameHasShadow" 
+                        x:TypeArguments="x:Boolean" 
+                        iOS="False" 
+                        Android="True"/>
+
+            <Style TargetType="Frame"
+                   ApplyToDerivedTypes="True">
+                <Setter Property="HasShadow"
+                        Value="{StaticResource FrameHasShadow}"/>
+                <Setter Property="ios:VisualElement.IsShadowEnabled"
+                        Value="True"/>
+                <Setter Property="ios:VisualElement.ShadowColor"
+                        Value="{AppThemeBinding Light={StaticResource LightFrameShadowiOS},
+                                                Dark={StaticResource DarkFrameShadowiOS}}"/>
+                <Setter Property="ios:VisualElement.ShadowOffset">
+                    <Setter.Value>
+                        <Size>
+                            <x:Arguments>
+                                <x:Double>0</x:Double>
+                                <x:Double>5</x:Double>
+                            </x:Arguments>
+                        </Size>
+                    </Setter.Value>
+                </Setter>
+                <Setter Property="ios:VisualElement.ShadowRadius"
+                        Value="10"/>
+            </Style>
+
+            <!-- Styles -->
+            
+            
+            
             <Style TargetType="Page"
                    ApplyToDerivedTypes="True">
                 <Setter Property="BackgroundColor"
@@ -134,7 +183,7 @@
                 <Setter Property="Padding"
                         Value="10, 0"/>
                 <Setter Property="CornerRadius"
-                        Value="20"/>
+                        Value="7"/>
                 <Setter Property="BackgroundColor"
                         Value="{AppThemeBinding Light={StaticResource LightSetCardCountBackgroundColor},
                                                 Dark={StaticResource DarkSetCardCountBackgroundColor}}"/>
@@ -155,8 +204,6 @@
                 <Setter Property="BackgroundColor"
                         Value="{AppThemeBinding Light={StaticResource LightSetCardBackgroundColor},
                                                 Dark={StaticResource DarkSetCardBackgroundColor}}"/>
-                <Setter Property="HasShadow"
-                        Value="True"/>
             </Style>
 
             <Style TargetType="Button"
@@ -165,9 +212,9 @@
                         Value="{AppThemeBinding Light={StaticResource LightSetCardAddButtonTextColor},
                                                 Dark={StaticResource DarkSetCardAddButtonTextColor}}"/>
                 <Setter Property="CornerRadius"
-                        Value="30"/>
+                        Value="13"/>
                 <Setter Property="Padding"
-                        Value="0"/>
+                        Value="{StaticResource ButtonPadding}"/>
                 <Setter Property="HeightRequest"
                         Value="25"/>
                 <Setter Property="VerticalOptions"

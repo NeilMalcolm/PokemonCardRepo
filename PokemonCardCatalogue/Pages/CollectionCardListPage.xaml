@@ -2,6 +2,8 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="PokemonCardCatalogue.Pages.CollectionCardListPage"
              xmlns:ff="clr-namespace:FFImageLoading.Forms;assembly=FFImageLoading.Forms"
+             xmlns:ios="clr-namespace:Xamarin.Forms.PlatformConfiguration.iOSSpecific;assembly=Xamarin.Forms.Core"
+             xmlns:xctk="http://xamarin.com/schemas/2020/toolkit"
              xmlns:pages="clr-namespace:PokemonCardCatalogue.Pages"
              x:Name="ThisPage">
     <Shell.TitleView>
@@ -17,66 +19,82 @@
         </StackLayout>
     </Shell.TitleView>
     <pages:BaseContentPage.Content>
-        <CollectionView ItemsSource="{Binding CardItemList}"
-                        RemainingItemsThreshold="3"
+        <StackLayout Orientation="Vertical">
+            <SearchBar Text="{Binding SearchText}"
+                       Placeholder="Search Cards..."
+                       Keyboard="Plain"
+                       ios:SearchBar.SearchBarStyle="Minimal">
+                <SearchBar.Behaviors>
+                    <xctk:UserStoppedTypingBehavior Command="{Binding SearchCardsCommand}"
+                                                    ShouldDismissKeyboardAutomatically="False"
+                                                    StoppedTypingTimeThreshold="400"
+                                                    MinimumLengthThreshold="1"/>
+                </SearchBar.Behaviors>
+            </SearchBar>
+            
+            <CollectionView x:Name="CardCollectionView"
+                        ItemsSource="{Binding CardItemList}"
+                        RemainingItemsThreshold="6"
+                        ItemsUpdatingScrollMode="KeepLastItemInView"
+                        SelectionMode="None"
                         VerticalScrollBarVisibility="Never"
                         RemainingItemsThresholdReachedCommand="{Binding LoadMoreCardItemsCommand}">
-            <CollectionView.ItemsLayout>
-                <GridItemsLayout Span="3"
+                <CollectionView.ItemsLayout>
+                    <GridItemsLayout Span="3"
                                  Orientation="Vertical"
                                  HorizontalItemSpacing="5"
                                  VerticalItemSpacing="5"
                                  SnapPointsAlignment="Start"
                                  SnapPointsType="Mandatory"/>
-            </CollectionView.ItemsLayout>
-            <CollectionView.ItemTemplate>
-                <DataTemplate>
-                    <ContentView>
-                        <Frame Padding="0"
+                </CollectionView.ItemsLayout>
+                <CollectionView.ItemTemplate>
+                    <DataTemplate>
+                        <ContentView>
+                            <Frame Padding="0"
                                CornerRadius="8">
-                            <Grid>
-                                <Grid.RowDefinitions>
-                                    <RowDefinition Height="*"/>
-                                    <RowDefinition Height="44"/>
-                                </Grid.RowDefinitions>
-                                <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="*"/>
-                                    <ColumnDefinition Width="*"/>
-                                </Grid.ColumnDefinitions>
-                                <ff:CachedImage Source="{Binding Card.Images.Small}"
+                                <Grid>
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Height="*"/>
+                                        <RowDefinition Height="44"/>
+                                    </Grid.RowDefinitions>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="*"/>
+                                    </Grid.ColumnDefinitions>
+                                    <ff:CachedImage Source="{Binding Card.Images.Small}"
                                                 Grid.RowSpan="1"
                                                 DownsampleToViewSize="True"
                                                 FadeAnimationForCachedImages="False"
                                                 Aspect="AspectFill"
                                                 Grid.ColumnSpan="2"
                                                 HeightRequest="190"/>
-                                <ContentView Grid.RowSpan="2"
+                                    <ContentView Grid.RowSpan="2"
                                        Grid.ColumnSpan="2">
-                                    <ContentView.Background>
-                                        <LinearGradientBrush StartPoint="0, 0"
+                                        <ContentView.Background>
+                                            <LinearGradientBrush StartPoint="0, 0"
                                                              EndPoint="0, 1">
-                                            <LinearGradientBrush.GradientStops>
-                                                <GradientStop Color="#33000000"/>
-                                                <GradientStop Color="#99000000"
+                                                <LinearGradientBrush.GradientStops>
+                                                    <GradientStop Color="#33000000"/>
+                                                    <GradientStop Color="#99000000"
                                                               Offset="0.5"/>
-                                                <GradientStop Color="#BF000000"
+                                                    <GradientStop Color="#BF000000"
                                                               Offset="1"/>
-                                            </LinearGradientBrush.GradientStops>
-                                        </LinearGradientBrush>
-                                    </ContentView.Background>
-                                </ContentView>
-                                <Frame Grid.Row="1"
+                                                </LinearGradientBrush.GradientStops>
+                                            </LinearGradientBrush>
+                                        </ContentView.Background>
+                                    </ContentView>
+                                    <Frame Grid.Row="1"
                                        Grid.ColumnSpan="2"
                                        Background="#54D68F"
                                        Padding="0">
-                                    <StackLayout Orientation="Horizontal">
-                                        <Label Text="{Binding OwnedCount}"
+                                        <StackLayout Orientation="Horizontal">
+                                            <Label Text="{Binding OwnedCount}"
                                                TextColor="White"
                                                FontAttributes="Bold"
                                                FontSize="20"
                                                VerticalOptions="Center"
                                                HorizontalOptions="CenterAndExpand"/>
-                                        <Button Text="Add"
+                                            <Button Text="Add"
                                                 Padding="0"
                                                 TextColor="White"
                                                 FontAttributes="Bold"
@@ -86,12 +104,12 @@
                                                 CommandParameter="{Binding .}"
                                                 Background="#3EC27A"
                                                 HorizontalOptions="End">
-                                        </Button>
-                                    </StackLayout>
-                                </Frame>
-                            </Grid>
-                        </Frame>
-                        <!--<Frame Style="{StaticResource SetListCardFrameStyle}">
+                                            </Button>
+                                        </StackLayout>
+                                    </Frame>
+                                </Grid>
+                            </Frame>
+                            <!--<Frame Style="{StaticResource SetListCardFrameStyle}">
                             <Frame.GestureRecognizers>
                                 <TapGestureRecognizer Command="{Binding Source={x:Reference ThisPage},
                                                                         Path=BindingContext.GoToCardCommand}"
@@ -113,7 +131,9 @@
                                        Aspect="AspectFit"
                                        Grid.RowSpan="3"/>
 
-                                --><!-- First Row --><!--
+                                -->
+                            <!-- First Row -->
+                            <!--
 
                                 <Label Grid.Column="1">
                                     <Label.FormattedText>
@@ -132,7 +152,9 @@
                                     </Label.FormattedText>
                                 </Label>
 
-                                --><!-- Second Row--><!--
+                                -->
+                            <!-- Second Row-->
+                            <!--
                                 <Frame Style="{StaticResource SetCardTotalBackgroundFrameStyle}"
                                        Padding="15, 0"
                                        Grid.Row="1"
@@ -145,7 +167,9 @@
                                            Margin="0"/>
                                 </Frame>
 
-                                --><!-- Third Row --><!--
+                                -->
+                            <!-- Third Row -->
+                            <!--
                                 <Label Grid.Row="2"
                                        Grid.Column="1">
                                     <Label.FormattedText>
@@ -171,9 +195,19 @@
                                 </Label>
                             </Grid>
                         </Frame>-->
-                    </ContentView>
-                </DataTemplate>
-            </CollectionView.ItemTemplate>
-        </CollectionView>
+                        </ContentView>
+                    </DataTemplate>
+                </CollectionView.ItemTemplate>
+                <CollectionView.EmptyView>
+                    <Grid HorizontalOptions="Fill"
+                      VerticalOptions="Fill">
+                        <ActivityIndicator HorizontalOptions="Center"
+                                       VerticalOptions="Center"
+                                       IsVisible="{Binding IsLoading}"
+                                       IsRunning="{Binding IsLoading}"/>
+                    </Grid>
+                </CollectionView.EmptyView>
+            </CollectionView>
+        </StackLayout>
     </pages:BaseContentPage.Content>
 </pages:BaseContentPage>

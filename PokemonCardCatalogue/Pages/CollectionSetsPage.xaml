@@ -20,6 +20,21 @@
                     <LinearItemsLayout Orientation="Vertical"
                                    ItemSpacing="0"/>
                 </CollectionView.ItemsLayout>
+                <CollectionView.Header>
+                    <StackLayout Orientation="Vertical"
+                             Margin="0"
+                             Spacing="10"
+                             Padding="10, 20">
+                        <Label Text="Card Collection"
+                           Style="{StaticResource LargeTitleViewLabelStyle}"
+                           FontAttributes="Bold"
+                           Margin="0"/>
+                        <Label Text="Your personal card collection, organized by set."
+                           HorizontalOptions="Center"
+                           HorizontalTextAlignment="Center"
+                           Margin="0"/>
+                    </StackLayout>
+                </CollectionView.Header>
                 <CollectionView.ItemTemplate>
                     <DataTemplate>
                         <ContentView>

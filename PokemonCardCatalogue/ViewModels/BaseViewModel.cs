@@ -1,4 +1,5 @@
 ﻿using PokemonCardCatalogue.Services.Interfaces;
+using System;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
@@ -43,6 +44,7 @@ namespace PokemonCardCatalogue.ViewModels
         public BaseViewModel(INavigationService navigationService)
         {
             NavigationService = navigationService;
+            SetUpCommands();
         }
 
         public virtual void Init(object parameter)
@@ -51,11 +53,14 @@ namespace PokemonCardCatalogue.ViewModels
 
         public async Task LoadAsync()
         {
-            SetUpCommands();
             try
             {
                 IsLoading = true;
                 await OnLoadAsync();
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine(ex);
             }
             finally
             {

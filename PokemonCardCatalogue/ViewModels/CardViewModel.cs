@@ -6,8 +6,6 @@ namespace PokemonCardCatalogue.ViewModels
 {
     public class CardViewModel : BaseViewModel
     {
-        private readonly ICardLogic _cardLogic;
-
         private Card _thisCard;
         public Card ThisCard
         {
@@ -19,11 +17,9 @@ namespace PokemonCardCatalogue.ViewModels
             }
         }
 
-        public CardViewModel(ICardLogic cardLogic,
-            INavigationService navigationService) 
+        public CardViewModel(INavigationService navigationService) 
             : base(navigationService)
         {
-            _cardLogic = cardLogic;
         }
 
         public override void Init(object parameter)
