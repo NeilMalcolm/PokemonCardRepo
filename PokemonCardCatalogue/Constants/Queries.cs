@@ -16,11 +16,13 @@
                      cs.LogoImage,
                      cs.SymbolImage,
                      cs.DateAdded,
-                     count(cc.OwnedCount > 0) as OwnedCardsCount
-            FROM CollectionSet cs
-            LEFT JOIN CollectionCard cc 
-	            ON cc.SetId = cs.Id
-            GROUP BY cs.Id";
+                     (
+                        SELECT COUNT() 
+                        FROM CollectionCard cc
+                        WHERE cc.SetId = cs.Id 
+                        AND cc.OwnedCount > 0
+                      ) as OwnedCardsCount
+            FROM CollectionSet cs";
 
         public static string DeleteAllCardsForSet =
             @"DELETE FROM CollectionCard

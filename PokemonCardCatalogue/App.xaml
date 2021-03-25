@@ -2,6 +2,7 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:droid="clr-namespace:Xamarin.Forms.PlatformConfiguration.AndroidSpecific;assembly=Xamarin.Forms.Core"
              xmlns:ios="clr-namespace:Xamarin.Forms.PlatformConfiguration.iOSSpecific;assembly=Xamarin.Forms.Core"
+             xmlns:controls="clr-namespace:PokemonCardCatalogue.Controls"
              x:Class="PokemonCardCatalogue.App">
     <!--
         Define global resources and styles here, that apply to all pages in your app.
@@ -59,14 +60,20 @@
             <Color x:Key="LightSetCardAddButtonTextColor">#E6EBF3</Color>
             <Color x:Key="DarkSetCardAddButtonTextColor">#E6EBF3</Color>
 
-            <Color x:Key="LightSetCardAddButtonBackgroundColor">#C1247C</Color>
+            <Color x:Key="LightSetCardAddButtonBackgroundColor">#cf1d80</Color>
             <Color x:Key="DarkSetCardAddButtonBackgroundColor">#C1247C</Color>
+
+            <Color x:Key="LightSetCardGoButtonBackgroundColor">#1d7fcf</Color>
+            <Color x:Key="DarkSetCardGoButtonBackgroundColor">#1d6acf</Color>
 
             <Color x:Key="LightSettingTitleLabelColor">#494E5C</Color>
             <Color x:Key="DarkSettingTitleLabelColor">#E6EBF3</Color>
 
             <Color x:Key="LightDestructiveColor">#db1a41</Color>
             <Color x:Key="DarkDestructiveColor">#bf1d3e</Color>
+
+            <Color x:Key="LightPageBackgroundAltColor">#FBFCFF</Color>
+            <Color x:Key="DarkPageBackgroundAltColor">#191B1F</Color>
 
             <!-- Ints  -->
             
@@ -75,6 +82,8 @@
             <x:Int32 x:Key="SetCardSubtitleLabelSize">13</x:Int32>
             <x:Int32 x:Key="SettingGroupHeaderTitleLabelSize">25</x:Int32>
             <x:Int32 x:Key="SettingTitleLabelSize">17</x:Int32>
+            <x:Int32 x:Key="CardPageTitleLabelSize">22</x:Int32>
+            <x:Int32 x:Key="CardPageSectionHeaderLabelSize">18</x:Int32>
 
             
             <!-- Platform-specific values  -->
@@ -121,7 +130,11 @@
             </Style>
 
             <!-- Styles -->
-            
+
+            <Style TargetType="controls:SkeletonView">
+                <Setter Property="BackgroundColor"
+                        Value="#80A3A9BF"/>
+            </Style>
             
             
             <Style TargetType="Page"
@@ -196,7 +209,7 @@
                 <Setter Property="CornerRadius"
                         Value="16"/>
                 <Setter Property="Margin"
-                        Value="15, 3.5, 10, 12.5"/>
+                        Value="15, 3.5, 15, 12.5"/>
                 <Setter Property="Padding"
                         Value="10, 16, 10, 16"/>
                 <Setter Property="droid:VisualElement.Elevation"
@@ -226,6 +239,14 @@
                 <Setter Property="BackgroundColor"
                         Value="{AppThemeBinding Light={StaticResource LightSetCardAddButtonBackgroundColor},
                                                 Dark={StaticResource DarkSetCardAddButtonBackgroundColor}}"/>
+            </Style>
+
+            <Style TargetType="Button"
+                   x:Key="SetCardGoButtonStyle"
+                   BasedOn="{StaticResource SetCardAddButtonStyle}">
+                <Setter Property="BackgroundColor"
+                        Value="{AppThemeBinding Light={StaticResource LightSetCardGoButtonBackgroundColor},
+                                                Dark={StaticResource DarkSetCardGoButtonBackgroundColor}}"/>
             </Style>
 
             <!-- End of All Sets Page -->
@@ -304,6 +325,23 @@
             </Style>
 
             <!-- End of Collection Sets Page -->
+
+            <Style TargetType="Label"
+                   x:Key="CardPagePokemonTitleLabelStyle">
+                <Setter Property="FontSize"
+                        Value="{StaticResource CardPageTitleLabelSize}"/>
+                <Setter Property="FontAttributes"
+                        Value="Bold"/>
+            </Style>
+
+            <Style TargetType="Label"
+                   x:Key="CardPageSectionTitleLabelStyle">
+                <Setter Property="FontSize"
+                        Value="{StaticResource CardPageSectionHeaderLabelSize}"/>
+                <Setter Property="FontAttributes"
+                        Value="Bold"/>
+            </Style>
+
         </ResourceDictionary>        
     </Application.Resources>
 </Application>

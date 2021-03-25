@@ -1,9 +1,9 @@
 ﻿using PokemonCardCatalogue.Common.Context.Interfaces;
 using PokemonCardCatalogue.Common.Models.Data;
-using PokemonCardCatalogue.Constants;
 using PokemonCardCatalogue.Logic.Interfaces;
 using PokemonCardCatalogue.Models;
 using PokemonCardCatalogue.Services.Interfaces;
+using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
@@ -64,6 +64,31 @@ namespace PokemonCardCatalogue.Logic
         public Task<int> SetOwnedCountForCard(CardItem cardItem)
         {
             return _cardCollection.SetOwnedCountForCard(cardItem.Card.Id, cardItem.OwnedCount);
+        }
+
+        public Task<int> IncrementCardOwnedCount(string id)
+        {
+            return _cardCollection.IncrementOwnedCountForCard(id);
+        }
+
+        public Task<int> DecrementCardOwnedCount(string id)
+        {
+            return _cardCollection.DecrementOwnedCountForCard(id);
+        }
+
+        public Task<int> GetCardOwnedCount(string cardId)
+        {
+            return _cardCollection.GetCardOwnedCount(cardId);
+        }
+
+        public Task<DateTime?> GetMostRecentCardModifiedDateBySetId(string setId)
+        {
+            return _cardCollection.GetMostRecentCardUpdateBySet(setId);
+        }
+
+        public Task<CardItem> GetMostRecentlyUpdatedCardBySetId(string setId)
+        {
+            return _cardCollection.GetMostRecentlyUpdatedCardBySetId(setId);
         }
     }
 }

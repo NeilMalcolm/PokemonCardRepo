@@ -18,6 +18,7 @@ namespace PokemonCardCatalogue.Models
         {
             OwnedCount++;
             OnPropertyChanged(nameof(OwnedCount));
+            OnPropertyChanged(nameof(Owned));
         }
 
         private void OnPropertyChanged([CallerMemberName]string propertyName = "")

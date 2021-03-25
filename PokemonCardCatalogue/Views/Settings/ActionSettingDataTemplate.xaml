@@ -6,8 +6,7 @@
             <TapGestureRecognizer Command="{Binding Command}"/>
         </StackLayout.GestureRecognizers>
         <Label Text="{Binding Name}"
-               Style="{StaticResource SettingTitleStyle}"
-               >
+               Style="{StaticResource SettingTitleStyle}">
             <Label.Triggers>
                 <DataTrigger Binding="{Binding IsDestructive}"
                              TargetType="Label">
@@ -18,6 +17,7 @@
             </Label.Triggers>
         </Label>
         <Label Text="{Binding Description}"
+               FontSize="13"
                FontAttributes="Italic"/>
     </StackLayout>
 </DataTemplate>

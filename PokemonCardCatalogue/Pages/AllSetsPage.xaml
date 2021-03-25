@@ -127,8 +127,7 @@
                                                        IsEnabled="{Binding IsDownloading}"/>
 
                                     <Button Text=">  Go"
-                                            Style="{StaticResource SetCardAddButtonStyle}"
-                                            BackgroundColor="Green"
+                                            Style="{StaticResource SetCardGoButtonStyle}"
                                             Grid.Row="1"
                                             Grid.Column="1"
                                             Grid.RowSpan="2"

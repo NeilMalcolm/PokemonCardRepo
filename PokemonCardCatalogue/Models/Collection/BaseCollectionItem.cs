@@ -1,4 +1,5 @@
 ﻿using SQLite;
+using System;
 
 namespace PokemonCardCatalogue.Models.Collection
 {
@@ -13,5 +14,11 @@ namespace PokemonCardCatalogue.Models.Collection
 
         [Indexed]
         public string Name { get; set; }
+
+        [Indexed]
+        public DateTime? ModifiedDate { get; set; }
+
+        [Indexed]
+        public DateTime? CreatedDate { get; set; }
     }
 }

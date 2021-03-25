@@ -17,6 +17,7 @@ namespace PokemonCardCatalogue.Models.Settings
            : base (name, SettingType.Action, description)
         {
             Command = command;
+            IsDestructive = isDestructive;
         }
     }
 }

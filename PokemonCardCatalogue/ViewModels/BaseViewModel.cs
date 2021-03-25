@@ -68,6 +68,11 @@ namespace PokemonCardCatalogue.ViewModels
             }
         }
 
+        public virtual Task OnPageAppearing()
+        {
+            return Task.CompletedTask;
+        }
+
         protected virtual Task OnLoadAsync()
         {
             Title = "Pokétracker";

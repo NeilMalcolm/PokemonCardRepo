@@ -1,15 +1,63 @@
 ﻿<pages:BaseContentPage xmlns="http://xamarin.com/schemas/2014/forms"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:pages="clr-namespace:PokemonCardCatalogue.Pages"
+             xmlns:controls="clr-namespace:PokemonCardCatalogue.Controls"
              xmlns:ff="clr-namespace:FFImageLoading.Forms;assembly=FFImageLoading.Forms"
+             xmlns:xctk="http://xamarin.com/schemas/2020/toolkit"
              x:Class="PokemonCardCatalogue.Pages.SetListPage"
              x:Name="ThisPage">
+    <Shell.TitleView>
+        <ContentView>
+            <ff:CachedImage Source="{Binding SetImageUrl}"
+                            DownsampleToViewSize="True"
+                            WidthRequest="80"
+                            VerticalOptions="Center"
+                            Margin="-80, 0, 0, 0"/>
+        </ContentView>
+    </Shell.TitleView>
     <pages:BaseContentPage.Content>
         <CollectionView ItemsSource="{Binding CardList}">
             <CollectionView.ItemsLayout>
                 <LinearItemsLayout Orientation="Vertical"
                                    ItemSpacing="0"/>
             </CollectionView.ItemsLayout>
+            <CollectionView.EmptyView>
+                <StackLayout Padding="15"
+                             Spacing="12.5">
+                    <controls:SkeletonView HeightRequest="85"
+                                           WidthRequest="150"
+                                           CornerRadius="12"
+                                           HorizontalOptions="FillAndExpand"/>
+                    <controls:SkeletonView HeightRequest="85"
+                                           WidthRequest="150"
+                                           CornerRadius="12"
+                                           HorizontalOptions="FillAndExpand"/>
+                    <controls:SkeletonView HeightRequest="85"
+                                           WidthRequest="150"
+                                           CornerRadius="12"
+                                           HorizontalOptions="FillAndExpand"/>
+                    <controls:SkeletonView HeightRequest="85"
+                                           WidthRequest="150"
+                                           CornerRadius="12"
+                                           HorizontalOptions="FillAndExpand"/>
+                    <controls:SkeletonView HeightRequest="85"
+                                           WidthRequest="150"
+                                           CornerRadius="12"
+                                           HorizontalOptions="FillAndExpand"/>
+                    <controls:SkeletonView HeightRequest="85"
+                                           WidthRequest="150"
+                                           CornerRadius="12"
+                                           HorizontalOptions="FillAndExpand"/>
+                    <controls:SkeletonView HeightRequest="85"
+                                           WidthRequest="150"
+                                           CornerRadius="12"
+                                           HorizontalOptions="FillAndExpand"/>
+                    <controls:SkeletonView HeightRequest="85"
+                                           WidthRequest="150"
+                                           CornerRadius="12"
+                                           HorizontalOptions="FillAndExpand"/>
+                </StackLayout>
+            </CollectionView.EmptyView>
             <CollectionView.ItemTemplate>
                 <DataTemplate>
                     <ContentView>

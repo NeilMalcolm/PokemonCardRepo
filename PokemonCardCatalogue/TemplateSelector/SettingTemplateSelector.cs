@@ -6,11 +6,13 @@ namespace PokemonCardCatalogue.TemplateSelector
 {
     public class SettingTemplateSelector : DataTemplateSelector
     {
+        private DataTemplate ActionSettingTemplate = new ActionSettingDataTemplate();
+
         protected override DataTemplate OnSelectTemplate(object item, BindableObject container)
         {
             if (item is ActionSetting)
             {
-                return new ActionSettingDataTemplate();
+                return ActionSettingTemplate;
             }
 
             return null;

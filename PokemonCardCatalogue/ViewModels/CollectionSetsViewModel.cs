@@ -2,6 +2,7 @@
 using PokemonCardCatalogue.Models;
 using PokemonCardCatalogue.Pages;
 using PokemonCardCatalogue.Services.Interfaces;
+using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -32,6 +33,19 @@ namespace PokemonCardCatalogue.ViewModels
             }
         }
 
+        private bool _isRefreshing;
+
+        public bool IsRefreshing
+        {
+            get => _isRefreshing; 
+            set 
+            {
+                _isRefreshing = value;
+                OnPropertyChanged();
+            }
+        }
+
+
         List<SetItem> _deletingSetItems { get; set; } = new List<SetItem>();
 
         public ICommand DeleteSetCommand { get; set; }
@@ -49,12 +63,42 @@ namespace PokemonCardCatalogue.ViewModels
 
         protected override void SetUpCommands()
         {
-            RefreshCommand = new Command(async () => await OnLoadAsync(), () => !IsLoading);
-            DeleteSetCommand = new Command<SetItem>(async (setItem) => await ConfirmDeleteSet(setItem), (setItem) => CanDeleteSet(setItem));
-            GoToSetCommand = new Command<SetItem>(async (setItem) => await GoToSetAsync(setItem), (setItem) => _canGoToSet);
+            RefreshCommand = new Command(async () => await RefreshAsync(), () => !IsRefreshing);
+            DeleteSetCommand = new Command<SetItem>
+            (
+                async (setItem) => await ConfirmDeleteSet(setItem), 
+                (setItem) => CanDeleteSet(setItem)
+            );
+            GoToSetCommand = new Command<SetItem>
+            (
+                async (setItem) => await GoToSetAsync(setItem),
+                (setItem) => _canGoToSet
+            );
         }
 
-        protected override async Task OnLoadAsync()
+        protected override Task OnLoadAsync()
+        {
+            return LoadAllData();
+        }
+        
+        private async Task RefreshAsync()
+        {
+            IsRefreshing = true;
+            try
+            {
+                await LoadAllData();
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine(ex);
+            }
+            finally
+            {
+                IsRefreshing = false;
+            }
+        }
+
+        private async Task LoadAllData()
         {
             var allSets = await _collectionLogic.GetAllSets(withCount: true);
 
@@ -64,10 +108,13 @@ namespace PokemonCardCatalogue.ViewModels
             }
             else if (DoPreviouslyNavigatedSetAndSetFromDbHaveDifferentOwnedCounts(allSets, _previouslyNavigatedToSetItem))
             {
-                var item = allSets?.FirstOrDefault(x => x.Set.Id == _previouslyNavigatedToSetItem.Set.Id);
-                var index = SetItems.IndexOf(item);
-                SetItems.RemoveAt(index);
-                SetItems.Insert(index, item);
+                if (_previouslyNavigatedToSetItem != null)
+                {
+                    var item = allSets?.FirstOrDefault(x => x.Set.Id == _previouslyNavigatedToSetItem.Set.Id);
+                    var index = SetItems.IndexOf(_previouslyNavigatedToSetItem);
+                    SetItems.RemoveAt(index);
+                    SetItems.Insert(index, item);
+                }
             }
 
             _previouslyNavigatedToSetItem = null;
@@ -95,7 +142,7 @@ namespace PokemonCardCatalogue.ViewModels
         {
             _canGoToSet = false;
             _previouslyNavigatedToSetItem = item;
-            await NavigationService.GoToAsync<CollectionCardListPage>(item.Set.Id);
+            await NavigationService.GoToAsync<CollectionCardListPage>(item.Set);
             _canGoToSet = true;
         }
 

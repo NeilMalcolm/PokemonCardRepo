@@ -2,27 +2,47 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="PokemonCardCatalogue.Pages.CollectionCardListPage"
              xmlns:ff="clr-namespace:FFImageLoading.Forms;assembly=FFImageLoading.Forms"
+             xmlns:controls="clr-namespace:PokemonCardCatalogue.Controls"
              xmlns:ios="clr-namespace:Xamarin.Forms.PlatformConfiguration.iOSSpecific;assembly=Xamarin.Forms.Core"
              xmlns:xctk="http://xamarin.com/schemas/2020/toolkit"
+             xmlns:dts="clr-namespace:PokemonCardCatalogue.TemplateSelector"
              xmlns:pages="clr-namespace:PokemonCardCatalogue.Pages"
              x:Name="ThisPage">
     <Shell.TitleView>
-        <StackLayout Orientation="Horizontal"
-                     HorizontalOptions="FillAndExpand">
-            <Label Text="{Binding Title}"/>
-            <Picker SelectedItem="{Binding CurrentSortOrder, Mode=TwoWay}"
-                    ItemsSource="{Binding SortModes}"
-                    ItemDisplayBinding="{Binding Value}"
-                    HorizontalOptions="EndAndExpand"
-                    WidthRequest="150"
-                    FontSize="13"/>
-        </StackLayout>
+        <ContentView>
+            <ff:CachedImage Source="{Binding SetImageUrl}"
+                            DownsampleToViewSize="True"
+                            WidthRequest="80"
+                            VerticalOptions="Center"
+                            Margin="-80, 0, 0, 0"/>
+        </ContentView>
     </Shell.TitleView>
+    <pages:BaseContentPage.Resources>
+        <dts:CollectionCardViewTemplateSelector x:Key="CardTemplateSelector"/>
+        <Style TargetType="controls:SkeletonView">
+            <Setter Property="HeightRequest"
+                    Value="175"/>
+            <Setter Property="CornerRadius"
+                    Value="12"/>
+            <Setter Property="VerticalOptions"
+                    Value="FillAndExpand"/>
+            <Setter Property="HorizontalOptions"
+                    Value="FillAndExpand"/>
+        </Style>
+    </pages:BaseContentPage.Resources>
     <pages:BaseContentPage.Content>
-        <StackLayout Orientation="Vertical">
+        <Grid>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="70"/>
+            </Grid.ColumnDefinitions>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="30"/>
+            </Grid.RowDefinitions>
             <SearchBar Text="{Binding SearchText}"
                        Placeholder="Search Cards..."
                        Keyboard="Plain"
+                       HeightRequest="30"
                        ios:SearchBar.SearchBarStyle="Minimal">
                 <SearchBar.Behaviors>
                     <xctk:UserStoppedTypingBehavior Command="{Binding SearchCardsCommand}"
@@ -31,183 +51,51 @@
                                                     MinimumLengthThreshold="1"/>
                 </SearchBar.Behaviors>
             </SearchBar>
-            
+            <Picker SelectedItem="{Binding CurrentSortOrder, Mode=TwoWay}"
+                    Title="Filter"
+                    ItemsSource="{Binding SortModes}"
+                    ItemDisplayBinding="{Binding Value}"
+                    HorizontalOptions="Start"
+                    WidthRequest="150"
+                    FontSize="13"
+                    Grid.Column="1"/>
             <CollectionView x:Name="CardCollectionView"
-                        ItemsSource="{Binding CardItemList}"
-                        RemainingItemsThreshold="6"
-                        ItemsUpdatingScrollMode="KeepLastItemInView"
-                        SelectionMode="None"
-                        VerticalScrollBarVisibility="Never"
-                        RemainingItemsThresholdReachedCommand="{Binding LoadMoreCardItemsCommand}">
+                            ItemsSource="{Binding CardItemList}"
+                            ItemTemplate="{StaticResource CardTemplateSelector}"
+                            RemainingItemsThreshold="12"
+                            ItemsUpdatingScrollMode="KeepScrollOffset"
+                            SelectionMode="None"
+                            VerticalScrollBarVisibility="Never"
+                            RemainingItemsThresholdReachedCommand="{Binding LoadMoreCardItemsCommand}"
+                            Grid.Row="1"
+                            Grid.ColumnSpan="2">
                 <CollectionView.ItemsLayout>
                     <GridItemsLayout Span="3"
-                                 Orientation="Vertical"
-                                 HorizontalItemSpacing="5"
-                                 VerticalItemSpacing="5"
-                                 SnapPointsAlignment="Start"
-                                 SnapPointsType="Mandatory"/>
+                                     Orientation="Vertical"
+                                     HorizontalItemSpacing="5"
+                                     VerticalItemSpacing="5"
+                                     SnapPointsAlignment="Start"
+                                     SnapPointsType="Mandatory"/>
                 </CollectionView.ItemsLayout>
-                <CollectionView.ItemTemplate>
-                    <DataTemplate>
-                        <ContentView>
-                            <Frame Padding="0"
-                               CornerRadius="8">
-                                <Grid>
-                                    <Grid.RowDefinitions>
-                                        <RowDefinition Height="*"/>
-                                        <RowDefinition Height="44"/>
-                                    </Grid.RowDefinitions>
-                                    <Grid.ColumnDefinitions>
-                                        <ColumnDefinition Width="*"/>
-                                        <ColumnDefinition Width="*"/>
-                                    </Grid.ColumnDefinitions>
-                                    <ff:CachedImage Source="{Binding Card.Images.Small}"
-                                                Grid.RowSpan="1"
-                                                DownsampleToViewSize="True"
-                                                FadeAnimationForCachedImages="False"
-                                                Aspect="AspectFill"
-                                                Grid.ColumnSpan="2"
-                                                HeightRequest="190"/>
-                                    <ContentView Grid.RowSpan="2"
-                                       Grid.ColumnSpan="2">
-                                        <ContentView.Background>
-                                            <LinearGradientBrush StartPoint="0, 0"
-                                                             EndPoint="0, 1">
-                                                <LinearGradientBrush.GradientStops>
-                                                    <GradientStop Color="#33000000"/>
-                                                    <GradientStop Color="#99000000"
-                                                              Offset="0.5"/>
-                                                    <GradientStop Color="#BF000000"
-                                                              Offset="1"/>
-                                                </LinearGradientBrush.GradientStops>
-                                            </LinearGradientBrush>
-                                        </ContentView.Background>
-                                    </ContentView>
-                                    <Frame Grid.Row="1"
-                                       Grid.ColumnSpan="2"
-                                       Background="#54D68F"
-                                       Padding="0">
-                                        <StackLayout Orientation="Horizontal">
-                                            <Label Text="{Binding OwnedCount}"
-                                               TextColor="White"
-                                               FontAttributes="Bold"
-                                               FontSize="20"
-                                               VerticalOptions="Center"
-                                               HorizontalOptions="CenterAndExpand"/>
-                                            <Button Text="Add"
-                                                Padding="0"
-                                                TextColor="White"
-                                                FontAttributes="Bold"
-                                                CornerRadius="0"
-                                                Command="{Binding Source={x:Reference ThisPage},
-                                                                  Path=BindingContext.AddCommand}"
-                                                CommandParameter="{Binding .}"
-                                                Background="#3EC27A"
-                                                HorizontalOptions="End">
-                                            </Button>
-                                        </StackLayout>
-                                    </Frame>
-                                </Grid>
-                            </Frame>
-                            <!--<Frame Style="{StaticResource SetListCardFrameStyle}">
-                            <Frame.GestureRecognizers>
-                                <TapGestureRecognizer Command="{Binding Source={x:Reference ThisPage},
-                                                                        Path=BindingContext.GoToCardCommand}"
-                                                      CommandParameter="{Binding .}"/>
-                            </Frame.GestureRecognizers>
-                            <Grid RowSpacing="0">
-                                <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="75"/>
-                                    <ColumnDefinition Width="*"/>
-                                </Grid.ColumnDefinitions>
-                                <Grid.RowDefinitions>
-                                    <RowDefinition Height="28"/>
-                                    <RowDefinition Height="25"/>
-                                    <RowDefinition Height="25"/>
-                                </Grid.RowDefinitions>
-
-                                <ff:CachedImage Source="{Binding Card.Images.Small}"
-			                           DownsampleToViewSize="true"
-                                       Aspect="AspectFit"
-                                       Grid.RowSpan="3"/>
-
-                                -->
-                            <!-- First Row -->
-                            <!--
-
-                                <Label Grid.Column="1">
-                                    <Label.FormattedText>
-                                        <FormattedString>
-                                            <Span Text="{Binding Card.Name}"
-                                                  Style="{StaticResource SetListCardTitleSpanStyle}"
-                                                  FontSize="20"/>
-                                            <Span Text=" "/>
-                                            <Span Text="{Binding Card.Number, 
-                                                                 StringFormat='{}{0:D3}'}"
-                                                  FontSize="15"/>
-                                            <Span Text="/"/>
-                                            <Span Text="{Binding Card.Set.Total, 
-                                                                StringFormat='{0:D3}'}"/>
-                                        </FormattedString>
-                                    </Label.FormattedText>
-                                </Label>
-
-                                -->
-                            <!-- Second Row-->
-                            <!--
-                                <Frame Style="{StaticResource SetCardTotalBackgroundFrameStyle}"
-                                       Padding="15, 0"
-                                       Grid.Row="1"
-                                       Grid.Column="1"
-                                       HorizontalOptions="Start">
-                                    <Label Text="{Binding Card.Rarity}"
-                                           FontSize="11"
-                                           VerticalOptions="Center"
-                                           Padding="0"
-                                           Margin="0"/>
-                                </Frame>
-
-                                -->
-                            <!-- Third Row -->
-                            <!--
-                                <Label Grid.Row="2"
-                                       Grid.Column="1">
-                                    <Label.FormattedText>
-                                        <FormattedString>
-                                            <Span Text="↑ "
-                                                  TextColor="#54D68F"
-                                                  FontSize="18"/>
-                                            <Span Text="{Binding Card.TcgPlayer.Prices.HighestPrice,
-                                                                 StringFormat='${0:0.00}'}"
-                                                  FontSize="13"
-                                                  FontAttributes="Bold"
-                                                  TextColor="#7D8186"/>
-                                            <Span Text=" ↓ "
-                                                  TextColor="#D6547B"
-                                                  FontSize="18"/>
-                                            <Span Text="{Binding Card.TcgPlayer.Prices.LowestPrice,
-                                                                 StringFormat='${0:0.00}'}"
-                                                  FontSize="13"
-                                                  FontAttributes="Bold"
-                                                  TextColor="#7D8186"/>
-                                        </FormattedString>
-                                    </Label.FormattedText>
-                                </Label>
-                            </Grid>
-                        </Frame>-->
-                        </ContentView>
-                    </DataTemplate>
-                </CollectionView.ItemTemplate>
                 <CollectionView.EmptyView>
-                    <Grid HorizontalOptions="Fill"
-                      VerticalOptions="Fill">
-                        <ActivityIndicator HorizontalOptions="Center"
-                                       VerticalOptions="Center"
-                                       IsVisible="{Binding IsLoading}"
-                                       IsRunning="{Binding IsLoading}"/>
+                    <Grid RowSpacing="5"
+                          ColumnSpacing="5"
+                          IsVisible="{Binding IsLoading}">
+                        <controls:SkeletonView Grid.Row="0"/>
+                        <controls:SkeletonView Grid.Row="0" Grid.Column="1"/>
+                        <controls:SkeletonView Grid.Row="0" Grid.Column="2"/>
+                        <controls:SkeletonView Grid.Row="1"/>
+                        <controls:SkeletonView Grid.Row="1" Grid.Column="1"/>
+                        <controls:SkeletonView Grid.Row="1" Grid.Column="2"/>
+                        <controls:SkeletonView Grid.Row="2"/>
+                        <controls:SkeletonView Grid.Row="2" Grid.Column="1"/>
+                        <controls:SkeletonView Grid.Row="2" Grid.Column="2"/>
+                        <controls:SkeletonView Grid.Row="3"/>
+                        <controls:SkeletonView Grid.Row="3" Grid.Column="1"/>
+                        <controls:SkeletonView Grid.Row="3" Grid.Column="2"/>
                     </Grid>
                 </CollectionView.EmptyView>
             </CollectionView>
-        </StackLayout>
+        </Grid>
     </pages:BaseContentPage.Content>
 </pages:BaseContentPage>

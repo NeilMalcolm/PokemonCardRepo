@@ -1,6 +1,9 @@
-﻿using PokemonCardCatalogue.Logic.Interfaces;
+﻿using PokemonCardCatalogue.Common.Models.Data;
+using PokemonCardCatalogue.Logic.Interfaces;
 using PokemonCardCatalogue.Models;
+using PokemonCardCatalogue.Pages;
 using PokemonCardCatalogue.Services.Interfaces;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Collections.Specialized;
@@ -23,14 +26,16 @@ namespace PokemonCardCatalogue.ViewModels
     public class CollectionCardListViewModel : BaseViewModel
     {
         private readonly ICollectionLogic _collectionLogic;
+        private readonly IVibrationService _vibrationService;
+
+        private DateTime? _navigatedToCardPageUtc = null;
 
         private int _offset = 0;
         private readonly int _limit = 39;
 
         private bool _canNavigateToCard = true;
-        private string _setId;
-        private int _allCardsCount;
-        private IEnumerable<CardItem> _allCardItems;
+        private Set _set;
+        private List<CardItem> _allCardItems;
 
         private readonly SemaphoreSlim semaphore = new SemaphoreSlim(1, 1);
 
@@ -47,6 +52,8 @@ namespace PokemonCardCatalogue.ViewModels
                 };
             }
         }
+
+        public string SetImageUrl { get; set; }
 
         private ObservableList<CardItem> _cardItemList;
         public ObservableList<CardItem> CardItemList
@@ -91,25 +98,29 @@ namespace PokemonCardCatalogue.ViewModels
         }
 
         public ICommand GoToCardCommand { get; set; }
-        public ICommand AddCommand { get; set; }
+        public ICommand AddCardToCollectionCommand { get; set; }
         public ICommand LoadMoreCardItemsCommand { get; set; }
         public ICommand SearchCardsCommand { get; set; }
 
         public CollectionCardListViewModel
             (
                 INavigationService navigationService,
-                ICollectionLogic collectionLogic
+                ICollectionLogic collectionLogic,
+                IVibrationService vibrationService
             ) 
             : base(navigationService)
         {
             _collectionLogic = collectionLogic;
+            _vibrationService = vibrationService;
         }
 
         public override void Init(object parameter)
         {
-            if (parameter is string setId)
+            if (parameter is Set set)
             {
-                _setId = setId;
+                _set = set;
+                SetImageUrl = set.Images.Logo;
+                Title = set.Name;
             }
         }
 
@@ -120,15 +131,17 @@ namespace PokemonCardCatalogue.ViewModels
                 async (cardItem) => await GoToCardAsync(cardItem),
                 (cardItem) => _canNavigateToCard
             );
-            AddCommand = new Command<CardItem>(async (cardItem) => await AddAsync(cardItem));
+            AddCardToCollectionCommand = new Command<CardItem>
+            (
+                async (cardItem) => await AddCardToCollectionAsync(cardItem)
+            );
             LoadMoreCardItemsCommand = new Command(LoadMore);
             SearchCardsCommand = new Command<string>((searchText) => SetDisplayList(CurrentSortOrder, searchText));
         }
 
         protected override async Task OnLoadAsync()
         {
-            _allCardItems = await _collectionLogic.GetCardsForSetAsync(_setId);
-            _allCardsCount = _allCardItems.Count();
+            _allCardItems = await _collectionLogic.GetCardsForSetAsync(_set.Id);
 
             SetDisplayList(SortModes.FirstOrDefault());
         }
@@ -164,33 +177,33 @@ namespace PokemonCardCatalogue.ViewModels
             return Task.CompletedTask;
         }
 
-        private IEnumerable<CardItem> GetCardItemsForOrderAndSearchText(KeyValuePair<SortOrder, string> mode, string searchText)
+        private List<CardItem> GetCardItemsForOrderAndSearchText(KeyValuePair<SortOrder, string> mode, string searchText)
         {
             var newSortOrder = mode.Key;
-            var cards = _allCardItems;
+            IEnumerable<CardItem> newCards = _allCardItems;
 
             if (!string.IsNullOrEmpty(searchText))
             {
-                cards = cards
+                newCards = newCards
                     .Where(x => x.Card.Name.Contains(searchText, System.StringComparison.OrdinalIgnoreCase));
             }
 
             switch (newSortOrder)
             {
                 case SortOrder.Rarity:
-                    cards = cards.OrderBy(x => x.Card.Rarity)
+                    newCards = newCards.OrderBy(x => x.Card.Rarity)
                         .ThenBy(x => x.CacheId);
                     break;
                 case SortOrder.NumericDescending:
-                    cards = cards.OrderByDescending(x => x.CacheId);
+                    newCards = newCards.OrderByDescending(x => x.CacheId);
                     break;
                 default:
                 case SortOrder.NumericAscending:
-                    cards = cards.OrderBy(x => x.CacheId);
+                    newCards = newCards.OrderBy(x => x.CacheId);
                     break;
             }
 
-            return cards;
+            return newCards.ToList();
         }
 
         private void LoadMore()
@@ -225,18 +238,71 @@ namespace PokemonCardCatalogue.ViewModels
             OnPropertyChanged(nameof(CardItemList));
         }
 
+        public override async Task OnPageAppearing()
+        {
+            if (_navigatedToCardPageUtc != null)
+            {
+                var mostRecentChange = await _collectionLogic.GetMostRecentCardModifiedDateBySetId(_set.Id);
+
+                if (mostRecentChange is null || 
+                    mostRecentChange < _navigatedToCardPageUtc)
+                {
+                    _navigatedToCardPageUtc = null;
+                    return;
+                }
+
+                var cardToUpdate = await _collectionLogic.GetMostRecentlyUpdatedCardBySetId(_set.Id);
+                
+                if (cardToUpdate is null)
+                {
+                    _navigatedToCardPageUtc = null;
+                    return;
+                }
+
+                // update backing store
+                var cardInList = _allCardItems.FirstOrDefault(x => x.Card.Id == cardToUpdate.Card.Id);
+                var index = _allCardItems.IndexOf(cardInList);
+
+                if(index > -1)
+                {
+                    _allCardItems[index] = cardToUpdate;
+                }
+
+                cardInList = CardItemList.FirstOrDefault(x => x.Card.Id == cardToUpdate.Card.Id);
+
+                if (index != null)
+                {
+                    CardItemList.Replace(cardInList, cardToUpdate);
+                }
+                _navigatedToCardPageUtc = null;
+            }
+        }
+
         private async Task GoToCardAsync(CardItem cardItem)
         {
+            if (!_canNavigateToCard)
+            {
+                return;
+            }
+
             _canNavigateToCard = false;
-            //await NavigationService.GoToAsync<>();
+            _navigatedToCardPageUtc = DateTime.UtcNow;
+            await NavigationService.GoToAsync<CardPage>(cardItem.Card);
             _canNavigateToCard = true;
         }
 
-        private async Task AddAsync(CardItem item)
+        private async Task AddCardToCollectionAsync(CardItem item)
         {
+            if (!_canNavigateToCard || item.OwnedCount > 0)
+            {
+                return;
+            }
+
+            _vibrationService.PerformNotificationFeedbackVibration();
             item.IncrementOwnedCount();
 
             await semaphore.WaitAsync();
+
             try
             {
                 _ = await _collectionLogic.SetOwnedCountForCard(item);
@@ -321,6 +387,16 @@ namespace PokemonCardCatalogue.ViewModels
             }
 
             return result;
+        }
+
+        public bool Replace(T oldItem, T newItem)
+        {
+            var index = _internalList.IndexOf(oldItem);
+            _internalList.RemoveAt(index);
+            _internalList.Insert(index, newItem);
+            InvokeCollectionChanged(new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Replace, newItem, oldItem));
+
+            return true;
         }
 
         public void RemoveAt(int index)

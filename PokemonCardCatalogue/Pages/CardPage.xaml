@@ -7,11 +7,12 @@
              x:Name="ThisPage">
     <pages:BaseContentPage.Resources>
         <helpers:InverseBooleanConverter x:Key="InvertBoolConverter"/>
+        <helpers:BoolToGridLengthConverter x:Key="BoolToGridLengthConverter"/>
     </pages:BaseContentPage.Resources>
     <pages:BaseContentPage.Content>
         <ScrollView Orientation="Vertical">
-            <Grid BackgroundColor="#F3F4F9"
-              Padding="10">
+            <Grid 
+                  Padding="10">
                 <Grid.RowDefinitions>
                     <RowDefinition Height="30"/>
                     <RowDefinition Height="20"/>
@@ -20,10 +21,18 @@
                     <RowDefinition Height="15"/>
                     <RowDefinition Height="50"/>
                     <RowDefinition Height="40"/>
-                    <RowDefinition Height="35"/>
-                    <RowDefinition Height="180"/>
-                    <RowDefinition Height="35"/>
-                    <RowDefinition Height="160"/>
+                    <RowDefinition Height="{Binding IsRelatedCardsSectionVisible,
+                        Converter={StaticResource BoolToGridLengthConverter},
+                        ConverterParameter='35'}"/>
+                    <RowDefinition Height="{Binding IsRelatedCardsSectionVisible,
+                        Converter={StaticResource BoolToGridLengthConverter},
+                        ConverterParameter='180'}"/>
+                    <RowDefinition Height="{Binding IsPricesSectionVisible,
+                        Converter={StaticResource BoolToGridLengthConverter},
+                        ConverterParameter='35'}"/>
+                    <RowDefinition Height="{Binding IsPricesSectionVisible,
+                        Converter={StaticResource BoolToGridLengthConverter},
+                        ConverterParameter='160'}"/>
                 </Grid.RowDefinitions>
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="*"/>
@@ -37,15 +46,16 @@
 
                 <!-- Top section, 7 rows -->
                 <Label Text="{Binding ThisCard.Name}"
-                   Grid.Row="0"
-                   Grid.Column="1"/>
+                       Style="{StaticResource CardPagePokemonTitleLabelStyle}"
+                       Grid.Row="0"
+                       Grid.Column="1"/>
 
                 <Label Text="{Binding ThisCard.Rarity}"
-                   Grid.Row="1"
-                   Grid.Column="1"/>
+                       Grid.Row="1"
+                       Grid.Column="1"/>
 
                 <Label Grid.Row="3"
-                   Grid.Column="1">
+                       Grid.Column="1">
                     <Label.FormattedText>
                         <FormattedString>
                             <Span Text="{Binding ThisCard.Number}"/>
@@ -56,12 +66,12 @@
                 </Label>
 
                 <Label Text="Card No."
-                   Grid.Row="4"
-                   Grid.Column="1"/>
+                       Grid.Row="4"
+                       Grid.Column="1"/>
 
                 <Label Grid.Row="4"
-                   HorizontalOptions="End"
-                   Grid.Column="1">
+                       HorizontalOptions="End"
+                       Grid.Column="1">
                     <Label.FormattedText>
                         <FormattedString>
                             <Span Text="{Binding ThisCard.Number}"/>
@@ -72,17 +82,34 @@
                 </Label>
 
                 <Label Text="Owned"
-                   Grid.Row="5"
-                   Grid.Column="1"
-                   VerticalOptions="End"/>
+                       Grid.Row="5"
+                       Grid.Column="1"
+                       VerticalOptions="End"/>
 
-                <Button Text="Owned"
-                    BackgroundColor="Green"
-                    HorizontalOptions="Fill"
-                    VerticalOptions="Fill"
-                    Grid.Column="1"
-                    Grid.Row="6"/>
-
+                <StackLayout Orientation="Horizontal"
+                             HorizontalOptions="Fill"
+                             VerticalOptions="Fill"
+                             Grid.Column="1"
+                             Spacing="0"
+                             Grid.Row="6">
+                    <Button Text="-"
+                            Command="{Binding DecrementOwnedCountCommand}"
+                            TextColor="White"
+                            BackgroundColor="green"
+                            HorizontalOptions="FillAndExpand"/>
+                    <Label Text="{Binding OwnedCount}"
+                           TextColor="White"
+                           BackgroundColor="green"
+                           HorizontalOptions="FillAndExpand"
+                           HorizontalTextAlignment="Center"
+                           VerticalTextAlignment="Center"/>
+                    <Button Text="+"
+                            Command="{Binding IncrementOwnedCountCommand}"
+                            TextColor="White"
+                            BackgroundColor="green"
+                            HorizontalOptions="FillAndExpand"/>
+                </StackLayout>
+                
                 <!-- Related Cards Section, 2 rows -->
 
                 <BoxView Grid.Row="7"
@@ -90,15 +117,16 @@
                          Grid.RowSpan="2"
                          HorizontalOptions="Fill"
                          VerticalOptions="Fill"
-                         BackgroundColor="#FBFCFF"
+                         BackgroundColor="{AppThemeBinding Light={StaticResource LightPageBackgroundAltColor},
+                                                           Dark={StaticResource DarkPageBackgroundAltColor}}"
                          Margin="-10, 0"/>
 
                 <Label Text="Related Cards"
-                       FontAttributes="Bold"
+                       Style="{StaticResource CardPageSectionTitleLabelStyle}"
                        VerticalOptions="Center"
-                       FontSize="22"
                        Grid.Row="7"
-                       Grid.Column="0"/>
+                       Grid.Column="0"
+                       IsVisible="{Binding IsRelatedCardsSectionVisible}"/>
 
                 <CollectionView HorizontalScrollBarVisibility="Never"
                                 HorizontalOptions="Fill"
@@ -141,8 +169,7 @@
                                    InputTransparent="True"/>
 
                 <Label Text="Prices"
-                       FontAttributes="Bold"
-                       FontSize="22"
+                       Style="{StaticResource CardPageSectionTitleLabelStyle}"
                        Grid.Row="9"/>
 
                 <CarouselView ItemsSource="{Binding Prices}"
@@ -151,7 +178,7 @@
                               Grid.ColumnSpan="2"
                               Loop="False"
                               HorizontalOptions="Start"
-                              Margin="-10, 0">
+                              Margin="0, 10">
                     <CarouselView.ItemsLayout>
                         <LinearItemsLayout Orientation="Horizontal"
                                            SnapPointsType="Mandatory"
@@ -163,7 +190,7 @@
                                 <Label Text="{Binding Title}"
                                        FontAttributes="Bold"
                                        FontSize="18"/>
-                                
+
                                 <Label Text="{Binding HighPrice, 
                                                       StringFormat='${0:0.00}'}"
                                        HorizontalOptions="Center"
@@ -213,6 +240,15 @@
                         </DataTemplate>
                     </CarouselView.ItemTemplate>
                 </CarouselView>
+
+                <ActivityIndicator Grid.Row="10"
+                                   Grid.ColumnSpan="2"
+                                   HorizontalOptions="Center"
+                                   VerticalOptions="Center"
+                                   IsRunning="{Binding IsLoadingPrices}"
+                                   IsVisible="{Binding IsLoadingPrices}"
+                                   InputTransparent="True"/>
+
             </Grid>
         </ScrollView>
     </pages:BaseContentPage.Content>

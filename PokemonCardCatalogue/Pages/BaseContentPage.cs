@@ -29,6 +29,15 @@ namespace PokemonCardCatalogue.Pages
                         hasLoadedData = true;
                     });
                 }
+
+                if (hasLoadedData)
+                {
+                    Task.Run(async () =>
+                    {
+                        await baseViewModel.OnPageAppearing();
+                        hasLoadedData = true;
+                    });
+                }
             }
         }
     }

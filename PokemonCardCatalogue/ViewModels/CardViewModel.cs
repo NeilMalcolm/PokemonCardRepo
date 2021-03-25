@@ -1,9 +1,12 @@
 ﻿using PokemonCardCatalogue.Common.Logic.Interfaces;
 using PokemonCardCatalogue.Common.Models.Data;
+using PokemonCardCatalogue.Enums;
+using PokemonCardCatalogue.Logic.Interfaces;
 using PokemonCardCatalogue.Pages;
 using PokemonCardCatalogue.Services.Interfaces;
 using System;
 using System.Collections.Generic;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Input;
 using Xamarin.Forms;
@@ -13,6 +16,9 @@ namespace PokemonCardCatalogue.ViewModels
     public class CardViewModel : BaseViewModel
     {
         private readonly ICardLogic _cardLogic;
+        private readonly ICollectionLogic _collectionLogic;
+        private readonly IVibrationService _vibrationService;
+        private readonly SemaphoreSlim ownedCountSemaphore = new SemaphoreSlim(1, 1);
 
         private bool _canNavigatingToRelatedCard = true;
 
@@ -26,7 +32,18 @@ namespace PokemonCardCatalogue.ViewModels
                 OnPropertyChanged();
             }
         }
-        
+
+        private int _ownedCount;
+        public int OwnedCount
+        {
+            get => _ownedCount; 
+            set 
+            {
+                _ownedCount = value;
+                OnPropertyChanged();
+            }
+        }
+
         private List<Card> _relatedCards;
         public List<Card> RelatedCards
         {
@@ -35,8 +52,11 @@ namespace PokemonCardCatalogue.ViewModels
             {
                 _relatedCards = value;
                 OnPropertyChanged();
+                OnPropertyChanged(nameof(IsRelatedCardsSectionVisible));
             }
         }
+
+        public bool IsRelatedCardsSectionVisible => RelatedCards?.Count > 0;
 
         private List<PriceDisplayViewModel> _prices;
         public List<PriceDisplayViewModel> Prices
@@ -46,8 +66,11 @@ namespace PokemonCardCatalogue.ViewModels
             {
                 _prices = value;
                 OnPropertyChanged();
+                OnPropertyChanged(nameof(IsPricesSectionVisible));
             }
         }
+
+        public bool IsPricesSectionVisible => Prices?.Count > 0;
 
         private bool _isLoadingRelatedCards;
 
@@ -74,12 +97,18 @@ namespace PokemonCardCatalogue.ViewModels
         }
 
         public ICommand GoToRelatedCardCommand { get; set; }
+        public ICommand DecrementOwnedCountCommand { get; set; }
+        public ICommand IncrementOwnedCountCommand { get; set; }
 
         public CardViewModel(INavigationService navigationService,
-            ICardLogic cardLogic) 
+            ICardLogic cardLogic,
+            ICollectionLogic collectionLogic,
+            IVibrationService vibrationService) 
             : base(navigationService)
         {
             _cardLogic = cardLogic;
+            _collectionLogic = collectionLogic;
+            _vibrationService = vibrationService;
         }
 
         public override void Init(object parameter)
@@ -97,6 +126,46 @@ namespace PokemonCardCatalogue.ViewModels
                 async (card) => await GoToRelatedCard(card), 
                 (card) => _canNavigatingToRelatedCard
             );
+
+            DecrementOwnedCountCommand = new Command
+            (
+                async () => await DecrementOwnedCount()
+            );
+
+            IncrementOwnedCountCommand = new Command
+            (
+                async () => await IncrementOwnedCount()
+            );
+        }
+
+        private async Task DecrementOwnedCount()
+        {
+            try
+            {
+                OwnedCount--;
+                await ownedCountSemaphore.WaitAsync();
+                _vibrationService.PerformNotificationFeedbackVibration(VibrationNotificationType.Success);
+                await _collectionLogic.DecrementCardOwnedCount(ThisCard.Id);
+            }
+            finally
+            {
+                ownedCountSemaphore.Release();
+            }
+        }
+
+        private async Task IncrementOwnedCount()
+        {
+            try
+            {
+                OwnedCount++;
+                await ownedCountSemaphore.WaitAsync();
+                _vibrationService.PerformSelectionFeedbackVibration();
+                await _collectionLogic.IncrementCardOwnedCount(ThisCard.Id);
+            }
+            finally
+            {
+                ownedCountSemaphore.Release();
+            }
         }
 
         private async Task GoToRelatedCard(Card card)
@@ -108,19 +177,27 @@ namespace PokemonCardCatalogue.ViewModels
 
         protected override async Task OnLoadAsync()
         {
-            var loadRelatedCards = LoadRelatedCardsFromSameSetAsync();
-            var prices = SetPrices(ThisCard);
+            IsLoadingRelatedCards = true;
+            IsLoadingPrices = true;
+            var loadRelatedCardsTask = LoadRelatedCardsFromSameSetAsync();
+            var getOwnedCountTask = GetOwnedCountAsync(ThisCard.Id);
+            var pricesTask = SetPrices(ThisCard);
 
-            await Task.WhenAll(loadRelatedCards, prices);
+            await Task.WhenAll(getOwnedCountTask, loadRelatedCardsTask, pricesTask);
+        }
+
+        private async Task GetOwnedCountAsync(string id)
+        {
+            OwnedCount = await _collectionLogic.GetCardOwnedCount(id);
         }
 
         private async Task SetPrices(Card card)
         {
-            IsLoadingPrices = true;
-
             try
             {
-                Prices = await GetPricesAsync(card);
+                var cards = await GetPricesAsync(card);
+                await Task.Delay(800);
+                Prices = cards;
             }
             catch (Exception ex)
             {
@@ -180,7 +257,6 @@ namespace PokemonCardCatalogue.ViewModels
 
         private async Task LoadRelatedCardsFromSameSetAsync()
         {
-            IsLoadingRelatedCards = true;
             try
             {
                 var results = await _cardLogic.GetRelatedCardsInSetAsync(_thisCard);

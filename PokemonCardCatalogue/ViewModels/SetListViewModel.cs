@@ -15,7 +15,7 @@ namespace PokemonCardCatalogue.ViewModels
 
         private bool _canGoToCard = true;
 
-        private string _setId;
+        private Set _set;
 
         private List<Card> _cardList;
         public List<Card> CardList
@@ -28,6 +28,8 @@ namespace PokemonCardCatalogue.ViewModels
             }
         }
 
+        public string SetImageUrl { get; set; }
+
         public ICommand GoToCardCommand { get; set; }
 
         public SetListViewModel(ISetListLogic setListLogic,
@@ -39,20 +41,28 @@ namespace PokemonCardCatalogue.ViewModels
 
         public override void Init(object parameter)
         {
-            if (parameter is string setId)
+            if (parameter is Set set)
             {
-                _setId = setId;
+                _set = set;
+                Title = _set.Name;
+                SetImageUrl = set.Images.Logo;
             }
         }
 
         protected override void SetUpCommands()
         {
-            GoToCardCommand = new Command<Card>(async (card) => await GoToCardAsync(card), (card) => _canGoToCard);
+            GoToCardCommand = new Command<Card>
+            (
+                async (card) => await GoToCardAsync(card), 
+                (card) => _canGoToCard
+            );
         }
 
         protected override async Task OnLoadAsync()
         {
-            CardList = await _setListLogic.GetAllCardsForSetAsync(_setId);
+            var allCards = await _setListLogic.GetAllCardsForSetAsync(_set.Id);
+            await Task.Delay(1000);
+            CardList = allCards;
         }
 
         private async Task GoToCardAsync(Card card)

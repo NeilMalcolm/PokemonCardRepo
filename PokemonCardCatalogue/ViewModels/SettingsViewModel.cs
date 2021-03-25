@@ -39,6 +39,7 @@ namespace PokemonCardCatalogue.ViewModels
             ICardCollection cardCollection)
             : base(navigationService)
         {
+            Title = "Settings";
             _api = api;
             _alertService = alertService;
             _cardCollection = cardCollection;

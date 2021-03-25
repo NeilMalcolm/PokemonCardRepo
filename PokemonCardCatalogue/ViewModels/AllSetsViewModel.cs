@@ -17,7 +17,6 @@ namespace PokemonCardCatalogue.ViewModels
         private readonly ICollectionLogic _collectionLogic;
 
         private bool _canGoToSet;
-        private bool _canAddSetToCollection;
 
         private List<ApiSetItem> _allSets;
 
@@ -68,7 +67,6 @@ namespace PokemonCardCatalogue.ViewModels
             _allSets = await _allSetsLogic.GetSetsOrderedByMostRecentAsync();
             SetDisplayList();
             _canGoToSet = true;
-            _canAddSetToCollection = true;
         }
 
         protected override void SetUpCommands()
@@ -131,7 +129,7 @@ namespace PokemonCardCatalogue.ViewModels
             _canGoToSet = false;
             System.Diagnostics.Debug.WriteLine($"Navigating to {selectedSetItem.Set.Name}.");
 
-            await NavigationService.GoToAsync<SetListPage>(selectedSetItem.Set.Id);
+            await NavigationService.GoToAsync<SetListPage>(selectedSetItem.Set);
 
             _canGoToSet = true;
         }

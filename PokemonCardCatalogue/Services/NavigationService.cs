@@ -41,11 +41,22 @@ namespace PokemonCardCatalogue.Services
         private Page GetPageAndViewModel<T>(object parameter = null) where T : Page
         {
             var viewModel = _viewModelResolver.Get<T>();
-            var page = Activator.CreateInstance<T>();
-            viewModel.Init(parameter);
+            Page page;
+            try
+            {
+                page = Activator.CreateInstance<T>();
+                viewModel.Init(parameter);
 
-            page.BindingContext = viewModel;
-            return page;
+                page.BindingContext = viewModel;
+                return page;
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine(ex);
+                throw ex;
+            }
+
+            return null;
         }
     }
 }
