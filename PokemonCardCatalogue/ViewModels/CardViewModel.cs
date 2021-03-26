@@ -41,6 +41,7 @@ namespace PokemonCardCatalogue.ViewModels
             {
                 _ownedCount = value;
                 OnPropertyChanged();
+                DecrementOwnedCountCommand.ChangeCanExecute();
             }
         }
 
@@ -97,7 +98,7 @@ namespace PokemonCardCatalogue.ViewModels
         }
 
         public ICommand GoToRelatedCardCommand { get; set; }
-        public ICommand DecrementOwnedCountCommand { get; set; }
+        public Command DecrementOwnedCountCommand { get; set; }
         public ICommand IncrementOwnedCountCommand { get; set; }
 
         public CardViewModel(INavigationService navigationService,
@@ -129,7 +130,8 @@ namespace PokemonCardCatalogue.ViewModels
 
             DecrementOwnedCountCommand = new Command
             (
-                async () => await DecrementOwnedCount()
+                async () => await DecrementOwnedCount(),
+                () => OwnedCount > 0
             );
 
             IncrementOwnedCountCommand = new Command
@@ -142,9 +144,14 @@ namespace PokemonCardCatalogue.ViewModels
         {
             try
             {
+                if (OwnedCount == 0)
+                {
+                    return;
+                }
+
                 OwnedCount--;
                 await ownedCountSemaphore.WaitAsync();
-                _vibrationService.PerformNotificationFeedbackVibration(VibrationNotificationType.Success);
+                _vibrationService.PerformSelectionFeedbackVibration();
                 await _collectionLogic.DecrementCardOwnedCount(ThisCard.Id);
             }
             finally

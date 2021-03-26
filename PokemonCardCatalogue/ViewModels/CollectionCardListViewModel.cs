@@ -298,7 +298,7 @@ namespace PokemonCardCatalogue.ViewModels
                 return;
             }
 
-            _vibrationService.PerformNotificationFeedbackVibration();
+            _vibrationService.PerformSelectionFeedbackVibration();
             item.IncrementOwnedCount();
 
             await semaphore.WaitAsync();
