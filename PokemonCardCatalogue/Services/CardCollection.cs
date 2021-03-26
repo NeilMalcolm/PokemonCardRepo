@@ -128,22 +128,6 @@ namespace PokemonCardCatalogue.Services
             return result;
         }
 
-        public async Task<int> SetOwnedCountForCard(string cardId, int count)
-        {
-            var result = await _collectionConnection.ExecuteAsync
-            (
-                "UPDATE CollectionCard SET OwnedCount = ?, ModifiedDate = ? WHERE Id = ?", 
-                count, 
-                DateTime.UtcNow,
-                cardId
-            );
-            var countFromDb = await _collectionConnection.ExecuteScalarAsync<int>
-            (
-                "SELECT OwnedCount FROM CollectionCard WHERE Id = ?", cardId
-            );
-            return result;
-        }
-
         public Task<List<T>> QueryAsync<T>(string query) where T : new()
         {
             return _collectionConnection.QueryAsync<T>(query);
@@ -155,73 +139,25 @@ namespace PokemonCardCatalogue.Services
             await _collectionConnection.DeleteAllAsync<CollectionSet>();
         }
 
-        public async Task<int> DecrementOwnedCountForCard(string cardId)
-        {
-            var countFromDb = await _collectionConnection.ExecuteScalarAsync<int>
-            (
-                "SELECT OwnedCount FROM CollectionCard WHERE Id = ?", cardId
-            );
-            countFromDb -= 1;
-            var result = await _collectionConnection.ExecuteAsync
-            (
-                "UPDATE CollectionCard SET OwnedCount = ?, ModifiedDate = ? WHERE Id = ?",
-                countFromDb,
-                DateTime.UtcNow,
-                cardId
-            );
-
-            return countFromDb;
-        }
-
-        public async Task<int> IncrementOwnedCountForCard(string cardId)
-        {
-            var countFromDb = await _collectionConnection.ExecuteScalarAsync<int>
-            (
-                "SELECT OwnedCount FROM CollectionCard WHERE Id = ?", cardId
-            );
-            countFromDb += 1;
-            var result = await _collectionConnection.ExecuteAsync
-            (
-                "UPDATE CollectionCard SET OwnedCount = ?, ModifiedDate = ? WHERE Id = ?", 
-                countFromDb, 
-                DateTime.UtcNow,
-                cardId
-            );
-
-            return countFromDb;
-        }
-
-        public Task<int> GetCardOwnedCount(string cardId)
-        {
-            return _collectionConnection.ExecuteScalarAsync<int>
-            (
-                "SELECT OwnedCount FROM CollectionCard WHERE Id = ? LIMIT 1", 
-                cardId
-            );
-        }
-
-        public Task<DateTime?> GetMostRecentCardUpdateBySet(string setId)
-        {
-            return _collectionConnection.ExecuteScalarAsync<DateTime?>
-            (
-                "SELECT MAX(ModifiedDate) FROM CollectionCard WHERE SetId = ?",
-                setId
-            );
-        }
-
-        public async Task<CardItem> GetMostRecentlyUpdatedCardBySetId(string setId)
+        public async Task<CardItem> FindCardByQueryAsync(string query, params object[] parameters)
         {
             var dbResult = await _collectionConnection.FindWithQueryAsync<CollectionCard>
             (
-                @"SELECT * 
-                    FROM CollectionCard 
-                    WHERE SetId = ? 
-                    ORDER BY ModifiedDate DESC 
-                    LIMIT 1",
-                setId
+                query,
+                parameters
             );
 
             return _collectionMapper.GetCard(dbResult);
+        }
+
+        public Task<int> ExecuteAsync(string commandText, params object[] parameters)
+        {
+            return _collectionConnection.ExecuteAsync(commandText, parameters);
+        }
+
+        public Task<T> ExecuteScalarAsync<T>(string commandText, params object[] parameters)
+        {
+            return _collectionConnection.ExecuteScalarAsync<T>(commandText, parameters);
         }
 
         private Task<CollectionCard> GetCardCollectionById(string cardId)

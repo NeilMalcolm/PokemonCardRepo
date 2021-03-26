@@ -3,7 +3,6 @@ using PokemonCardCatalogue.Models;
 using PokemonCardCatalogue.Pages;
 using PokemonCardCatalogue.Services.Interfaces;
 using System;
-using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
@@ -16,11 +15,13 @@ namespace PokemonCardCatalogue.ViewModels
     public class CollectionSetsViewModel : BaseViewModel
     {
         private readonly ICollectionLogic _collectionLogic;
+        private readonly ISetListLogic _setListLogic;
         private readonly IAlertService _alertService;
 
-        private bool _canGoToSet = true;
+        private readonly List<SetItem> _deletingSetItems = new List<SetItem>();
 
         private SetItem _previouslyNavigatedToSetItem;
+        private bool _canGoToSet = true;
 
         private ObservableCollection<SetItem> _setItems;
         public ObservableCollection<SetItem> SetItems
@@ -45,19 +46,18 @@ namespace PokemonCardCatalogue.ViewModels
             }
         }
 
-
-        List<SetItem> _deletingSetItems { get; set; } = new List<SetItem>();
-
         public ICommand DeleteSetCommand { get; set; }
         public ICommand GoToSetCommand { get; set; } 
 
         public CollectionSetsViewModel(INavigationService navigationService,
             ICollectionLogic collectionLogic,
-            IAlertService alertService) 
+            IAlertService alertService,
+            ISetListLogic setListLogic) 
             : base(navigationService)
         {
             _collectionLogic = collectionLogic;
             _alertService = alertService;
+            _setListLogic = setListLogic;
             ReloadDataOnAppearing = true;
         }
 
@@ -104,12 +104,14 @@ namespace PokemonCardCatalogue.ViewModels
 
             if (allSets.Count != SetItems?.Count)
             {
+                // if new sets have been added (or sets have been removed) update list.
                 SetItems = new ObservableCollection<SetItem>(allSets);
             }
-            else if (DoPreviouslyNavigatedSetAndSetFromDbHaveDifferentOwnedCounts(allSets, _previouslyNavigatedToSetItem))
+            else if (_setListLogic.DoSetsAndSetFromDbHaveDifferentOwnedCounts(allSets, _previouslyNavigatedToSetItem))
             {
                 if (_previouslyNavigatedToSetItem != null)
                 {
+                    // if we previously navigated to a set, replace the set to capture any changes.
                     var item = allSets?.FirstOrDefault(x => x.Set.Id == _previouslyNavigatedToSetItem.Set.Id);
                     var index = SetItems.IndexOf(_previouslyNavigatedToSetItem);
                     SetItems.RemoveAt(index);
@@ -124,7 +126,7 @@ namespace PokemonCardCatalogue.ViewModels
         {
             var shouldDelete = await _alertService.ShowAlertAsync
             (
-                $"Confirm Delete Set", 
+                "Confirm Delete Set", 
                 "You are about to delete {setItem.Set.Name} from your collection. This will remove all cards too. Do you want to delete?",
                 "Delete", 
                 "Do not delete"
@@ -158,27 +160,5 @@ namespace PokemonCardCatalogue.ViewModels
         {
             return !_deletingSetItems.Any(s => s.Set.Id == setItem.Set.Id);
         }
-
-        private bool DoPreviouslyNavigatedSetAndSetFromDbHaveDifferentOwnedCounts(List<SetItem> setItems, SetItem previouslyNavigated)
-        {
-            if (setItems?.Count == 0 || previouslyNavigated is null)
-            {
-                return true;
-            }
-
-            var matchingItem = setItems?.FirstOrDefault(x => x.Set.Id == previouslyNavigated.Set.Id);
-            if (matchingItem is null)
-            {
-                return true;
-            }
-
-            if (previouslyNavigated.OwnedCount != matchingItem.OwnedCount)
-            {
-                return true;
-            }
-
-            return false;
-        }
-
     }
 }

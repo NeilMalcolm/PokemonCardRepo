@@ -24,12 +24,36 @@
                       ) as OwnedCardsCount
             FROM CollectionSet cs";
 
-        public static string DeleteAllCardsForSet =
+        public const string DeleteAllCardsForSet =
             @"DELETE FROM CollectionCard
               WHERE SetId = ?";
 
-        public static string GetAllSetIdsInCollection =
+        public const string GetAllSetIdsInCollection =
             @"SELECT Id 
               FROM CollectionSet";
+
+        public const string SetCardOwnedCountById =
+             @"UPDATE CollectionCard 
+              SET OwnedCount = ?, 
+                  ModifiedDate = ? 
+              WHERE Id = ?";
+
+        public const string GetCardOwnedCountById =
+            @"SELECT OwnedCount 
+              FROM CollectionCard 
+              WHERE Id = ?
+              LIMIT 1";
+
+        public const string GetMostRecentModifiedDateBySetId =
+            @"SELECT MAX(ModifiedDate) 
+              FROM CollectionCard 
+              WHERE SetId = ?";
+
+        public const string GetMostRecentlyModifiedCardBySetId =
+            @"SELECT * 
+                FROM CollectionCard 
+                WHERE SetId = ? 
+                ORDER BY ModifiedDate DESC 
+                LIMIT 1";
     }
 }

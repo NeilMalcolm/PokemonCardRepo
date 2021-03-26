@@ -17,13 +17,10 @@ namespace PokemonCardCatalogue.Services.Interfaces
         Task<int> AddSetAsync(Set set);
         Task<List<SetItem>> GetSetItemsAsync(bool withOwnedCount = true); 
         Task<int> DeleteSetAndCardsAsync(Set set);
-        Task<int> SetOwnedCountForCard(string cardId, int count);
         Task<List<T>> QueryAsync<T>(string query) where T : new();
         Task DeleteAllDataAsync();
-        Task<int> DecrementOwnedCountForCard(string cardId);
-        Task<int> IncrementOwnedCountForCard(string cardId);
-        Task<int> GetCardOwnedCount(string cardId);
-        Task<DateTime?> GetMostRecentCardUpdateBySet(string setId);
-        Task<CardItem> GetMostRecentlyUpdatedCardBySetId(string setId);
+        Task<CardItem> FindCardByQueryAsync(string query, params object[] parameters);
+        Task<int> ExecuteAsync(string commandText, params object[] parameters);
+        Task<T> ExecuteScalarAsync<T>(string commandText, params object[] parameters);
     }
 }

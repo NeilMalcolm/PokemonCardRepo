@@ -1,7 +1,8 @@
 ﻿using PokemonCardCatalogue.Common.Logic.Interfaces;
 using PokemonCardCatalogue.Common.Models.Data;
-using PokemonCardCatalogue.Enums;
+using PokemonCardCatalogue.Helpers.Factories;
 using PokemonCardCatalogue.Logic.Interfaces;
+using PokemonCardCatalogue.Models;
 using PokemonCardCatalogue.Pages;
 using PokemonCardCatalogue.Services.Interfaces;
 using System;
@@ -218,48 +219,10 @@ namespace PokemonCardCatalogue.ViewModels
 
         private Task<List<PriceDisplayViewModel>> GetPricesAsync(Card card)
         {
-            var priceModel = new List<PriceDisplayViewModel>();
-
-            var allTypes = new Tuple<string, TcgPlayerCardRarityType>[]
-            {
-                new Tuple<string, TcgPlayerCardRarityType>
-                (
-                    "Holofoil",
-                    card.TcgPlayer.Prices.Holofoil
-                ),
-                new Tuple<string, TcgPlayerCardRarityType>
-                (
-                    "Reverse Holofoil", 
-                    card.TcgPlayer.Prices.ReverseHolofoil
-                ),
-                new Tuple<string, TcgPlayerCardRarityType>
-                (
-                    "Normal",
-                    card.TcgPlayer.Prices.Normal
-                )
-            };
-
-            foreach (var type in allTypes)
-            {
-                if (type.Item2 is null)
-                {
-                    continue;
-                }
-
-                var cardType = type.Item2;
-
-                priceModel.Add(new PriceDisplayViewModel
-                {
-                    Title = type.Item1,
-                    HighPrice = cardType.High,
-                    MidPrice = cardType.Mid,
-                    LowPrice = cardType.Low,
-                    MarketPrice = cardType.Market,
-                    DirectionPrice = cardType.DirectLow
-                });
-            }
-
-            return Task.FromResult(priceModel);
+            return Task.FromResult
+            (
+                PriceDisplayFactory.GetPriceDisplayViewModels(card.TcgPlayer?.Prices)
+            );
         }
 
         private async Task LoadRelatedCardsFromSameSetAsync()
@@ -279,15 +242,5 @@ namespace PokemonCardCatalogue.ViewModels
                 IsLoadingRelatedCards = false;
             }
         }
-    }
-
-    public class PriceDisplayViewModel
-    {
-        public string Title { get; set; }
-        public float? LowPrice { get; set; }
-        public float? MidPrice { get; set; }
-        public float? HighPrice { get; set; }
-        public float? MarketPrice { get; set; }
-        public float? DirectionPrice { get; set; }
     }
 }

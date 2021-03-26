@@ -55,8 +55,6 @@ namespace PokemonCardCatalogue.Services
                 System.Diagnostics.Debug.WriteLine(ex);
                 throw ex;
             }
-
-            return null;
         }
     }
 }
