@@ -152,7 +152,7 @@ namespace PokemonCardCatalogue.ViewModels
         {
             _canGoToSet = false;
             await NavigationService.SwitchTab("collection");
-            await NavigationService.GoToAsync<CollectionCardListPage>(selectedSetItem.Set.Id);
+            await NavigationService.GoToAsync<CollectionCardListPage>(selectedSetItem.Set);
             _canGoToSet = true;
         }
     }

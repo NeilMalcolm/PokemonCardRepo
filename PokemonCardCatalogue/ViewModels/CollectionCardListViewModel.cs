@@ -121,27 +121,18 @@ namespace PokemonCardCatalogue.ViewModels
         protected override async Task OnLoadAsync()
         {
             _allCardItems = await _collectionLogic.GetCardsForSetAsync(_set.Id);
-            SetDisplayList(Sorting.SortModes.FirstOrDefault());
+            await SetDisplayList(Sorting.SortModes.FirstOrDefault());
         }
 
-        private void SetDisplayList(KeyValuePair<SortOrder, string> mode, string searchText = null)
+        private async Task SetDisplayList(KeyValuePair<SortOrder, string> mode, string searchText = null)
         {
-            Device.BeginInvokeOnMainThread(() => 
-            {
-                CardItemList?.Clear();
-                IsLoading = true; 
-            });
+            CardItemList?.Clear();
+            IsLoading = true; 
 
             var cards = GetCardItemsForOrderAndSearchText(mode, searchText);
-            Task.Run(async () =>
-            {
-                await Task.Delay(500);
-                Device.BeginInvokeOnMainThread(async () =>
-                {
-                    await SetCardItemList(cards);
-                    IsLoading = false;
-                });
-            });
+            await Task.Delay(500);
+            await SetCardItemList(cards);
+            IsLoading = false;
         }
 
         private Task SetCardItemList(IEnumerable<CardItem> cardItems)
@@ -156,6 +147,11 @@ namespace PokemonCardCatalogue.ViewModels
 
         private List<CardItem> GetCardItemsForOrderAndSearchText(KeyValuePair<SortOrder, string> mode, string searchText)
         {
+            if (_allCardItems is null)
+            {
+                return _allCardItems;
+            }
+
             var newSortOrder = mode.Key;
             IEnumerable<CardItem> newCards = _allCardItems;
 
