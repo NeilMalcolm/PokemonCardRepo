@@ -9,10 +9,12 @@
     <PackageReference Include="AutoMapper" Version="10.1.1" />
     <PackageReference Include="AutoMapper.Collection" Version="7.0.1" />
     <PackageReference Include="LightInject" Version="6.4.0" />
+    <PackageReference Include="Xamarin.CommunityToolkit" Version="1.0.3" />
     <PackageReference Include="Xamarin.FFImageLoading" Version="2.4.11.982" />
     <PackageReference Include="Xamarin.FFImageLoading.Forms" Version="2.4.11.982" />
-    <PackageReference Include="Xamarin.Forms" Version="4.8.0.1451" />  
-    <PackageReference Include="Xamarin.Essentials" Version="1.5.3.2" />
+    <PackageReference Include="Xamarin.FFImageLoading.Transformations" Version="2.4.11.982" />
+    <PackageReference Include="Xamarin.Forms" Version="5.0.0.2012" />  
+    <PackageReference Include="Xamarin.Essentials" Version="1.6.1" />
   </ItemGroup>
 
   <ItemGroup>
@@ -20,8 +22,17 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Compile Update="Pages\CollectionCardListPage.xaml.cs">
+      <DependentUpon>CollectionCardListPage.xaml</DependentUpon>
+    </Compile>
     <Compile Update="Pages\CollectionSetsPage.xaml.cs">
       <DependentUpon>CollectionSetsPage.xaml</DependentUpon>
+    </Compile>
+    <Compile Update="Views\Cards\CollectionCardTemplate.xaml.cs">
+      <DependentUpon>CollectionCardTemplate.xaml</DependentUpon>
+    </Compile>
+    <Compile Update="Views\Cards\UnownedCollectionCardTemplate.xaml.cs">
+      <DependentUpon>UnownedCollectionCardTemplate.xaml</DependentUpon>
     </Compile>
     <Compile Update="Views\Settings\ActionSettingDataTemplate.xaml.cs">
       <DependentUpon>ActionSettingDataTemplate.xaml</DependentUpon>
@@ -35,10 +46,19 @@
     <EmbeddedResource Update="Pages\CardPage.xaml">
       <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
     </EmbeddedResource>
+    <EmbeddedResource Update="Pages\CollectionCardListPage.xaml">
+      <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
+    </EmbeddedResource>
     <EmbeddedResource Update="Pages\SetListPage.xaml">
       <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
     </EmbeddedResource>
     <EmbeddedResource Update="Pages\SettingsPage.xaml">
+      <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Views\Cards\CollectionCardTemplate.xaml">
+      <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Views\Cards\UnownedCollectionCardTemplate.xaml">
       <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
     </EmbeddedResource>
     <EmbeddedResource Update="Views\Settings\ActionSettingDataTemplate.xaml">
@@ -47,7 +67,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Views\Cards\" />
     <Folder Include="Views\Sets\" />
   </ItemGroup>
 </Project>

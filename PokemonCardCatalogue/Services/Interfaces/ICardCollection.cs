@@ -1,5 +1,6 @@
 ﻿using PokemonCardCatalogue.Common.Models.Data;
 using PokemonCardCatalogue.Models;
+using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
@@ -16,5 +17,10 @@ namespace PokemonCardCatalogue.Services.Interfaces
         Task<int> AddSetAsync(Set set);
         Task<List<SetItem>> GetSetItemsAsync(bool withOwnedCount = true); 
         Task<int> DeleteSetAndCardsAsync(Set set);
+        Task<List<T>> QueryAsync<T>(string query) where T : new();
+        Task DeleteAllDataAsync();
+        Task<CardItem> FindCardByQueryAsync(string query, params object[] parameters);
+        Task<int> ExecuteAsync(string commandText, params object[] parameters);
+        Task<T> ExecuteScalarAsync<T>(string commandText, params object[] parameters);
     }
 }

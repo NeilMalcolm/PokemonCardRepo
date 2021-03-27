@@ -1,0 +1,31 @@
+﻿<DataTemplate xmlns="http://xamarin.com/schemas/2014/forms" 
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:ff="clr-namespace:FFImageLoading.Forms;assembly=FFImageLoading.Forms" 
+             xmlns:xctk="http://xamarin.com/schemas/2020/toolkit"
+             xmlns:viewModels="clr-namespace:PokemonCardCatalogue.ViewModels"
+             x:Class="PokemonCardCatalogue.Views.Cards.UnownedCollectionCardTemplate">
+    <ff:CachedImage Source="{Binding Card.Images.Small}"
+                    DownsampleToViewSize="True"
+                    FadeAnimationForCachedImages="False"
+                    Aspect="AspectFill"
+                    HeightRequest="175"
+                    Opacity="0.4"
+                    xctk:TouchEffect.CommandParameter="{Binding .}"
+                    xctk:TouchEffect.Command="{Binding Source={RelativeSource AncestorType={x:Type viewModels:CollectionCardListViewModel}}, 
+                                                        Path=GoToCardCommand}"
+                    xctk:TouchEffect.LongPressCommand="{Binding Source={RelativeSource AncestorType={x:Type viewModels:CollectionCardListViewModel}}, 
+                                                             Path=AddCardToCollectionCommand}"
+                    xctk:TouchEffect.LongPressCommandParameter="{Binding .}"
+                    xctk:TouchEffect.AnimationDuration="50"
+                    xctk:TouchEffect.PressedScale="0.94"
+                    xctk:TouchEffect.LongPressDuration="350">
+        <ff:CachedImage.Triggers>
+            <DataTrigger Binding="{Binding Owned}"
+                         TargetType="ff:CachedImage"
+                         Value="True">
+                <Setter Property="Opacity"
+                        Value="1"/>
+            </DataTrigger>
+        </ff:CachedImage.Triggers>
+    </ff:CachedImage>
+</DataTemplate>

@@ -1,9 +1,10 @@
 ﻿using PokemonCardCatalogue.Common.Logic.Interfaces;
-using PokemonCardCatalogue.Common.Models.Data;
+using PokemonCardCatalogue.Common.Models;
 using PokemonCardCatalogue.Logic.Interfaces;
 using PokemonCardCatalogue.Pages;
 using PokemonCardCatalogue.Services.Interfaces;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Input;
 using Xamarin.Forms;
@@ -16,10 +17,11 @@ namespace PokemonCardCatalogue.ViewModels
         private readonly ICollectionLogic _collectionLogic;
 
         private bool _canGoToSet;
-        private bool _canAddSetToCollection;
 
-        private List<Set> _sets;
-        public List<Set> Sets
+        private List<ApiSetItem> _allSets;
+
+        private List<ApiSetItem> _sets;
+        public List<ApiSetItem> Sets
         {
             get => _sets;
             set
@@ -29,25 +31,31 @@ namespace PokemonCardCatalogue.ViewModels
             }
         }
 
-        private ICommand _goToSetCommand;
+        private string _searchText;
 
-        public ICommand GoToSetCommand
+        public string SearchText
         {
-            get { return _goToSetCommand; }
-            set { _goToSetCommand = value; }
+            get => _searchText;
+            set 
+            { 
+                if (value != _searchText  && string.IsNullOrWhiteSpace(value))
+                {
+                    SetDisplayList();
+                }
+                _searchText = value;
+            }
         }
 
-        private ICommand _addSetToCollectionCommand;
+        public ICommand GoToSetCommand { get; set; }
+        public ICommand AddSetToCollectionCommand { get; set; }
+        public ICommand GoToSetInCollectionCommand { get; set; }
+        public ICommand SearchSetsCommand { get; set; }
+        public ICommand ClearSearchCommand { get; set; }
 
-        public ICommand AddSetToCollectionCommand
-        {
-            get { return _addSetToCollectionCommand; }
-            set { _addSetToCollectionCommand = value; }
-        }
 
         public AllSetsViewModel(IAllSetsLogic allSetsLogic,
-            INavigationService navigationService,
-            ICollectionLogic collectionLogic)
+            ICollectionLogic collectionLogic,
+            INavigationService navigationService)
             : base(navigationService)
         {
             _allSetsLogic = allSetsLogic;
@@ -56,37 +64,96 @@ namespace PokemonCardCatalogue.ViewModels
 
         protected override async Task OnLoadAsync()
         {
-            Sets = await _allSetsLogic.GetSetsOrderedByMostRecentAsync();
+            _allSets = await _allSetsLogic.GetSetsOrderedByMostRecentAsync();
+            SetDisplayList();
             _canGoToSet = true;
-            _canAddSetToCollection = true;
         }
 
         protected override void SetUpCommands()
         {
             base.SetUpCommands();
 
-            GoToSetCommand = new Command<Set>(async (set) => await GoToSet(set), (set) => _canGoToSet);
-            AddSetToCollectionCommand = new Command<Set>(async (set) => await AddSetToCollection(set), (set) => _canAddSetToCollection);
+            GoToSetCommand = new Command<ApiSetItem>(async (apiSetItem) => await GoToSet(apiSetItem), (apiSetItem) => _canGoToSet);
+
+            AddSetToCollectionCommand = new Command<ApiSetItem>
+            (
+                async (apiSetItem) => await AddSetToCollection(apiSetItem), 
+                (apiSetItem) => !apiSetItem?.IsDownloading ?? false
+            );
+
+            GoToSetInCollectionCommand = new Command<ApiSetItem>
+            (
+                async (apiSetItem) => await GoToSetInCollection(apiSetItem), 
+                (apiSetItem) => _canGoToSet
+            );
+
+            SearchSetsCommand = new Command<string>((searchText) => SearchSets(searchText));
+            ClearSearchCommand = new Command<string>((searchText) => ClearSearch(searchText));
         }
 
-        private async Task GoToSet(Set selectedSet)
+        /// <summary>
+        /// Control has no event for Cancel, so when user searches for empty text
+        /// just revert list to full data set.
+        /// </summary>
+        /// <param name="searchText"></param>
+        private void ClearSearch(string searchText)
+        {
+            if (!string.IsNullOrEmpty(searchText))
+            {
+                return;
+            }
+
+            SetDisplayList();
+        }
+
+        private void SearchSets(string searchText)
+        {
+            SetDisplayList(searchText);
+        }
+
+        private void SetDisplayList(string searchText = null)
+        {
+            if (string.IsNullOrWhiteSpace(searchText))
+            {
+                Sets = _allSets;
+                return;
+            }
+
+            Sets = _allSets
+                .Where(x => x.Set.Name.Contains(searchText))
+                .ToList();
+        }
+
+        private async Task GoToSet(ApiSetItem selectedSetItem)
         {
             _canGoToSet = false;
-            System.Diagnostics.Debug.WriteLine($"Navigating to {selectedSet.Name}.");
+            System.Diagnostics.Debug.WriteLine($"Navigating to {selectedSetItem.Set.Name}.");
 
-            await NavigationService.GoToAsync<SetListPage>(selectedSet.Id);
+            await NavigationService.GoToAsync<SetListPage>(selectedSetItem.Set);
 
             _canGoToSet = true;
         }
 
-        private async Task AddSetToCollection(Set selectedSet)
+        private async Task AddSetToCollection(ApiSetItem selectedSetItem)
         {
-            _canAddSetToCollection = false;
+            if (selectedSetItem.IsInCollection || selectedSetItem.IsDownloading)
+            {
+                return;
+            }
 
-            System.Diagnostics.Debug.WriteLine($"Adding {selectedSet.Name} to collection.");
-            await _collectionLogic.AddSetAndCardsToCollection(selectedSet);
+            selectedSetItem.IsDownloading = true;
+            System.Diagnostics.Debug.WriteLine($"Adding {selectedSetItem.Set.Name} to collection.");
+            await _collectionLogic.AddSetAndCardsToCollection(selectedSetItem.Set);
+            selectedSetItem.IsInCollection = true;
+            selectedSetItem.IsDownloading = false;
+        }
 
-            _canAddSetToCollection = true;
+        private async Task GoToSetInCollection(ApiSetItem selectedSetItem)
+        {
+            _canGoToSet = false;
+            await NavigationService.SwitchTab("collection");
+            await NavigationService.GoToAsync<CollectionCardListPage>(selectedSetItem.Set);
+            _canGoToSet = true;
         }
     }
 }

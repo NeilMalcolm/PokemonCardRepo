@@ -1,5 +1,8 @@
 ﻿using PokemonCardCatalogue.ViewModels;
+using System.Threading.Tasks;
 using Xamarin.Forms;
+using Xamarin.Forms.PlatformConfiguration;
+using Xamarin.Forms.PlatformConfiguration.iOSSpecific;
 
 namespace PokemonCardCatalogue.Pages
 {
@@ -7,7 +10,12 @@ namespace PokemonCardCatalogue.Pages
     {
         private bool hasLoadedData = false;
 
-        protected override async void OnAppearing()
+        public BaseContentPage()
+        {
+            On<iOS>().SetUseSafeArea(true);
+        }
+
+        protected override void OnAppearing()
         {
             base.OnAppearing();
 
@@ -15,8 +23,20 @@ namespace PokemonCardCatalogue.Pages
             {
                 if (baseViewModel.ReloadDataOnAppearing || !hasLoadedData)
                 {
-                    await baseViewModel.LoadAsync();
-                    hasLoadedData = true;
+                    Task.Run(async () => 
+                    { 
+                        await baseViewModel.LoadAsync();
+                        hasLoadedData = true;
+                    });
+                }
+
+                if (hasLoadedData)
+                {
+                    Task.Run(async () =>
+                    {
+                        await baseViewModel.OnPageAppearing();
+                        hasLoadedData = true;
+                    });
                 }
             }
         }

@@ -1,8 +1,10 @@
 ﻿using PokemonCardCatalogue.Common.Context.Interfaces;
 using PokemonCardCatalogue.Common.Models.Data;
+using PokemonCardCatalogue.Constants;
 using PokemonCardCatalogue.Logic.Interfaces;
 using PokemonCardCatalogue.Models;
 using PokemonCardCatalogue.Services.Interfaces;
+using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
@@ -53,6 +55,86 @@ namespace PokemonCardCatalogue.Logic
         public Task<int> DeleteSetAsync(Set setToDelete)
         {
             return _cardCollection.DeleteSetAndCardsAsync(setToDelete);
+        }
+
+        public Task<List<CardItem>> GetCardsForSetAsync(string setId)
+        {
+            return _cardCollection.GetCardItemsAsync(setId);
+        }
+
+        public async Task<int> SetOwnedCountForCard(CardItem cardItem)
+        {
+            string cardId = cardItem.Card.Id;
+            _ = await _cardCollection.ExecuteAsync
+            (
+               Queries.SetCardOwnedCountById,
+                cardItem.OwnedCount,
+                DateTime.UtcNow,
+                cardId
+            );
+
+            var countFromDb = await _cardCollection.ExecuteScalarAsync<int>
+            (
+                Queries.GetCardOwnedCountById,
+                cardId
+            );
+
+            return countFromDb;
+        }
+
+        public async Task<int> IncrementCardOwnedCount(string id)
+        {
+            var countFromDb = await _cardCollection.ExecuteScalarAsync<int>
+            (
+                Queries.GetCardOwnedCountById, id
+            );
+            countFromDb += 1;
+            _ = await _cardCollection.ExecuteAsync
+            (
+                Queries.SetCardOwnedCountById,
+                countFromDb,
+                DateTime.UtcNow,
+                id
+            );
+
+            return countFromDb;
+        }
+
+        public async Task<int> DecrementCardOwnedCount(string id)
+        {
+            var countFromDb = await _cardCollection.ExecuteScalarAsync<int>
+            (
+               Queries.GetCardOwnedCountById, id
+            );
+            countFromDb -= 1;
+            _ = await _cardCollection.ExecuteAsync
+            (
+                Queries.SetCardOwnedCountById,
+                countFromDb,
+                DateTime.UtcNow,
+                id
+            );
+
+            return countFromDb;
+        }
+
+        public Task<int> GetCardOwnedCount(string cardId)
+        {
+            return _cardCollection.ExecuteScalarAsync<int>
+            (
+                Queries.GetCardOwnedCountById,
+                cardId
+            );
+        }
+
+        public Task<DateTime?> GetMostRecentCardModifiedDateBySetId(string setId)
+        {
+            return _cardCollection.ExecuteScalarAsync<DateTime?>(Queries.GetMostRecentModifiedDateBySetId, setId);
+        }
+
+        public Task<CardItem> GetMostRecentlyUpdatedCardBySetId(string setId)
+        {
+            return _cardCollection.FindCardByQueryAsync(Queries.GetMostRecentlyModifiedCardBySetId, setId);
         }
     }
 }

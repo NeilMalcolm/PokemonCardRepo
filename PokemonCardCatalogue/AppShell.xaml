@@ -12,33 +12,53 @@
     <Shell.Resources>
         <ResourceDictionary>
             <Style x:Key="BaseStyle" TargetType="Element">
-                <Setter Property="Shell.BackgroundColor" Value="{StaticResource Primary}" />
-                <Setter Property="Shell.ForegroundColor" Value="White" />
-                <Setter Property="Shell.TitleColor" Value="White" />
+                <Setter Property="Shell.BackgroundColor" Value="{AppThemeBinding Light={StaticResource LightShellBackgroundColor},
+                                                                                 Dark={StaticResource DarkShellBackgroundColor}}" />
+                <Setter Property="Shell.ForegroundColor" Value="{AppThemeBinding Light={StaticResource LightShellForegroundColor},
+                                                                                 Dark={StaticResource DarkShellForegroundColor}}" />
+
+                <Setter Property="Shell.TitleColor" Value="{AppThemeBinding Light={StaticResource LightShellTitleColor},
+                                                                            Dark={StaticResource DarkShellTitleColor}}" />
+                
+
                 <Setter Property="Shell.DisabledColor" Value="#B4FFFFFF" />
                 <Setter Property="Shell.UnselectedColor" Value="#95FFFFFF" />
-                <Setter Property="Shell.TabBarBackgroundColor" Value="{StaticResource Primary}" />
-                <Setter Property="Shell.TabBarForegroundColor" Value="White"/>
-                <Setter Property="Shell.TabBarUnselectedColor" Value="#95FFFFFF"/>
-                <Setter Property="Shell.TabBarTitleColor" Value="White"/>
+
+                <Setter Property="Shell.TabBarBackgroundColor" Value="{AppThemeBinding Light={StaticResource LightShellTabBackgroundColor},
+                                                                                       Dark={StaticResource DarkShellTabBackgroundColor}}" />
+
+                <Setter Property="Shell.TabBarForegroundColor" Value="{AppThemeBinding Light={StaticResource LightShellForegroundColor},
+                                                                                       Dark={StaticResource DarkShellForegroundColor}}" />
+
+                <Setter Property="Shell.TabBarUnselectedColor" Value="{AppThemeBinding Light={StaticResource LightShellTabBarUnselectedColor},
+                                                                                       Dark={StaticResource DarkShellTabBarUnselectedColor}}" />
+
+                <Setter Property="Shell.TabBarTitleColor" Value="{AppThemeBinding Light={StaticResource LightShellTabBarTitleColor},
+                                                                                       Dark={StaticResource DarkShellTabBarTitleColor}}" />
             </Style>
             <Style TargetType="TabBar" BasedOn="{StaticResource BaseStyle}" />
             <Style TargetType="FlyoutItem" BasedOn="{StaticResource BaseStyle}" />
         </ResourceDictionary>
     </Shell.Resources>
 
-    <TabBar>
-        <ShellContent Title="All Sets" 
+    <TabBar Route="tabbar">
+        <ShellContent x:Name="HomeTab" 
+                      Title="All Sets" 
                       Icon="icon_feed.png" 
                       ContentTemplate="{DataTemplate pages:AllSetsPage}"
+                      Route="home"
                       BindingContext="{Binding AllSetsContext}"/>
 
-        <ShellContent Title="Collection" 
+        <ShellContent x:Name="CollectionTab" 
+                      Title="Collection" 
                       ContentTemplate="{DataTemplate pages:CollectionSetsPage}"
+                      Route="collection"
                       BindingContext="{Binding CollectionSetsContext}"/>
-        
-        <ShellContent Title="Settings" 
+
+        <ShellContent x:Name="SettingsTab" 
+                      Title="Settings" 
                       ContentTemplate="{DataTemplate pages:SettingsPage}"
+                      Route="settings"
                       BindingContext="{Binding SettingsContext}"/>
     </TabBar>
 </Shell>

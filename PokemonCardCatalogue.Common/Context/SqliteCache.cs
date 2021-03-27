@@ -21,7 +21,7 @@ namespace PokemonCardCatalogue.Common.Context
 
         public void Init(string filePath = null, TimeSpan? defaultCacheDuration = null)
         {
-            string fileName = Path.Combine(filePath ?? Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), DefaultCacheFile);
+            string fileName = Path.Combine(filePath ?? Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), DefaultCacheFile);
             _defaultCacheDuration = defaultCacheDuration ?? new TimeSpan(24, 0, 0);
             
             _sqliteAsyncConnection = new SQLiteAsyncConnection(fileName ?? DefaultCacheFile);

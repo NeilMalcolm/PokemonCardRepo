@@ -1,0 +1,110 @@
+﻿<pages:BaseContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="PokemonCardCatalogue.Pages.CollectionCardListPage"
+             xmlns:ff="clr-namespace:FFImageLoading.Forms;assembly=FFImageLoading.Forms"
+             xmlns:controls="clr-namespace:PokemonCardCatalogue.Controls"
+             xmlns:ios="clr-namespace:Xamarin.Forms.PlatformConfiguration.iOSSpecific;assembly=Xamarin.Forms.Core"
+             xmlns:xctk="http://xamarin.com/schemas/2020/toolkit"
+             xmlns:dts="clr-namespace:PokemonCardCatalogue.TemplateSelector"
+             xmlns:constants="clr-namespace:PokemonCardCatalogue.Constants"
+             xmlns:pages="clr-namespace:PokemonCardCatalogue.Pages"
+             x:Name="ThisPage">
+    <Shell.TitleView>
+        <ContentView>
+            <ff:CachedImage Source="{Binding SetImageUrl}"
+                            DownsampleToViewSize="True"
+                            WidthRequest="80"
+                            VerticalOptions="Center"
+                            Margin="-80, 0, 0, 0"/>
+        </ContentView>
+    </Shell.TitleView>
+    <pages:BaseContentPage.Resources>
+        <dts:CollectionCardViewTemplateSelector x:Key="CardTemplateSelector"/>
+        <Style TargetType="controls:SkeletonView">
+            <Setter Property="HeightRequest"
+                    Value="175"/>
+            <Setter Property="CornerRadius"
+                    Value="12"/>
+            <Setter Property="VerticalOptions"
+                    Value="FillAndExpand"/>
+            <Setter Property="HorizontalOptions"
+                    Value="FillAndExpand"/>
+        </Style>
+    </pages:BaseContentPage.Resources>
+    <pages:BaseContentPage.Content>
+        <Grid RowSpacing="0"
+              ColumnSpacing="0">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="70"/>
+            </Grid.ColumnDefinitions>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="50"/>
+            </Grid.RowDefinitions>
+            <SearchBar Text="{Binding SearchText}"
+                       Placeholder="Search Cards..."
+                       Keyboard="Plain"
+                       HeightRequest="50"
+                       ios:SearchBar.SearchBarStyle="Minimal">
+                <SearchBar.Behaviors>
+                    <xctk:UserStoppedTypingBehavior Command="{Binding SearchCardsCommand}"
+                                                    ShouldDismissKeyboardAutomatically="False"
+                                                    StoppedTypingTimeThreshold="400"
+                                                    MinimumLengthThreshold="1"/>
+                </SearchBar.Behaviors>
+            </SearchBar>
+            <Picker SelectedItem="{Binding CurrentSortOrder, Mode=TwoWay}"
+                    Title="Sort Order"
+                    ItemsSource="{x:Static constants:Sorting.SortModes}"
+                    ItemDisplayBinding="{Binding Value}"
+                    HorizontalOptions="Start"
+                    WidthRequest="170"
+                    HeightRequest="50"
+                    FontSize="13"
+                    Grid.Column="1"/>
+            <CollectionView x:Name="CardCollectionView"
+                            ItemsSource="{Binding CardItemList}"
+                            ItemTemplate="{StaticResource CardTemplateSelector}"
+                            RemainingItemsThreshold="12"
+                            ItemsUpdatingScrollMode="KeepScrollOffset"
+                            SelectionMode="None"
+                            VerticalScrollBarVisibility="Never"
+                            RemainingItemsThresholdReachedCommand="{Binding LoadMoreCardItemsCommand}"
+                            Grid.Row="1"
+                            Grid.ColumnSpan="2">
+                <CollectionView.ItemsLayout>
+                    <GridItemsLayout Span="3"
+                                     Orientation="Vertical"
+                                     HorizontalItemSpacing="5"
+                                     VerticalItemSpacing="5"
+                                     SnapPointsAlignment="Start"
+                                     SnapPointsType="Mandatory"/>
+                </CollectionView.ItemsLayout>
+                <CollectionView.EmptyView>
+                    <Grid RowSpacing="5"
+                          ColumnSpacing="5"
+                          IsVisible="{Binding IsLoading}">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="175"/>
+                            <RowDefinition Height="175"/>
+                            <RowDefinition Height="175"/>
+                            <RowDefinition Height="175"/>
+                        </Grid.RowDefinitions>
+                        <controls:SkeletonView Grid.Row="0"/>
+                        <controls:SkeletonView Grid.Row="0" Grid.Column="1"/>
+                        <controls:SkeletonView Grid.Row="0" Grid.Column="2"/>
+                        <controls:SkeletonView Grid.Row="1"/>
+                        <controls:SkeletonView Grid.Row="1" Grid.Column="1"/>
+                        <controls:SkeletonView Grid.Row="1" Grid.Column="2"/>
+                        <controls:SkeletonView Grid.Row="2"/>
+                        <controls:SkeletonView Grid.Row="2" Grid.Column="1"/>
+                        <controls:SkeletonView Grid.Row="2" Grid.Column="2"/>
+                        <controls:SkeletonView Grid.Row="3"/>
+                        <controls:SkeletonView Grid.Row="3" Grid.Column="1"/>
+                        <controls:SkeletonView Grid.Row="3" Grid.Column="2"/>
+                    </Grid>
+                </CollectionView.EmptyView>
+            </CollectionView>
+        </Grid>
+    </pages:BaseContentPage.Content>
+</pages:BaseContentPage>

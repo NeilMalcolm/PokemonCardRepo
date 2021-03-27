@@ -16,6 +16,6 @@ namespace PokemonCardCatalogue.Models.Collection
         public string SymbolImage { get; set; }
         public DateTime? DateAdded { get; set; }
 
-        public int OwnedCount { get; set; }
+        public int OwnedCardsCount { get; set; }
     }
 }

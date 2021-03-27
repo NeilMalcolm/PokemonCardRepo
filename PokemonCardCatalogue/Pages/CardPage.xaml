@@ -2,22 +2,254 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:pages="clr-namespace:PokemonCardCatalogue.Pages"
              xmlns:ff="clr-namespace:FFImageLoading.Forms;assembly=FFImageLoading.Forms"
-             x:Class="PokemonCardCatalogue.Pages.CardPage">
+             xmlns:helpers="clr-namespace:PokemonCardCatalogue.Helpers"
+             x:Class="PokemonCardCatalogue.Pages.CardPage"
+             x:Name="ThisPage">
+    <pages:BaseContentPage.Resources>
+        <helpers:InverseBooleanConverter x:Key="InvertBoolConverter"/>
+        <helpers:BoolToGridLengthConverter x:Key="BoolToGridLengthConverter"/>
+    </pages:BaseContentPage.Resources>
     <pages:BaseContentPage.Content>
-        <Grid BackgroundColor="#F7F8FC">
-            <Grid.RowDefinitions>
-                <RowDefinition />
-            </Grid.RowDefinitions>
+        <ScrollView Orientation="Vertical">
+            <Grid 
+                  Padding="10">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="30"/>
+                    <RowDefinition Height="20"/>
+                    <RowDefinition Height="10"/><!-- Empty Row -->
+                    <RowDefinition Height="15"/>
+                    <RowDefinition Height="15"/>
+                    <RowDefinition Height="50"/>
+                    <RowDefinition Height="40"/>
+                    <RowDefinition Height="{Binding IsRelatedCardsSectionVisible,
+                        Converter={StaticResource BoolToGridLengthConverter},
+                        ConverterParameter='35'}"/>
+                    <RowDefinition Height="{Binding IsRelatedCardsSectionVisible,
+                        Converter={StaticResource BoolToGridLengthConverter},
+                        ConverterParameter='180'}"/>
+                    <RowDefinition Height="{Binding IsPricesSectionVisible,
+                        Converter={StaticResource BoolToGridLengthConverter},
+                        ConverterParameter='35'}"/>
+                    <RowDefinition Height="{Binding IsPricesSectionVisible,
+                        Converter={StaticResource BoolToGridLengthConverter},
+                        ConverterParameter='160'}"/>
+                </Grid.RowDefinitions>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
 
-            <ff:CachedImage Source="{Binding ThisCard.Images.Large}"
+                <ff:CachedImage Source="{Binding ThisCard.Images.Large}"
                    DownsampleToViewSize="True"
                    LoadingPlaceholder="{Binding ThisCard.Images.Small}"
-                   Grid.RowSpan="2"/>
-            
-            <!-- Row 1 -->
-            <Label Text="{Binding ThisCard.Name}"
-                   Grid.Row="1"
-                   Grid.Column="1"/>
-        </Grid>
+                   Grid.RowSpan="7"/>
+
+                <!-- Top section, 7 rows -->
+                <Label Text="{Binding ThisCard.Name}"
+                       Style="{StaticResource CardPagePokemonTitleLabelStyle}"
+                       Grid.Row="0"
+                       Grid.Column="1"/>
+
+                <Label Text="{Binding ThisCard.Rarity}"
+                       Grid.Row="1"
+                       Grid.Column="1"/>
+
+                <Label Grid.Row="3"
+                       Grid.Column="1">
+                    <Label.FormattedText>
+                        <FormattedString>
+                            <Span Text="{Binding ThisCard.Number}"/>
+                            <Span Text="/"/>
+                            <Span Text="{Binding ThisCard.Total}"/>
+                        </FormattedString>
+                    </Label.FormattedText>
+                </Label>
+
+                <Label Text="Card No."
+                       Grid.Row="4"
+                       Grid.Column="1"/>
+
+                <Label Grid.Row="4"
+                       HorizontalOptions="End"
+                       Grid.Column="1">
+                    <Label.FormattedText>
+                        <FormattedString>
+                            <Span Text="{Binding ThisCard.Number}"/>
+                            <Span Text="/"/>
+                            <Span Text="{Binding ThisCard.Total}"/>
+                        </FormattedString>
+                    </Label.FormattedText>
+                </Label>
+
+                <Label Text="Owned"
+                       Grid.Row="5"
+                       Grid.Column="1"
+                       VerticalOptions="End"/>
+
+                <StackLayout Orientation="Horizontal"
+                             HorizontalOptions="Fill"
+                             VerticalOptions="Fill"
+                             Grid.Column="1"
+                             Spacing="0"
+                             Grid.Row="6">
+                    <Button Text="-"
+                            Command="{Binding DecrementOwnedCountCommand}"
+                            TextColor="White"
+                            BackgroundColor="green"
+                            HorizontalOptions="FillAndExpand"/>
+                    <Label Text="{Binding OwnedCount}"
+                           TextColor="White"
+                           BackgroundColor="green"
+                           HorizontalOptions="FillAndExpand"
+                           HorizontalTextAlignment="Center"
+                           VerticalTextAlignment="Center"/>
+                    <Button Text="+"
+                            Command="{Binding IncrementOwnedCountCommand}"
+                            TextColor="White"
+                            BackgroundColor="green"
+                            HorizontalOptions="FillAndExpand"/>
+                </StackLayout>
+                
+                <!-- Related Cards Section, 2 rows -->
+
+                <BoxView Grid.Row="7"
+                         Grid.ColumnSpan="2"
+                         Grid.RowSpan="2"
+                         HorizontalOptions="Fill"
+                         VerticalOptions="Fill"
+                         BackgroundColor="{AppThemeBinding Light={StaticResource LightPageBackgroundAltColor},
+                                                           Dark={StaticResource DarkPageBackgroundAltColor}}"
+                         Margin="-10, 0"/>
+
+                <Label Text="Related Cards"
+                       Style="{StaticResource CardPageSectionTitleLabelStyle}"
+                       VerticalOptions="Center"
+                       Grid.Row="7"
+                       Grid.Column="0"
+                       IsVisible="{Binding IsRelatedCardsSectionVisible}"/>
+
+                <CollectionView HorizontalScrollBarVisibility="Never"
+                                HorizontalOptions="Fill"
+                                ItemsUpdatingScrollMode="KeepItemsInView"
+                                ItemsSource="{Binding RelatedCards}"
+                                IsVisible="{Binding IsLoadingRelatedCards, 
+                                                    Converter={StaticResource InvertBoolConverter}}"
+                                Grid.Row="8"
+                                Margin="-10, 0, -10, 10"
+                                Grid.ColumnSpan="2">
+                    <CollectionView.ItemsLayout>
+                        <LinearItemsLayout Orientation="Horizontal"
+                                           SnapPointsType="Mandatory"
+                                           SnapPointsAlignment="Start"
+                                           ItemSpacing="0"/>
+                    </CollectionView.ItemsLayout>
+                    <CollectionView.ItemTemplate>
+                        <DataTemplate>
+                            <ff:CachedImage Source="{Binding Images.Large}"
+                                            DownsampleToViewSize="True"
+                                            WidthRequest="130"
+                                            HeightRequest="160"
+                                            Margin="5, 0">
+                                <ff:CachedImage.GestureRecognizers>
+                                    <TapGestureRecognizer Command="{Binding Source={x:Reference ThisPage},
+                                                                            Path=BindingContext.GoToRelatedCardCommand}"
+                                                          CommandParameter="{Binding .}"/>
+                                </ff:CachedImage.GestureRecognizers>
+                            </ff:CachedImage>
+                        </DataTemplate>
+                    </CollectionView.ItemTemplate>
+                </CollectionView>
+
+                <ActivityIndicator Grid.Row="8"
+                                   Grid.ColumnSpan="2"
+                                   HorizontalOptions="Center"
+                                   VerticalOptions="Center"
+                                   IsRunning="{Binding IsLoadingRelatedCards}"
+                                   IsVisible="{Binding IsLoadingRelatedCards}"
+                                   InputTransparent="True"/>
+
+                <Label Text="Prices"
+                       Style="{StaticResource CardPageSectionTitleLabelStyle}"
+                       Grid.Row="9"/>
+
+                <CarouselView ItemsSource="{Binding Prices}"
+                              PeekAreaInsets="10"
+                              Grid.Row="10"
+                              Grid.ColumnSpan="2"
+                              Loop="False"
+                              HorizontalOptions="Start"
+                              Margin="0, 10">
+                    <CarouselView.ItemsLayout>
+                        <LinearItemsLayout Orientation="Horizontal"
+                                           SnapPointsType="Mandatory"
+                                           SnapPointsAlignment="Start"/>
+                    </CarouselView.ItemsLayout>
+                    <CarouselView.ItemTemplate>
+                        <DataTemplate>
+                            <Grid HorizontalOptions="CenterAndExpand">
+                                <Label Text="{Binding Title}"
+                                       FontAttributes="Bold"
+                                       FontSize="18"/>
+
+                                <Label Text="{Binding Prices.High, 
+                                                      StringFormat='${0:0.00}'}"
+                                       HorizontalOptions="Center"
+                                       Grid.Row="1"/>
+                                <Label Text="High"
+                                       HorizontalOptions="Center"
+                                       Grid.Row="2"/>
+
+                                <Label Text="{Binding Prices.Mid, 
+                                                      StringFormat='${0:0.00}'}"
+                                       HorizontalOptions="Center"
+                                       Grid.Column="1"
+                                       Grid.Row="1"/>
+                                <Label Text="Mid"
+                                       HorizontalOptions="Center"
+                                       Grid.Column="1"
+                                       Grid.Row="2"/>
+
+                                <Label Text="{Binding Prices.Low, 
+                                                      StringFormat='${0:0.00}'}"
+                                       HorizontalOptions="Center"
+                                       Grid.Column="2"
+                                       Grid.Row="1"/>
+                                <Label Text="Low"
+                                       HorizontalOptions="Center"
+                                       Grid.Column="2"
+                                       Grid.Row="2"/>
+
+                                <Label Text="{Binding Prices.Market, 
+                                                      StringFormat='${0:0.00}'}"
+                                       HorizontalOptions="Center"
+                                       Grid.Row="4"/>
+                                <Label Text="Market"
+                                       HorizontalOptions="Center"
+                                       Grid.Row="5"/>
+
+                                <Label Text="{Binding Prices.DirectLow, 
+                                                      StringFormat='${0:0.00}'}"
+                                       Grid.Row="4"
+                                       HorizontalOptions="Center"
+                                       Grid.Column="1"/>
+                                <Label Text="Direction"
+                                       HorizontalOptions="Center"
+                                       Grid.Row="5"
+                                       Grid.Column="1"/>
+                            </Grid>
+                        </DataTemplate>
+                    </CarouselView.ItemTemplate>
+                </CarouselView>
+
+                <ActivityIndicator Grid.Row="10"
+                                   Grid.ColumnSpan="2"
+                                   HorizontalOptions="Center"
+                                   VerticalOptions="Center"
+                                   IsRunning="{Binding IsLoadingPrices}"
+                                   IsVisible="{Binding IsLoadingPrices}"
+                                   InputTransparent="True"/>
+
+            </Grid>
+        </ScrollView>
     </pages:BaseContentPage.Content>
 </pages:BaseContentPage>

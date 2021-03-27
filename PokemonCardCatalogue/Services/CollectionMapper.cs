@@ -68,7 +68,7 @@ namespace PokemonCardCatalogue.Services
         {
             return new SetItem
             {
-                OwnedCount = collectionSet.OwnedCount,
+                OwnedCount = collectionSet.OwnedCardsCount,
                 Set = new Set
                 {
                     Id = collectionSet.Id,
@@ -110,7 +110,7 @@ namespace PokemonCardCatalogue.Services
 
         private CollectionCard GetCollectionCardFromCard(Card card)
         {
-            return new CollectionCard
+            var collectionCard = new CollectionCard
             {
                 AddedDate = DateTime.UtcNow,
                 SetId = card.Set.Id,
@@ -124,34 +124,46 @@ namespace PokemonCardCatalogue.Services
                 Hp = card.Hp,
                 ExpandedLegality = card.Legalities.Expanded,
                 UnlimitedLegality = card.Legalities.Unlimited,
-
-                // Holofoil
-                HolofoilLow = card.TcgPlayer?.Prices?.Holofoil?.Low ?? float.MaxValue,
-                HolofoilMid = card.TcgPlayer?.Prices?.Holofoil?.Mid ?? null,
-                HolofoilHigh = card.TcgPlayer?.Prices?.Holofoil?.High ?? float.MinValue,
-                HolofoilMarket = card.TcgPlayer?.Prices?.Holofoil?.Market ?? null,
-                HolofoilDirectLow = card.TcgPlayer?.Prices?.Holofoil?.DirectLow ?? null,
-
-                // Normal
-                NormalLow = card.TcgPlayer?.Prices?.Normal?.Low ?? float.MaxValue,
-                NormalMid = card.TcgPlayer?.Prices?.Normal?.Mid ?? null,
-                NormalHigh = card.TcgPlayer?.Prices?.Normal?.High ?? float.MinValue,
-                NormalMarket = card.TcgPlayer?.Prices?.Normal?.Market ?? null,
-                NormalDirectLow = card.TcgPlayer?.Prices?.Normal?.DirectLow ?? null,
-
-                // ReverseHolofoil
-                ReverseHolofoilLow = card.TcgPlayer?.Prices?.ReverseHolofoil?.Low ?? float.MaxValue,
-                ReverseHolofoilMid = card.TcgPlayer?.Prices?.ReverseHolofoil?.Mid ?? null,
-                ReverseHolofoilHigh = card.TcgPlayer?.Prices?.ReverseHolofoil?.High ?? float.MinValue,
-                ReverseHolofoilMarket = card.TcgPlayer?.Prices?.ReverseHolofoil?.Market ?? null,
-                ReverseHolofoilDirectLow = card.TcgPlayer?.Prices?.ReverseHolofoil?.DirectLow ?? null
             };
+
+            if (card.TcgPlayer?.Prices?.Holofoil != null)
+            {
+                // Holofoil
+                collectionCard.HolofoilLow = card.TcgPlayer?.Prices?.Holofoil?.Low ?? float.MaxValue;
+                collectionCard.HolofoilMid = card.TcgPlayer?.Prices?.Holofoil?.Mid ?? null;
+                collectionCard.HolofoilHigh = card.TcgPlayer?.Prices?.Holofoil?.High ?? float.MinValue;
+                collectionCard.HolofoilMarket = card.TcgPlayer?.Prices?.Holofoil?.Market ?? null;
+                collectionCard.HolofoilDirectLow = card.TcgPlayer?.Prices?.Holofoil?.DirectLow ?? null;
+            }
+
+            if (card.TcgPlayer?.Prices?.Normal != null)
+            {
+                // Normal
+                collectionCard.NormalLow = card.TcgPlayer?.Prices?.Normal?.Low ?? float.MaxValue;
+                collectionCard.NormalMid = card.TcgPlayer?.Prices?.Normal?.Mid ?? null;
+                collectionCard.NormalHigh = card.TcgPlayer?.Prices?.Normal?.High ?? float.MinValue;
+                collectionCard.NormalMarket = card.TcgPlayer?.Prices?.Normal?.Market ?? null;
+                collectionCard.NormalDirectLow = card.TcgPlayer?.Prices?.Normal?.DirectLow ?? null;
+            }
+
+            if (card.TcgPlayer?.Prices?.Normal != null)
+            {
+                // ReverseHolofoil
+                collectionCard.ReverseHolofoilLow = card.TcgPlayer?.Prices?.ReverseHolofoil?.Low ?? float.MaxValue;
+                collectionCard.ReverseHolofoilMid = card.TcgPlayer?.Prices?.ReverseHolofoil?.Mid ?? null;
+                collectionCard.ReverseHolofoilHigh = card.TcgPlayer?.Prices?.ReverseHolofoil?.High ?? float.MinValue;
+                collectionCard.ReverseHolofoilMarket = card.TcgPlayer?.Prices?.ReverseHolofoil?.Market ?? null;
+                collectionCard.ReverseHolofoilDirectLow = card.TcgPlayer?.Prices?.ReverseHolofoil?.DirectLow ?? null;
+            }
+
+            return collectionCard;
         }
 
         private CardItem GetCardItem(CollectionCard collectionCard)
         {
             return new CardItem
             {
+                CacheId = collectionCard.CacheId,
                 OwnedCount =  collectionCard.OwnedCount,
                 Card = new Card
                 {

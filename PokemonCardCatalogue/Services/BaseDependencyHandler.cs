@@ -10,7 +10,7 @@ namespace PokemonCardCatalogue.Services
 {
     public abstract class BaseDependencyHandler : IDependencyHandler
     {
-        private readonly IDependencyContainer _dependencyContainer;
+        protected readonly IDependencyContainer _dependencyContainer;
 
         public T Get<T>() where T : class
         {
@@ -65,6 +65,7 @@ namespace PokemonCardCatalogue.Services
             _dependencyContainer.Register<CardViewModel>();
             _dependencyContainer.Register<SettingsViewModel>();
             _dependencyContainer.Register<CollectionSetsViewModel>();
+            _dependencyContainer.Register<CollectionCardListViewModel>();
         }
     }
 }

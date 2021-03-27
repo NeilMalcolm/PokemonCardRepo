@@ -1,7 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 using System.Net.Http;
+using FFImageLoading;
+using FFImageLoading.Config;
 using Foundation;
 using PokemonCardCatalogue.iOS.Services;
 using PokemonCardCatalogue.Services;
@@ -25,13 +28,28 @@ namespace PokemonCardCatalogue.iOS
         public override bool FinishedLaunching(UIApplication app, NSDictionary options)
         {
             FFImageLoading.Forms.Platform.CachedImageRenderer.Init();
-            global::Xamarin.Forms.Forms.SetFlags("SwipeView_Experimental");
-            global::Xamarin.Forms.Forms.SetFlags("CollectionView_Experimental");
+            //SetUpNativeHttpClientForImageLoading();
+            global::Xamarin.Forms.Forms.SetFlags(new string[] {
+                "Brush_Experimental",
+                "SwipeView_Experimental",
+                "CollectionView_Experimental"
+            });
             global::Xamarin.Forms.Forms.Init();
             LoadApplication(new App(new DependencyHandler_iOS(new DependencyContainer())));
             
 
             return base.FinishedLaunching(app, options);
+        }
+
+        private void SetUpNativeHttpClientForImageLoading()
+        {
+            ImageService.Instance.Initialize(new Configuration
+            {
+                HttpClient = new HttpClient(new HttpClientHandler
+                {
+                    AutomaticDecompression = DecompressionMethods.GZip | DecompressionMethods.Deflate,
+                })
+            });
         }
     }
 }

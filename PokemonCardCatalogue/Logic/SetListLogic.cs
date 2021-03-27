@@ -1,9 +1,11 @@
 ﻿using PokemonCardCatalogue.Common.Context.Interfaces;
-using PokemonCardCatalogue.Common.Logic.Interfaces;
+using PokemonCardCatalogue.Logic.Interfaces;
 using PokemonCardCatalogue.Common.Models;
 using PokemonCardCatalogue.Common.Models.Data;
+using PokemonCardCatalogue.Models;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using System.Linq;
 
 namespace PokemonCardCatalogue.Logic
 {
@@ -25,6 +27,27 @@ namespace PokemonCardCatalogue.Logic
                 },
                 OrderBy = "number"
             });
+        }
+
+        public bool DoSetsAndSetFromDbHaveDifferentOwnedCounts(List<SetItem> setItems, SetItem set)
+        {
+            if (setItems?.Count == 0 || set is null)
+            {
+                return true;
+            }
+
+            var matchingItem = setItems?.FirstOrDefault(x => x.Set.Id == set.Set.Id);
+            if (matchingItem is null)
+            {
+                return true;
+            }
+
+            if (set.OwnedCount != matchingItem.OwnedCount)
+            {
+                return true;
+            }
+
+            return false;
         }
     }
 }

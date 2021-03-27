@@ -1,5 +1,4 @@
-﻿using PokemonCardCatalogue.Common.Context.Interfaces;
-using PokemonCardCatalogue.Common.Models.Data;
+﻿using PokemonCardCatalogue.Common.Models.Data;
 using PokemonCardCatalogue.Constants;
 using PokemonCardCatalogue.Models;
 using PokemonCardCatalogue.Models.Collection;
@@ -8,6 +7,7 @@ using SQLite;
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace PokemonCardCatalogue.Services
@@ -18,7 +18,7 @@ namespace PokemonCardCatalogue.Services
 
         SQLiteAsyncConnection _collectionConnection;
 
-        private string collectionDbPath
+        private readonly string collectionDbPath
             = Path.Combine
             (
                 Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments),
@@ -110,11 +110,11 @@ namespace PokemonCardCatalogue.Services
             var cardCollection = await GetCardCollectionById(card.Card.Id);
 
             cardCollection.OwnedCount = card.OwnedCount;
-            cardCollection.AddedDate ??= DateTime.UtcNow;
+            cardCollection.CreatedDate ??= DateTime.UtcNow;
+            cardCollection.ModifiedDate ??= DateTime.UtcNow;
 
             return await _collectionConnection.UpdateAsync(cardCollection);
         }
-
 
         public async Task<int> DeleteSetAndCardsAsync(Set set)
         {
@@ -128,11 +128,44 @@ namespace PokemonCardCatalogue.Services
             return result;
         }
 
+        public Task<List<T>> QueryAsync<T>(string query) where T : new()
+        {
+            return _collectionConnection.QueryAsync<T>(query);
+        }
+
+        public async Task DeleteAllDataAsync()
+        {
+            await _collectionConnection.DeleteAllAsync<CollectionCard>();
+            await _collectionConnection.DeleteAllAsync<CollectionSet>();
+        }
+
+        public async Task<CardItem> FindCardByQueryAsync(string query, params object[] parameters)
+        {
+            var dbResult = await _collectionConnection.FindWithQueryAsync<CollectionCard>
+            (
+                query,
+                parameters
+            );
+
+            return _collectionMapper.GetCard(dbResult);
+        }
+
+        public Task<int> ExecuteAsync(string commandText, params object[] parameters)
+        {
+            return _collectionConnection.ExecuteAsync(commandText, parameters);
+        }
+
+        public Task<T> ExecuteScalarAsync<T>(string commandText, params object[] parameters)
+        {
+            return _collectionConnection.ExecuteScalarAsync<T>(commandText, parameters);
+        }
+
         private Task<CollectionCard> GetCardCollectionById(string cardId)
         {
             return _collectionConnection.Table<CollectionCard>()
                 .FirstOrDefaultAsync(x => x.Id == cardId);
         }
+
         private Task<List<CollectionCard>> GetCardCollectionsBySetId(string setId)
         {
             return _collectionConnection.Table<CollectionCard>()
@@ -164,6 +197,5 @@ namespace PokemonCardCatalogue.Services
 
             return _collectionMapper.GetSetItems(collectionSets);
         }
-
     }
 }
