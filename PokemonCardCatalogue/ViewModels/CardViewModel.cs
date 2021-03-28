@@ -141,6 +141,17 @@ namespace PokemonCardCatalogue.ViewModels
             );
         }
 
+        protected override async Task OnLoadAsync()
+        {
+            IsLoadingRelatedCards = true;
+            IsLoadingPrices = true;
+            var loadRelatedCardsTask = LoadRelatedCardsFromSameSetAsync();
+            var getOwnedCountTask = GetOwnedCountAsync(ThisCard.Id);
+            var pricesTask = SetPrices(ThisCard);
+
+            await Task.WhenAll(getOwnedCountTask, loadRelatedCardsTask, pricesTask);
+        }
+
         private async Task DecrementOwnedCount()
         {
             try
@@ -157,7 +168,10 @@ namespace PokemonCardCatalogue.ViewModels
             }
             finally
             {
-                ownedCountSemaphore.Release();
+                if (ownedCountSemaphore.CurrentCount == 0)
+                {
+                    ownedCountSemaphore.Release();
+                }
             }
         }
 
@@ -172,7 +186,10 @@ namespace PokemonCardCatalogue.ViewModels
             }
             finally
             {
-                ownedCountSemaphore.Release();
+                if (ownedCountSemaphore.CurrentCount == 0)
+                {
+                    ownedCountSemaphore.Release();
+                }
             }
         }
 
@@ -181,17 +198,6 @@ namespace PokemonCardCatalogue.ViewModels
             _canNavigatingToRelatedCard = false;
             await NavigationService.GoToAsync<CardPage>(card);
             _canNavigatingToRelatedCard = true;
-        }
-
-        protected override async Task OnLoadAsync()
-        {
-            IsLoadingRelatedCards = true;
-            IsLoadingPrices = true;
-            var loadRelatedCardsTask = LoadRelatedCardsFromSameSetAsync();
-            var getOwnedCountTask = GetOwnedCountAsync(ThisCard.Id);
-            var pricesTask = SetPrices(ThisCard);
-
-            await Task.WhenAll(getOwnedCountTask, loadRelatedCardsTask, pricesTask);
         }
 
         private async Task GetOwnedCountAsync(string id)

@@ -12,11 +12,15 @@ namespace PokemonCardCatalogue.Common.Context
     {
         private readonly ICache _cache;
         private readonly JsonSerializerOptions _jsonSerializerOptions;
+        private readonly HttpClient _client;
 
-        public PokemonTcgApiService(ICache cache)
+        public PokemonTcgApiService(ICache cache,
+            HttpClient httpClient)
         {
             _cache = cache;
             _cache.Init();
+
+            _client = httpClient;
 
             _jsonSerializerOptions = new JsonSerializerOptions();
             _jsonSerializerOptions.Converters.Add(new DateTimeJsonConverter());
@@ -33,7 +37,7 @@ namespace PokemonCardCatalogue.Common.Context
             }
 
             var fullUrl = string.Format(endpoint, QueryHelper.BuildQuery(parameters));
-            var response = await Self.GlobalClient.GetAsync(fullUrl);
+            var response = await _client.GetAsync(fullUrl);
 
             return await HandleResponse<ApiResponseDataContainer<T>>(response, endpoint, parameters);
         }
@@ -49,7 +53,7 @@ namespace PokemonCardCatalogue.Common.Context
             }
 
             var fullUrl = string.Format("{0}{1}", endpoint, QueryHelper.BuildQuery(parameters));
-            var response = await Self.GlobalClient.GetAsync(fullUrl);
+            var response = await _client.GetAsync(fullUrl);
 
             return await HandleResponse<ApiListResponseDataContainer<T>>(response, endpoint, parameters);
         }

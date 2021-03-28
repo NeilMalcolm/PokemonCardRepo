@@ -127,7 +127,7 @@ namespace PokemonCardCatalogue.ViewModels
             var shouldDelete = await _alertService.ShowAlertAsync
             (
                 "Confirm Delete Set", 
-                "You are about to delete {setItem.Set.Name} from your collection. This will remove all cards too. Do you want to delete?",
+                $"You are about to delete {setItem.Set.Name} from your collection. This will remove all cards too. Do you want to delete?",
                 "Delete", 
                 "Do not delete"
             );

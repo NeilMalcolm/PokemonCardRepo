@@ -9,25 +9,26 @@ namespace PokemonCardCatalogue.Common
     {
         internal static string ApiKey {get;set;}
 
-        internal static HttpClient GlobalClient { get; set; } 
+        internal static string BaseAddress { get; set; }
+        internal static HttpClient GlobalHttpClient { get; set; }
             = new HttpClient();
 
-        public static void SetCustomHttpClient(HttpClient client)
+        public static void SetCustomHttpClient(HttpClient customHttpClient)
         {
-            GlobalClient = client;
+            GlobalHttpClient = customHttpClient;
         }
 
         public static void SetApikey(string apiKey)
         {
             ApiKey = apiKey;
-            SetHeaders();
+            SetHeaders(GlobalHttpClient);
         }
 
-        private static void SetHeaders()
+        internal static void SetHeaders(HttpClient client)
         {
-            GlobalClient.BaseAddress = new Uri($"https://{ApiConstants.BaseUrl}");
-            GlobalClient.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
-            GlobalClient.DefaultRequestHeaders.Add("X-Api-key", ApiKey);
+            client.BaseAddress = new Uri($"https://{ApiConstants.BaseUrl}");
+            client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+            client.DefaultRequestHeaders.Add("X-Api-key", ApiKey);
         }
     }
 }

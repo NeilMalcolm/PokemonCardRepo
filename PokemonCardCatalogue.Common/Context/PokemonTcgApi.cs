@@ -17,10 +17,10 @@ namespace PokemonCardCatalogue.Common.Context
         public static PokemonTcgApi Instance
         {
             get => _instance ??= new PokemonTcgApi(_cache, 
-                new PokemonTcgApiService(_cache));
+                new PokemonTcgApiService(_cache, Self.GlobalHttpClient));
         }
 
-        internal PokemonTcgApi(ICache cache,
+        public PokemonTcgApi(ICache cache,
             IApiService apiService)
         {
             _cache = cache;
