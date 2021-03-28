@@ -8,6 +8,7 @@ using PokemonCardCatalogue.Pages;
 using PokemonCardCatalogue.Services.Interfaces;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -29,6 +30,11 @@ namespace PokemonCardCatalogue.ViewModels
         private bool _canNavigateToCard = true;
         private Set _set;
         private List<CardItem> _allCardItems;
+
+        public List<CardItem> AllCardItems 
+        {
+            get => _allCardItems;  
+        }
 
         private readonly SemaphoreSlim semaphore = new SemaphoreSlim(1, 1);
 
@@ -81,6 +87,8 @@ namespace PokemonCardCatalogue.ViewModels
         public ICommand LoadMoreCardItemsCommand { get; set; }
         public ICommand SearchCardsCommand { get; set; }
 
+        public ICommand SetDisplayListCommand { get; set; }
+
         public CollectionCardListViewModel
             (
                 INavigationService navigationService,
@@ -115,16 +123,16 @@ namespace PokemonCardCatalogue.ViewModels
                 async (cardItem) => await AddCardToCollectionAsync(cardItem)
             );
             LoadMoreCardItemsCommand = new Command(LoadMore);
-            SearchCardsCommand = new Command<string>((searchText) => SetDisplayList(CurrentSortOrder, searchText));
+            SearchCardsCommand = new Command<string>(async (searchText) => await SetDisplayList(CurrentSortOrder, searchText));
         }
 
         protected override async Task OnLoadAsync()
         {
             _allCardItems = await _collectionLogic.GetCardsForSetAsync(_set.Id);
-            await SetDisplayList(Sorting.SortModes.FirstOrDefault());
+            await SetDisplayList(_currentSortOrder);
         }
 
-        private async Task SetDisplayList(KeyValuePair<SortOrder, string> mode, string searchText = null)
+        public async Task SetDisplayList(KeyValuePair<SortOrder, string> mode, string searchText = null)
         {
             CardItemList?.Clear();
             IsLoading = true; 

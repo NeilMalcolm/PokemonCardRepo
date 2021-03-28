@@ -38,6 +38,9 @@ namespace PokemonCardCatalogue.ViewModels
             get => _searchText;
             set 
             { 
+                // Since SearchTextComamnd searches for us,
+                // this is only required to display all results 
+                // text when empty.
                 if (value != _searchText  && string.IsNullOrWhiteSpace(value))
                 {
                     SetDisplayList();
@@ -120,7 +123,7 @@ namespace PokemonCardCatalogue.ViewModels
             }
 
             Sets = _allSets
-                .Where(x => x.Set.Name.Contains(searchText))
+                .Where(x => x.Set.Name.Contains(searchText, System.StringComparison.OrdinalIgnoreCase))
                 .ToList();
         }
 
