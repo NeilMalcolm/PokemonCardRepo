@@ -23,18 +23,24 @@ namespace PokemonCardCatalogue.Models.Collection
 
         public float? HolofoilLow { get; set; }
         public float? HolofoilMid { get; set; }
+
+        [Indexed]
         public float? HolofoilHigh { get; set; }
         public float? HolofoilMarket { get; set; }
         public float? HolofoilDirectLow { get; set; }
 
         public float? NormalLow { get; set; }
         public float? NormalMid { get; set; }
+
+        [Indexed]
         public float? NormalHigh { get; set; }
         public float? NormalMarket { get; set; }
         public float? NormalDirectLow { get; set; }
 
         public float? ReverseHolofoilLow { get; set; }
         public float? ReverseHolofoilMid { get; set; }
+
+        [Indexed]
         public float? ReverseHolofoilHigh { get; set; }
         public float? ReverseHolofoilMarket { get; set; }
         public float? ReverseHolofoilDirectLow { get; set; }

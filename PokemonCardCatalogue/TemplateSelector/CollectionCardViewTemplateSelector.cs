@@ -1,4 +1,4 @@
-﻿using PokemonCardCatalogue.Models;
+﻿using PokemonCardCatalogue.Common.Models;
 using PokemonCardCatalogue.Views.Cards;
 using Xamarin.Forms;
 

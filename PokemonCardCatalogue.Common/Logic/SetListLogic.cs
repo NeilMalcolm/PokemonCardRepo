@@ -1,13 +1,13 @@
 ﻿using PokemonCardCatalogue.Common.Context.Interfaces;
-using PokemonCardCatalogue.Logic.Interfaces;
 using PokemonCardCatalogue.Common.Models;
 using PokemonCardCatalogue.Common.Models.Data;
-using PokemonCardCatalogue.Models;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using System.Linq;
+using PokemonCardCatalogue.Common.Logic;
+using PokemonCardCatalogue.Common.Logic.Interfaces;
 
-namespace PokemonCardCatalogue.Logic
+namespace PokemonCardCatalogue.Common.Logic
 {
     public class SetListLogic : BaseLogic, ISetListLogic
     {

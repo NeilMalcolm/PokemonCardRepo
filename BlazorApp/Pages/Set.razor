@@ -1,0 +1,117 @@
+﻿@page "/set"
+
+@using PokemonCardCatalogue.Common.Logic.Interfaces;
+@using PokemonSet = PokemonCardCatalogue.Common.Models.Data.Set;
+@using PokemonCard = PokemonCardCatalogue.Common.Models.Data.Card;
+@using PokemonCardCatalogue.Common.Models.Data;
+@using Microsoft.AspNetCore.WebUtilities;
+@using Microsoft.Extensions.Primitives;
+
+@inject IAllSetsLogic AllSetsLogic;
+@inject ISetListLogic SetListLogic;
+@inject NavigationManager NavManager;
+
+<img src="@SetLogoUrl"
+     style="width: 150px"/>
+
+<h1>@SetName</h1>
+
+@if (IsLoading)
+{
+    <p>Loading...</p>
+    <RadzenDataList WrapItems="true"
+                    Count="30"
+                    Data="@Placeholders"
+                    TItem="int"
+                    Visible="IsLoading">
+        <Template Context="skeletonView">
+            <div style="width: 30%; height: 350px; padding:0; margin:5px; background-color: gray;"/>
+        </Template>
+    </RadzenDataList>
+}
+else
+{
+    <RadzenDataList WrapItems="true"
+                    Data="@CardItems"
+                    Count="@CardItems.Count"
+                    TItem="PokemonCard"
+                    Visible="DataHasLoaded">
+        <Template Context="pokemonCard">
+            <img src="@pokemonCard.Images.Small"
+                 class="col-md-4 col-sm-12 col-lg-4"
+                 style="margin:5px 0; object-fit:cover"
+                 @onclick="() => NavigateTo(pokemonCard)"/>
+        </Template>
+    </RadzenDataList>
+}
+
+@code {
+
+    private int[] Placeholders = new int[30];
+    private bool _dataHasLoaded;
+
+    [Parameter]
+    public string Id { get; set; }
+    [Parameter]
+    public string SetName { get; set; }
+    [Parameter]
+    public string SetLogoUrl { get; set; }
+
+    public bool IsLoading { get; set; } = true;
+
+    public bool DataHasLoaded
+    {
+        get => _dataHasLoaded;
+        set
+        {
+            _dataHasLoaded = value;
+            IsLoading = false;
+        }
+    }
+
+
+    public PokemonSet ThisSet { get; private set; }
+    public List<PokemonCard> CardItems = new List<PokemonCard>();
+
+    protected override async Task OnInitializedAsync()
+    {
+        CheckParameters();
+
+        var cardItemsTask = SetListLogic.GetAllCardsForSetAsync(Id);
+        var setDataTask = AllSetsLogic.GetSetByIdAsync(Id);
+
+        await Task.WhenAll(cardItemsTask, setDataTask);
+
+        CardItems = cardItemsTask.Result;
+        ThisSet = setDataTask.Result;
+        DataHasLoaded = true;
+    }
+
+    private void NavigateTo(PokemonCard card)
+    {
+        Console.WriteLine(card.Name);
+    }
+
+    private void CheckParameters()
+    {
+        StringValues value;
+        var query = NavManager.ToAbsoluteUri(NavManager.Uri).Query;
+
+        if (!QueryHelpers.ParseQuery(query).TryGetValue(UrlParameters.Set.Id, out value))
+        {
+            return;
+        }
+
+        Id = value.ToString();
+
+        if (QueryHelpers.ParseQuery(query).TryGetValue(UrlParameters.Set.Name, out value))
+        {
+            SetName = value.ToString();
+        }
+
+        if (QueryHelpers.ParseQuery(query).TryGetValue(UrlParameters.Set.Logo, out value))
+        {
+            SetLogoUrl = value.ToString();
+        }
+    }
+}

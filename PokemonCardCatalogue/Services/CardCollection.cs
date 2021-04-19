@@ -1,13 +1,13 @@
-﻿using PokemonCardCatalogue.Common.Models.Data;
+﻿using PokemonCardCatalogue.Common.Logic.Interfaces;
+using PokemonCardCatalogue.Common.Models;
+using PokemonCardCatalogue.Common.Models.Data;
 using PokemonCardCatalogue.Constants;
-using PokemonCardCatalogue.Models;
 using PokemonCardCatalogue.Models.Collection;
 using PokemonCardCatalogue.Services.Interfaces;
 using SQLite;
 using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using System.Threading.Tasks;
 
 namespace PokemonCardCatalogue.Services
@@ -32,6 +32,9 @@ namespace PokemonCardCatalogue.Services
 
         public async Task InitAsync()
         {
+#if DEBUG
+            System.Diagnostics.Debug.WriteLine($"Db location: {collectionDbPath}");
+#endif
             _collectionConnection = new SQLiteAsyncConnection(collectionDbPath);
             await _collectionConnection.CreateTableAsync<CollectionCard>();
             await _collectionConnection.CreateTableAsync<CollectionSet>();

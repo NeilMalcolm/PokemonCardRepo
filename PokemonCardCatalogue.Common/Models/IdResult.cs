@@ -1,4 +1,4 @@
-﻿namespace PokemonCardCatalogue.Models.Collection
+﻿namespace PokemonCardCatalogue.Common.Models
 {
     public class IdResult
     {

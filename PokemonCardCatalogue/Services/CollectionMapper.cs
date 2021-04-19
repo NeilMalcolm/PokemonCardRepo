@@ -2,9 +2,9 @@
 using PokemonCardCatalogue.Models.Collection;
 using PokemonCardCatalogue.Common.Models.Data;
 using System.Collections.Generic;
-using PokemonCardCatalogue.Models;
 using System.Linq;
 using System;
+using PokemonCardCatalogue.Common.Models;
 
 namespace PokemonCardCatalogue.Services
 {

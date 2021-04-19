@@ -5,7 +5,7 @@ using PokemonCardCatalogue.Common.Context.Interfaces;
 using PokemonCardCatalogue.Common.Logic.Interfaces;
 using PokemonCardCatalogue.Common.Models.Data;
 using PokemonCardCatalogue.Common.Models.Types;
-using PokemonCardCatalogue.Logic;
+using PokemonCardCatalogue.Common.Logic;
 using System.Collections.Generic;
 using System.Net.Http;
 using System.Threading.Tasks;

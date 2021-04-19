@@ -1,10 +1,10 @@
 ﻿using PokemonCardCatalogue.Common.Models.Data;
-using PokemonCardCatalogue.Models;
+using PokemonCardCatalogue.Common.Models;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
-namespace PokemonCardCatalogue.Logic.Interfaces
+namespace PokemonCardCatalogue.Common.Logic.Interfaces
 {
     public interface ICollectionLogic
     {
@@ -18,5 +18,6 @@ namespace PokemonCardCatalogue.Logic.Interfaces
         Task<int> GetCardOwnedCount(string cardId);
         Task<DateTime?> GetMostRecentCardModifiedDateBySetId(string setId);
         Task<CardItem> GetMostRecentlyUpdatedCardBySetId(string setId);
+        Task<float> GetMaxMarketValueForCollection();
     }
 }

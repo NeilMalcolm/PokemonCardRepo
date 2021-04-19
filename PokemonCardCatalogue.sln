@@ -15,7 +15,13 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PokemonCardCatalogue.Tests"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PokemonCardCatalogue.Common", "PokemonCardCatalogue.Common\PokemonCardCatalogue.Common.csproj", "{35204E1E-B8AE-4523-80EF-62323364222B}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PokemonCardCatalogue.Common.Models", "PokemonCardCatalogue.Common.Models\PokemonCardCatalogue.Common.Models.csproj", "{D5724BE5-EDDB-4E7A-B8F2-D47881A9955B}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PokemonCardCatalogue.Common.Models", "PokemonCardCatalogue.Common.Models\PokemonCardCatalogue.Common.Models.csproj", "{D5724BE5-EDDB-4E7A-B8F2-D47881A9955B}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BlazorApp", "BlazorApp\BlazorApp.csproj", "{01FAB6EC-B729-4C58-9116-9FD46B8DB950}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Web", "Web", "{A27FE780-0EF2-404E-9251-D16FBAD6EE0D}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Mobile", "Mobile", "{83DD1EF0-DC2E-405C-9F43-79978EFFE5F5}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -117,14 +123,30 @@ Global
 		{D5724BE5-EDDB-4E7A-B8F2-D47881A9955B}.Release|iPhone.Build.0 = Release|Any CPU
 		{D5724BE5-EDDB-4E7A-B8F2-D47881A9955B}.Release|iPhoneSimulator.ActiveCfg = Release|Any CPU
 		{D5724BE5-EDDB-4E7A-B8F2-D47881A9955B}.Release|iPhoneSimulator.Build.0 = Release|Any CPU
+		{01FAB6EC-B729-4C58-9116-9FD46B8DB950}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{01FAB6EC-B729-4C58-9116-9FD46B8DB950}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{01FAB6EC-B729-4C58-9116-9FD46B8DB950}.Debug|iPhone.ActiveCfg = Debug|Any CPU
+		{01FAB6EC-B729-4C58-9116-9FD46B8DB950}.Debug|iPhone.Build.0 = Debug|Any CPU
+		{01FAB6EC-B729-4C58-9116-9FD46B8DB950}.Debug|iPhoneSimulator.ActiveCfg = Debug|Any CPU
+		{01FAB6EC-B729-4C58-9116-9FD46B8DB950}.Debug|iPhoneSimulator.Build.0 = Debug|Any CPU
+		{01FAB6EC-B729-4C58-9116-9FD46B8DB950}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{01FAB6EC-B729-4C58-9116-9FD46B8DB950}.Release|Any CPU.Build.0 = Release|Any CPU
+		{01FAB6EC-B729-4C58-9116-9FD46B8DB950}.Release|iPhone.ActiveCfg = Release|Any CPU
+		{01FAB6EC-B729-4C58-9116-9FD46B8DB950}.Release|iPhone.Build.0 = Release|Any CPU
+		{01FAB6EC-B729-4C58-9116-9FD46B8DB950}.Release|iPhoneSimulator.ActiveCfg = Release|Any CPU
+		{01FAB6EC-B729-4C58-9116-9FD46B8DB950}.Release|iPhoneSimulator.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
+		{3DDC7069-D1B5-44DE-A954-294380B58FC8} = {83DD1EF0-DC2E-405C-9F43-79978EFFE5F5}
+		{B573A700-4C1D-492F-A410-8571107D7260} = {83DD1EF0-DC2E-405C-9F43-79978EFFE5F5}
+		{09482A55-B737-4FC3-AB1B-11439CE43F69} = {83DD1EF0-DC2E-405C-9F43-79978EFFE5F5}
 		{D87AEBB5-9AB8-47C4-94FF-79F8E0F38058} = {7BD5604C-2A9E-46AA-AACC-F046FDEFAED6}
 		{35204E1E-B8AE-4523-80EF-62323364222B} = {7BD5604C-2A9E-46AA-AACC-F046FDEFAED6}
 		{D5724BE5-EDDB-4E7A-B8F2-D47881A9955B} = {7BD5604C-2A9E-46AA-AACC-F046FDEFAED6}
+		{01FAB6EC-B729-4C58-9116-9FD46B8DB950} = {A27FE780-0EF2-404E-9251-D16FBAD6EE0D}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {DE9F193E-1D5D-434C-BEF0-2B4F097E672C}

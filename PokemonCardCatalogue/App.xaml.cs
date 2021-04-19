@@ -1,4 +1,5 @@
-﻿using PokemonCardCatalogue.Pages;
+﻿using PokemonCardCatalogue.Common.Logic.Interfaces;
+using PokemonCardCatalogue.Pages;
 using PokemonCardCatalogue.Services.Interfaces;
 using PokemonCardCatalogue.ViewModels;
 using System.Threading.Tasks;

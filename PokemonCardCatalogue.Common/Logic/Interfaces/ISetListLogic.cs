@@ -1,9 +1,9 @@
 ﻿using PokemonCardCatalogue.Common.Models.Data;
-using PokemonCardCatalogue.Models;
+using PokemonCardCatalogue.Common.Models;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
-namespace PokemonCardCatalogue.Logic.Interfaces
+namespace PokemonCardCatalogue.Common.Logic.Interfaces
 {
     public interface ISetListLogic
     {

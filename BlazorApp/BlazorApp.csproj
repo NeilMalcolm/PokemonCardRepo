@@ -1,0 +1,18 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>net5.0</TargetFramework>
+    <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
+    <StartupObject></StartupObject>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Radzen.Blazor" Version="3.2.2" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\PokemonCardCatalogue.Common.Models\PokemonCardCatalogue.Common.Models.csproj" />
+    <ProjectReference Include="..\PokemonCardCatalogue.Common\PokemonCardCatalogue.Common.csproj" />
+  </ItemGroup>
+
+</Project>

@@ -6,8 +6,7 @@ namespace PokemonCardCatalogue.Common.Models
     [Table("cached_query")]
     internal class CachedQuery
     {
-        [PrimaryKey]
-        [AutoIncrement]
+        [PrimaryKey, AutoIncrement]
         [Column("id")]
         public int Id { get; set; }
 

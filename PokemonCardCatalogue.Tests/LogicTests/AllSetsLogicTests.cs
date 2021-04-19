@@ -1,12 +1,12 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
 using PokemonCardCatalogue.Common.Context.Interfaces;
+using PokemonCardCatalogue.Common.Logic;
+using PokemonCardCatalogue.Common.Logic.Interfaces;
 using PokemonCardCatalogue.Common.Models;
 using PokemonCardCatalogue.Common.Models.Data;
 using PokemonCardCatalogue.Constants;
-using PokemonCardCatalogue.Logic;
 using PokemonCardCatalogue.Models.Collection;
-using PokemonCardCatalogue.Services.Interfaces;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;

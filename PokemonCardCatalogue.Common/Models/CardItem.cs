@@ -2,7 +2,7 @@
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
 
-namespace PokemonCardCatalogue.Models
+namespace PokemonCardCatalogue.Common.Models
 {
     public class CardItem : INotifyPropertyChanged
     {

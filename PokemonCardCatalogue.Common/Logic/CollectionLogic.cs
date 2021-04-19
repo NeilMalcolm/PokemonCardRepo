@@ -1,17 +1,19 @@
-﻿using PokemonCardCatalogue.Common.Context.Interfaces;
+﻿using PokemonCardCatalogue.Common.Constants;
+using PokemonCardCatalogue.Common.Context.Interfaces;
+using PokemonCardCatalogue.Common.Logic;
+using PokemonCardCatalogue.Common.Logic.Interfaces;
+using PokemonCardCatalogue.Common.Models;
 using PokemonCardCatalogue.Common.Models.Data;
-using PokemonCardCatalogue.Constants;
-using PokemonCardCatalogue.Logic.Interfaces;
-using PokemonCardCatalogue.Models;
-using PokemonCardCatalogue.Services.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
-namespace PokemonCardCatalogue.Logic
+namespace PokemonCardCatalogue.Common.Logic
 {
     public class CollectionLogic : BaseLogic, ICollectionLogic
     {
+        private const int pageSizeMaximum = 250;
+
         private readonly ICardCollection _cardCollection;
 
         public CollectionLogic(IApi api,
@@ -24,13 +26,7 @@ namespace PokemonCardCatalogue.Logic
         public async Task<bool> AddSetAndCardsToCollection(Set set)
         {
             var saveSetTask = _cardCollection.AddSetAsync(set);
-            var getCardsTask = Api.GetCardsAsync(new Common.Models.QueryParameters
-            {
-                Query = new Dictionary<string, string>
-                {
-                    { "set.id", set.Id }
-                }
-            });
+            var getCardsTask = GetAllCardsForSet(set.Id, set.Total);
 
             await Task.WhenAll(saveSetTask, getCardsTask);
 
@@ -47,6 +43,46 @@ namespace PokemonCardCatalogue.Logic
             return true;
         }
 
+        private async Task<List<Card>> GetAllCardsForSet(string setId, int setTotal)
+        {
+            if (setTotal <= pageSizeMaximum)
+            {
+                return await GetPageOfCardsForSetAsync(setId, 1);
+            }
+
+            int totalPages = (int)Math.Ceiling((double)setTotal / (double)pageSizeMaximum);
+
+            // Fetch all pages for set as separate web reqs
+            Task<List<Card>>[] setPageFetchTasks = new Task<List<Card>>[totalPages];
+            for (int i = 0; i < totalPages; i++)
+            {
+                setPageFetchTasks[i] = GetPageOfCardsForSetAsync(setId, i + 1);
+            }
+
+            await Task.WhenAll(setPageFetchTasks);
+
+            // when all are done, combine into single collection and return.
+            var allCardsForSet = new List<Card>();
+            for (int i = 0; i < setPageFetchTasks.Length; i++)
+            {
+                allCardsForSet.AddRange(setPageFetchTasks[i].Result);
+            }
+
+            return allCardsForSet;
+        }
+
+        private Task<List<Card>> GetPageOfCardsForSetAsync(string setId, int page)
+        {
+
+            return Api.GetCardsAsync(new QueryParameters
+            {
+                Query = new Dictionary<string, string>
+                {
+                    {  "set.id", setId }
+                },
+                Page = page
+            });
+        }
         public Task<List<SetItem>> GetAllSets(bool withCount = true)
         {
             return _cardCollection.GetSetItemsAsync(withCount);
@@ -135,6 +171,11 @@ namespace PokemonCardCatalogue.Logic
         public Task<CardItem> GetMostRecentlyUpdatedCardBySetId(string setId)
         {
             return _cardCollection.FindCardByQueryAsync(Queries.GetMostRecentlyModifiedCardBySetId, setId);
+        }
+
+        public Task<float> GetMaxMarketValueForCollection()
+        {
+            return _cardCollection.ExecuteScalarAsync<float>(Queries.GetMaxCardMarketTotals);
         }
     }
 }

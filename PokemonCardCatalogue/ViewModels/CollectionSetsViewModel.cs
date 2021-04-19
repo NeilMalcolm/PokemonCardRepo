@@ -1,5 +1,5 @@
-﻿using PokemonCardCatalogue.Logic.Interfaces;
-using PokemonCardCatalogue.Models;
+﻿using PokemonCardCatalogue.Common.Logic.Interfaces;
+using PokemonCardCatalogue.Common.Models;
 using PokemonCardCatalogue.Pages;
 using PokemonCardCatalogue.Services.Interfaces;
 using System;
@@ -42,6 +42,17 @@ namespace PokemonCardCatalogue.ViewModels
             set 
             {
                 _isRefreshing = value;
+                OnPropertyChanged();
+            }
+        }
+
+        private float _collectionCardsMaxMarketTotal;
+        public float CollectionCardsMaxMarketTotal
+        {
+            get => _collectionCardsMaxMarketTotal;
+            set
+            {
+                _collectionCardsMaxMarketTotal = value;
                 OnPropertyChanged();
             }
         }
@@ -98,7 +109,15 @@ namespace PokemonCardCatalogue.ViewModels
             }
         }
 
-        private async Task LoadAllData()
+        private Task LoadAllData()
+        {
+            var allSetsTask = LoadSetsAsync();
+            var totalPriceTask = LoadCollectionCardsMaxMarketTotalAsync();
+
+            return Task.WhenAll(allSetsTask, totalPriceTask);
+        }
+
+        private async Task LoadSetsAsync()
         {
             var allSets = await _collectionLogic.GetAllSets(withCount: true);
 
@@ -120,6 +139,11 @@ namespace PokemonCardCatalogue.ViewModels
             }
 
             _previouslyNavigatedToSetItem = null;
+        }
+
+        private async Task LoadCollectionCardsMaxMarketTotalAsync()
+        {
+            CollectionCardsMaxMarketTotal = await _collectionLogic.GetMaxMarketValueForCollection();
         }
 
         private async Task ConfirmDeleteSet(SetItem setItem)
