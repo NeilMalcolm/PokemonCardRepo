@@ -1,8 +1,7 @@
 ﻿using PokemonCardCatalogue.Common.Context;
 using PokemonCardCatalogue.Common.Context.Interfaces;
+using PokemonCardCatalogue.Common.Logic;
 using PokemonCardCatalogue.Common.Logic.Interfaces;
-using PokemonCardCatalogue.Logic;
-using PokemonCardCatalogue.Logic.Interfaces;
 using PokemonCardCatalogue.Services.Interfaces;
 using PokemonCardCatalogue.ViewModels;
 

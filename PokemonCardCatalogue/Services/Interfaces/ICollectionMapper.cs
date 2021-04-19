@@ -1,4 +1,5 @@
-﻿using PokemonCardCatalogue.Common.Models.Data;
+﻿using PokemonCardCatalogue.Common.Models;
+using PokemonCardCatalogue.Common.Models.Data;
 using PokemonCardCatalogue.Models;
 using PokemonCardCatalogue.Models.Collection;
 using System.Collections.Generic;

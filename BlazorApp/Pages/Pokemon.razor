@@ -1,0 +1,103 @@
+﻿@page "/pokemon"
+
+@using PokemonCardCatalogue.Common.Logic.Interfaces;
+@using PokemonCardCatalogue.Common.Models;
+@using PokemonSet = PokemonCardCatalogue.Common.Models.Data.Set;
+@using Microsoft.AspNetCore.WebUtilities;
+
+@inject IAllSetsLogic AllSetsLogic;
+@inject NavigationManager NavManager;
+
+<h1>All Sets</h1>
+
+@if (ApiSetItems?.Count == 0)
+{
+    <p>Loading...</p>
+}
+
+else
+{
+    <RadzenDataList WrapItems="true"
+                    Data="@ApiSetItems"
+                    Count="@ApiSetItems.Count"
+                    TItem="ApiSetItem"
+                    Visible="DataHasLoaded">
+        <Template Context="apiSetItem">
+            <RadzenCard Style="box-shadow: 0 6px 14px 0 rgb(0 0 0 / 6%); width:100%;">
+                <div style="border: none; box-shadow:none; margin: 0;"
+                     class="row col-md-12">
+                    <span class="col-md-2"
+                          style="margin-top: auto; margin-bottom:auto;">@apiSetItem.Set.Name</span>
+                    <div style="border: none;" 
+                         class="col-md-8 align-middle">
+                        <img style="max-height:80px; max-width:200px; margin-top: auto; margin-bottom:auto;" 
+                             src="@apiSetItem.Set.Images.Logo" />
+                    </div>
+                    <div style="border: none; margin-top: auto; margin-bottom:auto;"
+                         class="col-md-2 align-middle">
+                        <div style="display:block; background-color:silver; border-radius:17.5px; height:30px; align-self: flex-end; padding: 5px;">
+                            <span style="margin-top: auto; margin-bottom: auto;">@apiSetItem.Set.Total</span>
+                        </div>
+                        <RadzenButton Text="Go"
+                                      Style="align-self: flex-end;"
+                                      Click="e => NavigateToSet(apiSetItem.Set)" />
+                    </div>
+                </div>
+            </RadzenCard>
+        </Template>
+    </RadzenDataList>
+    @*<table class="table">
+        <tbody>
+            @foreach (var apiSetItem in ApiSetItems)
+            {
+                <tr>
+                    <td>@apiSetItem.Set.Name</td>
+                    <td><img style="max-height:80px; max-width:200px" src="@apiSetItem.Set.Images.Logo" /></td>
+                    <td>
+                        <RadzenButton Text="Go"
+                                      Click="e => NavigateToSet(apiSetItem.Set)" />
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>*@
+}
+
+@code {
+    private bool _dataHasLoaded;
+
+    public bool IsLoading { get; set; }
+
+    public bool DataHasLoaded
+    {
+        get => _dataHasLoaded;
+        set
+        {
+            _dataHasLoaded = value;
+            IsLoading = false;
+        }
+    }
+
+    List<ApiSetItem> ApiSetItems = new List<ApiSetItem>();
+
+
+    protected override async Task OnInitializedAsync()
+    {
+        IsLoading = true;
+        ApiSetItems = await AllSetsLogic.GetSetsOrderedByMostRecentAsync();
+        DataHasLoaded = true;
+    }
+
+    private void NavigateToSet(PokemonSet set)
+    {
+        var query = new Dictionary<string, string>
+        {
+            { UrlParameters.Set.Id, set.Id },
+            { UrlParameters.Set.Name, set.Name },
+            { UrlParameters.Set.Logo, set.Images.Logo},
+        };
+
+        Console.WriteLine("Clicked");
+        NavManager.NavigateTo(QueryHelpers.AddQueryString("/set", query));
+    }
+}

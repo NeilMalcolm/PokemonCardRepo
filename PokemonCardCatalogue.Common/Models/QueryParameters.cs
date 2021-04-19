@@ -6,5 +6,6 @@ namespace PokemonCardCatalogue.Common.Models
     {
         public string OrderBy { get; set; }
         public Dictionary<string, string> Query { get; set; }
+        public int Page { get; set; }
     }
 }

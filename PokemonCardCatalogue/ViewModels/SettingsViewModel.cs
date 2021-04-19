@@ -1,4 +1,5 @@
 ﻿using PokemonCardCatalogue.Common.Context.Interfaces;
+using PokemonCardCatalogue.Common.Logic.Interfaces;
 using PokemonCardCatalogue.Models.Settings;
 using PokemonCardCatalogue.Services.Interfaces;
 using System.Collections.Generic;

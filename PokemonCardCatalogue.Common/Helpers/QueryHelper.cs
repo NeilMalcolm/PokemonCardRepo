@@ -44,6 +44,12 @@ namespace PokemonCardCatalogue.Common.Helpers
                 sb.Append("orderBy=");
                 sb.Append(parameters.OrderBy);
             }
+            if (parameters.Page > 0)
+            {
+                sb.Append(sb.Length > 0 ? '&' : '?');
+                sb.Append("page=");
+                sb.Append(parameters.Page.ToString());
+            }
 
             return sb.ToString();
         }

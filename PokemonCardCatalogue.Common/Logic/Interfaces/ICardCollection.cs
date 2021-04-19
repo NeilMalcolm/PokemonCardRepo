@@ -1,10 +1,9 @@
-﻿using PokemonCardCatalogue.Common.Models.Data;
-using PokemonCardCatalogue.Models;
-using System;
+﻿using PokemonCardCatalogue.Common.Models;
+using PokemonCardCatalogue.Common.Models.Data;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
-namespace PokemonCardCatalogue.Services.Interfaces
+namespace PokemonCardCatalogue.Common.Logic.Interfaces
 {
     public interface ICardCollection
     {

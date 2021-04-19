@@ -1,15 +1,13 @@
-﻿using PokemonCardCatalogue.Common.Context.Interfaces;
+﻿using PokemonCardCatalogue.Common.Constants;
+using PokemonCardCatalogue.Common.Context.Interfaces;
 using PokemonCardCatalogue.Common.Logic.Interfaces;
 using PokemonCardCatalogue.Common.Models;
 using PokemonCardCatalogue.Common.Models.Data;
-using PokemonCardCatalogue.Constants;
-using PokemonCardCatalogue.Models.Collection;
-using PokemonCardCatalogue.Services.Interfaces;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace PokemonCardCatalogue.Logic
+namespace PokemonCardCatalogue.Common.Logic
 {
     public class AllSetsLogic : BaseLogic, IAllSetsLogic
     {
@@ -33,6 +31,17 @@ namespace PokemonCardCatalogue.Logic
             {
                 OrderBy = "-releaseDate"
             }));
+        }
+
+        public Task<Set> GetSetByIdAsync(string id)
+        {
+            return Api.FetchSetAsync(new QueryParameters
+            {
+                Query = new Dictionary<string, string>
+                {
+                    { "id", id }
+                }
+            });
         }
 
         private async Task<List<ApiSetItem>> GetApiSetItems(Task<List<Set>> apiTask)

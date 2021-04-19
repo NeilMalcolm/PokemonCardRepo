@@ -1,7 +1,6 @@
 ﻿using PokemonCardCatalogue.ViewModels;
 using System.Collections.Generic;
 using Xamarin.Forms;
-
 namespace PokemonCardCatalogue
 {
     public partial class AppShell : Shell
@@ -11,6 +10,7 @@ namespace PokemonCardCatalogue
         public AppShell()
         {
             InitializeComponent();
+            SetNavBarHasShadow(this, false);
             Tabs = new Dictionary<string, ShellContent>
             {
                 { HomeTab.Route, HomeTab },

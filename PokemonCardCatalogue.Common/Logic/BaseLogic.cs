@@ -1,6 +1,6 @@
 ﻿using PokemonCardCatalogue.Common.Context.Interfaces;
 
-namespace PokemonCardCatalogue.Logic
+namespace PokemonCardCatalogue.Common.Logic
 {
     public abstract class BaseLogic
     {

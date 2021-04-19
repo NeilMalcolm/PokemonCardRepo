@@ -1,14 +1,13 @@
-﻿using PokemonCardCatalogue.Common.Models.Data;
+﻿using PokemonCardCatalogue.Common.Logic.Interfaces;
+using PokemonCardCatalogue.Common.Models;
+using PokemonCardCatalogue.Common.Models.Data;
 using PokemonCardCatalogue.Constants;
 using PokemonCardCatalogue.Enums;
 using PokemonCardCatalogue.Helpers;
-using PokemonCardCatalogue.Logic.Interfaces;
-using PokemonCardCatalogue.Models;
 using PokemonCardCatalogue.Pages;
 using PokemonCardCatalogue.Services.Interfaces;
 using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;

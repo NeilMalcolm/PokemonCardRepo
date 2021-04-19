@@ -1,6 +1,6 @@
 ﻿using PokemonCardCatalogue.Common.Models.Data;
 
-namespace PokemonCardCatalogue.Models
+namespace PokemonCardCatalogue.Common.Models
 {
     public class SetItem
     {

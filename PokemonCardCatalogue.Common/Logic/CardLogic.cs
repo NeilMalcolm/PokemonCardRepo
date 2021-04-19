@@ -1,12 +1,13 @@
 ﻿using PokemonCardCatalogue.Common.Context.Interfaces;
 using PokemonCardCatalogue.Common.Helpers;
+using PokemonCardCatalogue.Common.Logic;
 using PokemonCardCatalogue.Common.Logic.Interfaces;
 using PokemonCardCatalogue.Common.Models.Data;
 using PokemonCardCatalogue.Common.Models.Types;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
-namespace PokemonCardCatalogue.Logic
+namespace PokemonCardCatalogue.Common.Logic
 {
     public class CardLogic : BaseLogic, ICardLogic
     {
