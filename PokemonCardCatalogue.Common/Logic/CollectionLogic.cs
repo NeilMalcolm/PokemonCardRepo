@@ -4,6 +4,7 @@ using PokemonCardCatalogue.Common.Logic;
 using PokemonCardCatalogue.Common.Logic.Interfaces;
 using PokemonCardCatalogue.Common.Models;
 using PokemonCardCatalogue.Common.Models.Data;
+using PokemonCardCatalogue.Common.Models.Enums;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
@@ -98,36 +99,79 @@ namespace PokemonCardCatalogue.Common.Logic
             return _cardCollection.GetCardItemsAsync(setId);
         }
 
-        public async Task<int> SetOwnedCountForCard(CardItem cardItem)
+        #region Set Owned Count
+
+        public Task<int> QuickAddCardToCollection(CardItem cardItem)
         {
-            string cardId = cardItem.Card.Id;
+            if (Rarity.IsHolo(cardItem.Card.Rarity))
+            {
+                return SetHoloOwnedCountForCard(cardItem.Card.Id, cardItem.HoloOwnedCount);
+            }
+
+            return SetNormalOwnedCountForCard(cardItem.Card.Id, cardItem.NormalOwnedCount);
+        }
+
+        private Task<int> SetNormalOwnedCountForCard(string id, int ownedCount)
+        {
+            return SetOwnedCountForCard(id, ownedCount, Queries.SetNormalCardOwnedCountById, Queries.GetNormalCardOwnedCountById);
+        }
+        
+
+        private Task<int> SetHoloOwnedCountForCard(string id, int ownedCount)
+        {
+            return SetOwnedCountForCard(id, ownedCount, Queries.SetHoloCardOwnedCountById, Queries.GetHoloCardOwnedCountById);
+        }
+
+        private async Task<int> SetOwnedCountForCard(string id, int ownedCount, string setQuery, string getQuery)
+        {
+
+            string cardId = id;
             _ = await _cardCollection.ExecuteAsync
             (
-               Queries.SetCardOwnedCountById,
-                cardItem.OwnedCount,
+                setQuery,
+                ownedCount,
                 DateTime.UtcNow,
                 cardId
             );
 
             var countFromDb = await _cardCollection.ExecuteScalarAsync<int>
             (
-                Queries.GetCardOwnedCountById,
+                getQuery,
                 cardId
             );
 
             return countFromDb;
         }
 
-        public async Task<int> IncrementCardOwnedCount(string id)
+        #endregion
+
+        #region Increment Owned Count 
+
+        public Task<int> IncrementCardNormalOwnedCount(string id)
+        {
+            return IncrementOwnedCount(id, Queries.GetNormalCardOwnedCountById, Queries.SetNormalCardOwnedCountById);
+        }
+        
+        public Task<int> IncrementCardHoloOwnedCount(string id)
+        {
+            return IncrementOwnedCount(id, Queries.GetHoloCardOwnedCountById, Queries.SetHoloCardOwnedCountById);
+        }
+        
+        public Task<int> IncrementCardReverseOwnedCount(string id)
+        {
+            return IncrementOwnedCount(id, Queries.GetReverseCardOwnedCountById, Queries.SetReverseCardOwnedCountById);
+        }
+
+        private async Task<int> IncrementOwnedCount(string id, string getQuery, string setQuery)
         {
             var countFromDb = await _cardCollection.ExecuteScalarAsync<int>
             (
-                Queries.GetCardOwnedCountById, id
+                getQuery, id
             );
             countFromDb += 1;
             _ = await _cardCollection.ExecuteAsync
             (
-                Queries.SetCardOwnedCountById,
+                setQuery,
                 countFromDb,
                 DateTime.UtcNow,
                 id
@@ -136,16 +180,35 @@ namespace PokemonCardCatalogue.Common.Logic
             return countFromDb;
         }
 
-        public async Task<int> DecrementCardOwnedCount(string id)
+        #endregion
+
+        #region Decrement Owned Counts
+
+        public Task<int> DecrementCardNormalOwnedCount(string id)
+        {
+            return DecrementOwnedCount(id, Queries.GetNormalCardOwnedCountById, Queries.SetNormalCardOwnedCountById);
+        }
+        
+        public Task<int> DecrementCardHoloOwnedCount(string id)
+        {
+            return DecrementOwnedCount(id, Queries.GetHoloCardOwnedCountById, Queries.SetHoloCardOwnedCountById);
+        }
+        
+        public Task<int> DecrementCardReverseOwnedCount(string id)
+        {
+            return DecrementOwnedCount(id, Queries.GetReverseCardOwnedCountById, Queries.SetReverseCardOwnedCountById);
+        }
+
+        private async Task<int> DecrementOwnedCount(string id, string getQuery, string setQuery)
         {
             var countFromDb = await _cardCollection.ExecuteScalarAsync<int>
             (
-               Queries.GetCardOwnedCountById, id
+               getQuery, id
             );
             countFromDb -= 1;
             _ = await _cardCollection.ExecuteAsync
             (
-                Queries.SetCardOwnedCountById,
+                setQuery,
                 countFromDb,
                 DateTime.UtcNow,
                 id
@@ -154,14 +217,35 @@ namespace PokemonCardCatalogue.Common.Logic
             return countFromDb;
         }
 
-        public Task<int> GetCardOwnedCount(string cardId)
+        #endregion
+
+        #region Get Owned Count
+
+        public Task<int> GetCardNormalOwnedCount(string cardId)
+        {
+            return GetCardOwnedCount(cardId, Queries.GetNormalCardOwnedCountById);
+        }
+        
+        public Task<int> GetCardHoloOwnedCount(string cardId)
+        {
+            return GetCardOwnedCount(cardId, Queries.GetHoloCardOwnedCountById);
+        }
+        
+        public Task<int> GetCardReverseOwnedCount(string cardId)
+        {
+            return GetCardOwnedCount(cardId, Queries.GetReverseCardOwnedCountById);
+        }
+        
+        private Task<int> GetCardOwnedCount(string cardId, string query)
         {
             return _cardCollection.ExecuteScalarAsync<int>
             (
-                Queries.GetCardOwnedCountById,
+                query,
                 cardId
             );
         }
+
+        #endregion
 
         public Task<DateTime?> GetMostRecentCardModifiedDateBySetId(string setId)
         {
@@ -173,9 +257,9 @@ namespace PokemonCardCatalogue.Common.Logic
             return _cardCollection.FindCardByQueryAsync(Queries.GetMostRecentlyModifiedCardBySetId, setId);
         }
 
-        public Task<float> GetMaxMarketValueForCollection()
+        public Task<float> GetEstimatedCollectionMarketValue()
         {
-            return _cardCollection.ExecuteScalarAsync<float>(Queries.GetMaxCardMarketTotals);
+            return _cardCollection.ExecuteScalarAsync<float>(Queries.GetEstimatedCollectionMarketValue);
         }
     }
 }

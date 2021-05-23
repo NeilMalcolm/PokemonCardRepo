@@ -18,30 +18,47 @@ namespace PokemonCardCatalogue.Models.Collection
         public string SmallImage { get; set; }
         public string TcgPlayerUrl { get; set; }
 
-        public int OwnedCount { get; set; }
+        public int NormalOwnedCount { get; set; }
+        public int HoloOwnedCount { get; set; }
+        public int ReverseHoloOwnedCount { get; set; }
+
         public DateTime? AddedDate { get; set; }
+
+
+        public float? FirstEditionHolofoilLow { get; set; }
+        public float? FirstEditionHolofoilMid { get; set; }
+
+        public float? FirstEditionHolofoilHigh { get; set; }
+
+        [Indexed]
+        public float? FirstEditionHolofoilMarket { get; set; }
+        public float? FirstEditionHolofoilDirectLow { get; set; }
+
 
         public float? HolofoilLow { get; set; }
         public float? HolofoilMid { get; set; }
 
-        [Indexed]
         public float? HolofoilHigh { get; set; }
+
+        [Indexed]
         public float? HolofoilMarket { get; set; }
         public float? HolofoilDirectLow { get; set; }
 
         public float? NormalLow { get; set; }
         public float? NormalMid { get; set; }
 
-        [Indexed]
         public float? NormalHigh { get; set; }
+
+        [Indexed]
         public float? NormalMarket { get; set; }
         public float? NormalDirectLow { get; set; }
 
         public float? ReverseHolofoilLow { get; set; }
         public float? ReverseHolofoilMid { get; set; }
 
-        [Indexed]
         public float? ReverseHolofoilHigh { get; set; }
+
+        [Indexed]
         public float? ReverseHolofoilMarket { get; set; }
         public float? ReverseHolofoilDirectLow { get; set; }
 

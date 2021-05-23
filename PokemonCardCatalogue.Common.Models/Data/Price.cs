@@ -13,39 +13,9 @@ namespace PokemonCardCatalogue.Common.Models.Data
 
         [JsonPropertyName("normal")]
         public TcgPlayerCardRarityType Normal { get; set; }
+        
+        [JsonPropertyName("1stEditionHolofoil")]
+        public TcgPlayerCardRarityType FirstEditionHolofoil { get; set; }
 
-        private float? _highestPrice;
-        public float HighestPrice 
-        {
-            get
-            {
-                return _highestPrice ??= Math.Max
-                (
-                    Holofoil?.High.Value ?? 0f,
-                    Math.Max
-                    (
-                        ReverseHolofoil?.High.Value ?? 0f,
-                        Normal?.High.Value ?? 0f
-                    )
-                );
-            }
-        }
-
-        private float? _lowestPrice;
-        public float LowestPrice
-        {
-            get
-            {
-                return _lowestPrice ??= Math.Min
-                (
-                    Holofoil?.Low.Value ?? float.MaxValue,
-                    Math.Min
-                    (
-                        ReverseHolofoil?.Low.Value ?? float.MaxValue,
-                        Normal?.Low.Value ?? float.MaxValue
-                    )
-                );
-            }
-        }
     }
 }

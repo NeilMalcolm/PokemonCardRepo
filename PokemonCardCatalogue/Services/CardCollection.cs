@@ -1,4 +1,5 @@
-﻿using PokemonCardCatalogue.Common.Logic.Interfaces;
+﻿using PokemonCardCatalogue.Common.Constants;
+using PokemonCardCatalogue.Common.Logic.Interfaces;
 using PokemonCardCatalogue.Common.Models;
 using PokemonCardCatalogue.Common.Models.Data;
 using PokemonCardCatalogue.Constants;
@@ -112,7 +113,9 @@ namespace PokemonCardCatalogue.Services
         {
             var cardCollection = await GetCardCollectionById(card.Card.Id);
 
-            cardCollection.OwnedCount = card.OwnedCount;
+            cardCollection.HoloOwnedCount = card.HoloOwnedCount;
+            cardCollection.NormalOwnedCount = card.NormalOwnedCount;
+            cardCollection.ReverseHoloOwnedCount = card.ReverseOwnedCount;
             cardCollection.CreatedDate ??= DateTime.UtcNow;
             cardCollection.ModifiedDate ??= DateTime.UtcNow;
 

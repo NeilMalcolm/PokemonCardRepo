@@ -20,7 +20,11 @@
                         SELECT COUNT() 
                         FROM CollectionCard cc
                         WHERE cc.SetId = cs.Id 
-                        AND cc.OwnedCount > 0
+                        AND (
+                            cc.NormalOwnedCount > 0 
+                            OR cc.HoloOwnedCount > 0 
+                            OR cc.ReverseHoloOwnedCount > 0
+                        )
                       ) as OwnedCardsCount
             FROM CollectionSet cs";
 
@@ -32,14 +36,38 @@
             @"SELECT Id 
               FROM CollectionSet";
 
-        public const string SetCardOwnedCountById =
+        public const string SetNormalCardOwnedCountById =
              @"UPDATE CollectionCard 
-              SET OwnedCount = ?, 
+              SET NormalOwnedCount = ?, 
                   ModifiedDate = ? 
               WHERE Id = ?";
 
-        public const string GetCardOwnedCountById =
-            @"SELECT OwnedCount 
+        public const string SetHoloCardOwnedCountById =
+             @"UPDATE CollectionCard 
+              SET HoloOwnedCount = ?, 
+                  ModifiedDate = ? 
+              WHERE Id = ?";
+
+        public const string SetReverseCardOwnedCountById =
+             @"UPDATE CollectionCard 
+              SET ReverseHoloOwnedCount = ?, 
+                  ModifiedDate = ? 
+              WHERE Id = ?";
+
+        public const string GetNormalCardOwnedCountById =
+            @"SELECT NormalOwnedCount 
+              FROM CollectionCard 
+              WHERE Id = ?
+              LIMIT 1";
+
+        public const string GetHoloCardOwnedCountById =
+            @"SELECT HoloOwnedCount 
+              FROM CollectionCard 
+              WHERE Id = ?
+              LIMIT 1";
+
+        public const string GetReverseCardOwnedCountById =
+            @"SELECT ReverseHoloOwnedCount 
               FROM CollectionCard 
               WHERE Id = ?
               LIMIT 1";
@@ -56,21 +84,48 @@
                 ORDER BY ModifiedDate DESC 
                 LIMIT 1";
 
-        public const string GetAllCardTotals =
-            @"select TOTAL(NormalHigh) as NormalHighTotal,
-		             TOTAL(ReverseHolofoilHigh) as ReverseHolofoilHighTotal,
-		             TOTAL(HolofoilHigh) as HolofoilHighTotal
-            FROM CollectionCard";
-
-        public const string GetAllCardMarketTotals =
-            @"select TOTAL(NormalMarket) as NormalMarketTotal,
-		             TOTAL(HolofoilMarket) as HolofoilMarketTotal,
-		             TOTAL(ReverseHolofoilMarket) as ReverseHolofoilMarketTotal
-            FROM CollectionCard";
-
-        public const string GetMaxCardMarketTotals =
-            @"select TOTAL(Max(IFNULL(NormalMarket, 0.0), IFNULL(HolofoilMarket, 0.0), IFNULL(ReverseHolofoilMarket, 0.0)))
-            FROM CollectionCard
-            WHERE OwnedCount > 0";
+        public const string GetEstimatedCollectionMarketValue =
+            @"SELECT 
+                TOTAL
+                (
+	                CASE 
+		                WHEN Rarity = 'Rare ACE'  
+			                OR rarity = 'Rare Holo EX' 
+			                OR rarity = 'Rare Holo GX' 
+			                OR rarity = 'Rare Holo V' 
+			                OR rarity = 'Rare Holo VMAX' 
+			                OR rarity = 'Rare Rainbow'
+			                OR rarity = 'Rare Prime'
+			                OR rarity = 'Rare Prism Star'
+			                OR rarity = 'Rare Rainbow'
+			                OR rarity = 'Rare Secret'
+			                OR rarity = 'Rare Shining'
+			                OR rarity = 'Rare Shiny'
+			                OR rarity = 'Rare Shiny GX'
+			                OR rarity = 'Rare Ultra'
+			                OR rarity = 'Amazing Rare'
+				                THEN (IFNULL (HolofoilMarket, 0.0) * HoloOwnedCount) -- If holo and non-holo unavailable, take holofoil market value
+		                WHEN (rarity = 'Common'
+			                OR rarity = 'Uncommon')
+				                THEN (IFNULL (NormalMarket, 0.0) * NormalOwnedCount)
+                                      + (IFNULL(ReverseHolofoilMarket, 0.0) * ReverseHoloOwnedCount)
+		                WHEN rarity = 'Rare'
+				                THEN (IFNULL (HolofoilMarket, 0.0) * HoloOwnedCount)
+                                      + (IFNULL(ReverseHolofoilMarket, 0.0) * ReverseHoloOwnedCount)
+		                WHEN rarity = 'Rare Holo'
+				                THEN (IFNULL (HolofoilMarket, 0.0) * HoloOwnedCount)
+                                     + (IFNULL(ReverseHolofoilMarket, 0.0) * ReverseHoloOwnedCount)
+		                WHEN rarity = 'Promo'
+				                THEN (IFNULL (NormalMarket, 0.0) * NormalOwnedCount) 
+                                        + (IFNULL(HolofoilMarket, 0.0) * HoloOwnedCount)
+                                        + (IFNULL(ReverseHolofoilMarket, 0.0) * ReverseHoloOwnedCount) 
+		                ELSE 
+				                0
+	                END
+                ) TotalMarketValue
+                FROM CollectionCard
+                WHERE (HoloOwnedCount > 0
+                    OR ReverseHoloOwnedCount > 0
+                    OR NormalOwnedCount > 0)";
     }
 }

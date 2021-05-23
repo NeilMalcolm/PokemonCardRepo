@@ -27,7 +27,7 @@
                            HorizontalOptions="Center"
                            HorizontalTextAlignment="Center"
                            Margin="0"/>
-                        <Label Text="{Binding CollectionCardsMaxMarketTotal, StringFormat='${0:0.00}'}"/>
+                        <Label Text="{Binding CollectionCardsEstimatedMarketTotal, StringFormat='${0:0.00}'}"/>
                     </StackLayout>
                 </CollectionView.Header>
                 <CollectionView.ItemTemplate>

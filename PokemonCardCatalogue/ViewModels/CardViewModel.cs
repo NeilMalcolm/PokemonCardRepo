@@ -1,5 +1,6 @@
 ﻿using PokemonCardCatalogue.Common.Logic.Interfaces;
 using PokemonCardCatalogue.Common.Models.Data;
+using PokemonCardCatalogue.Common.Models.Enums;
 using PokemonCardCatalogue.Helpers.Factories;
 using PokemonCardCatalogue.Models;
 using PokemonCardCatalogue.Pages;
@@ -18,7 +19,9 @@ namespace PokemonCardCatalogue.ViewModels
         private readonly ICardLogic _cardLogic;
         private readonly ICollectionLogic _collectionLogic;
         private readonly IVibrationService _vibrationService;
-        private readonly SemaphoreSlim ownedCountSemaphore = new SemaphoreSlim(1, 1);
+        private readonly SemaphoreSlim _normalOwnedCountSemaphore = new SemaphoreSlim(1, 1);
+        private readonly SemaphoreSlim _holoOwnedCountSemaphore = new SemaphoreSlim(1, 1);
+        private readonly SemaphoreSlim _reverseOwnedCountSemaphore = new SemaphoreSlim(1, 1);
 
         private bool _canNavigatingToRelatedCard = true;
 
@@ -33,15 +36,72 @@ namespace PokemonCardCatalogue.ViewModels
             }
         }
 
-        private int _ownedCount;
-        public int OwnedCount
+        private int _normalOwnedCount;
+        public int NormalOwnedCount
         {
-            get => _ownedCount; 
+            get => _normalOwnedCount; 
             set 
             {
-                _ownedCount = value;
+                _normalOwnedCount = value;
                 OnPropertyChanged();
-                DecrementOwnedCountCommand.ChangeCanExecute();
+                DecrementNormalOwnedCountCommand.ChangeCanExecute();
+            }
+        }
+        
+        private int _holoOwnedCount;
+        public int HoloOwnedCount
+        {
+            get => _holoOwnedCount; 
+            set 
+            {
+                _holoOwnedCount = value;
+                OnPropertyChanged();
+                DecrementHoloOwnedCountCommand.ChangeCanExecute();
+            }
+        }
+        
+        private int _reverseOwnedCount;
+        public int ReverseOwnedCount
+        {
+            get => _reverseOwnedCount; 
+            set 
+            {
+                _reverseOwnedCount = value;
+                OnPropertyChanged();
+                DecrementReverseOwnedCountCommand.ChangeCanExecute();
+            }
+        }
+        
+        private bool _showNormalCounter;
+        public bool ShowNormalCounter
+        {
+            get => _showNormalCounter; 
+            set 
+            {
+                _showNormalCounter = value;
+                OnPropertyChanged();
+            }
+        }
+
+        private bool _showReverseCounter;
+        public bool ShowReverseCounter
+        {
+            get => _showReverseCounter; 
+            set 
+            {
+                _showReverseCounter = value;
+                OnPropertyChanged();
+            }
+        }
+        
+        private bool _showHoloCounter;
+        public bool ShowHoloCounter
+        {
+            get => _showHoloCounter; 
+            set 
+            {
+                _showHoloCounter = value;
+                OnPropertyChanged();
             }
         }
 
@@ -98,8 +158,12 @@ namespace PokemonCardCatalogue.ViewModels
         }
 
         public ICommand GoToRelatedCardCommand { get; set; }
-        public Command DecrementOwnedCountCommand { get; set; }
-        public ICommand IncrementOwnedCountCommand { get; set; }
+        public Command DecrementNormalOwnedCountCommand { get; set; }
+        public Command DecrementHoloOwnedCountCommand { get; set; }
+        public Command DecrementReverseOwnedCountCommand { get; set; }
+        public ICommand IncrementNormalOwnedCountCommand { get; set; }
+        public ICommand IncrementHoloOwnedCountCommand { get; set; }
+        public ICommand IncrementReverseOwnedCountCommand { get; set; }
 
         public CardViewModel(INavigationService navigationService,
             ICardLogic cardLogic,
@@ -128,15 +192,35 @@ namespace PokemonCardCatalogue.ViewModels
                 (card) => _canNavigatingToRelatedCard
             );
 
-            DecrementOwnedCountCommand = new Command
+            DecrementNormalOwnedCountCommand = new Command
             (
-                async () => await DecrementOwnedCount(),
-                () => OwnedCount > 0
+                async () => await DecrementNormalOwnedCount(),
+                () => NormalOwnedCount > 0
+            );
+            
+            DecrementHoloOwnedCountCommand = new Command
+            (
+                async () => await DecrementHoloOwnedCount(),
+                () => HoloOwnedCount > 0
+            );
+            
+            DecrementReverseOwnedCountCommand = new Command
+            (
+                async () => await DecrementReverseOwnedCount(),
+                () => ReverseOwnedCount > 0
             );
 
-            IncrementOwnedCountCommand = new Command
+            IncrementNormalOwnedCountCommand = new Command
             (
-                async () => await IncrementOwnedCount()
+                async () => await IncrementNormalOwnedCount()
+            );
+            IncrementHoloOwnedCountCommand = new Command
+            (
+                async () => await IncrementHoloOwnedCount()
+            );
+            IncrementReverseOwnedCountCommand = new Command
+            (
+                async () => await IncrementReverseOwnedCount()
             );
         }
 
@@ -148,50 +232,86 @@ namespace PokemonCardCatalogue.ViewModels
             var getOwnedCountTask = GetOwnedCountAsync(ThisCard.Id);
             var pricesTask = SetPrices(ThisCard);
 
+            ShowNormalCounter = ThisCard.TcgPlayer.Prices.Normal != null;
+            ShowReverseCounter = ThisCard.TcgPlayer.Prices.ReverseHolofoil != null;
+            ShowHoloCounter = ThisCard.TcgPlayer.Prices.Holofoil != null;
+
             await Task.WhenAll(getOwnedCountTask, loadRelatedCardsTask, pricesTask);
         }
 
-        private async Task DecrementOwnedCount()
+        private async Task DecrementHoloOwnedCount()
+        {
+            HoloOwnedCount = await DecrementCount(HoloOwnedCount, _holoOwnedCountSemaphore, _collectionLogic.DecrementCardHoloOwnedCount(ThisCard.Id));
+        }
+        
+        private async Task DecrementReverseOwnedCount()
+        {
+            ReverseOwnedCount = await DecrementCount(ReverseOwnedCount, _reverseOwnedCountSemaphore, _collectionLogic.DecrementCardReverseOwnedCount(ThisCard.Id));
+        }
+        
+        private async Task DecrementNormalOwnedCount()
+        {
+            NormalOwnedCount = await DecrementCount(NormalOwnedCount, _normalOwnedCountSemaphore, _collectionLogic.DecrementCardNormalOwnedCount(ThisCard.Id));
+        }
+
+        private async Task<int> DecrementCount(int ownedCount, SemaphoreSlim semaphore, Task<int> onDecrement)
         {
             try
             {
-                if (OwnedCount == 0)
+                if (ownedCount == 0)
                 {
-                    return;
+                    return 0;
                 }
 
-                OwnedCount--;
-                await ownedCountSemaphore.WaitAsync();
+                ownedCount--;
+                await semaphore.WaitAsync();
                 _vibrationService.PerformSelectionFeedbackVibration();
-                await _collectionLogic.DecrementCardOwnedCount(ThisCard.Id);
+                await onDecrement;
+                return ownedCount;
             }
             finally
             {
-                if (ownedCountSemaphore.CurrentCount == 0)
+                if (semaphore.CurrentCount == 0)
                 {
-                    ownedCountSemaphore.Release();
+                    semaphore.Release();
                 }
             }
         }
 
-        private async Task IncrementOwnedCount()
+        private async Task IncrementHoloOwnedCount()
+        {
+            HoloOwnedCount = await IncrementCount(HoloOwnedCount, _holoOwnedCountSemaphore, _collectionLogic.IncrementCardHoloOwnedCount(ThisCard.Id));
+        }
+
+        private async Task IncrementReverseOwnedCount()
+        {
+            ReverseOwnedCount = await IncrementCount(ReverseOwnedCount, _reverseOwnedCountSemaphore, _collectionLogic.IncrementCardReverseOwnedCount(ThisCard.Id));
+        }
+
+        private async Task IncrementNormalOwnedCount()
+        {
+            NormalOwnedCount = await IncrementCount(NormalOwnedCount, _normalOwnedCountSemaphore, _collectionLogic.IncrementCardNormalOwnedCount(ThisCard.Id));
+        }
+
+        private async Task<int> IncrementCount(int ownedCount, SemaphoreSlim semaphore, Task<int> onDecrement)
         {
             try
             {
-                OwnedCount++;
-                await ownedCountSemaphore.WaitAsync();
+                ownedCount++;
+                await semaphore.WaitAsync();
                 _vibrationService.PerformSelectionFeedbackVibration();
-                await _collectionLogic.IncrementCardOwnedCount(ThisCard.Id);
+                await onDecrement;
+                return ownedCount;
             }
             finally
             {
-                if (ownedCountSemaphore.CurrentCount == 0)
+                if (semaphore.CurrentCount == 0)
                 {
-                    ownedCountSemaphore.Release();
+                    semaphore.Release();
                 }
             }
         }
-
+        
         private async Task GoToRelatedCard(Card card)
         {
             _canNavigatingToRelatedCard = false;
@@ -201,7 +321,9 @@ namespace PokemonCardCatalogue.ViewModels
 
         private async Task GetOwnedCountAsync(string id)
         {
-            OwnedCount = await _collectionLogic.GetCardOwnedCount(id);
+            NormalOwnedCount = await _collectionLogic.GetCardNormalOwnedCount(id);
+            HoloOwnedCount = await _collectionLogic.GetCardHoloOwnedCount(id);
+            ReverseOwnedCount = await _collectionLogic.GetCardReverseOwnedCount(id);
         }
 
         private async Task SetPrices(Card card)

@@ -36,7 +36,7 @@
                     <RowDefinition Height="15"/>
                     <RowDefinition Height="15"/>
                     <RowDefinition Height="50"/>
-                    <RowDefinition Height="40"/>
+                    <RowDefinition Height="Auto"/>
                     <RowDefinition Height="{Binding IsRelatedCardsSectionVisible,
                         Converter={StaticResource BoolToGridLengthConverter},
                         ConverterParameter='35'}"/>
@@ -48,7 +48,7 @@
                         ConverterParameter='35'}"/>
                     <RowDefinition Height="{Binding IsPricesSectionVisible,
                         Converter={StaticResource BoolToGridLengthConverter},
-                        ConverterParameter='200'}"/>
+                        ConverterParameter='157'}"/>
                 </Grid.RowDefinitions>
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="*"/>
@@ -102,29 +102,80 @@
                        Grid.Column="1"
                        VerticalOptions="End"/>
 
-                <StackLayout Orientation="Horizontal"
+                <StackLayout Orientation="Vertical"
                              HorizontalOptions="Fill"
                              VerticalOptions="Fill"
                              Grid.Column="1"
-                             BackgroundColor="Blue"
-                             Spacing="0"
                              Grid.Row="6">
-                    <Button Text="-"
-                            Command="{Binding DecrementOwnedCountCommand}"
-                            TextColor="White"
-                            BackgroundColor="Blue"
-                            HorizontalOptions="Fill"/>
-                    <Label Text="{Binding OwnedCount}"
-                           TextColor="White"
-                           WidthRequest="30"
-                           HorizontalOptions="FillAndExpand"
-                           HorizontalTextAlignment="Center"
-                           VerticalTextAlignment="Center"/>
-                    <Button Text="+"
-                            Command="{Binding IncrementOwnedCountCommand}"
-                            TextColor="White"
-                            BackgroundColor="Blue"
-                            HorizontalOptions="Fill"/>
+
+                    <!-- Normal Owned Count Control -->
+                    <StackLayout Orientation="Horizontal"
+                                 BackgroundColor="Blue"
+                                 Spacing="0"
+                                 IsVisible="{Binding ShowNormalCounter}">
+                        <Button Text="-"
+                                Command="{Binding DecrementNormalOwnedCountCommand}"
+                                TextColor="White"
+                                BackgroundColor="Blue"
+                                HorizontalOptions="Fill"/>
+                        <Label Text="{Binding NormalOwnedCount}"
+                               TextColor="White"
+                               WidthRequest="30"
+                               HorizontalOptions="FillAndExpand"
+                               HorizontalTextAlignment="Center"
+                               VerticalTextAlignment="Center"/>
+                        <Button Text="+"
+                                Command="{Binding IncrementNormalOwnedCountCommand}"
+                                TextColor="White"
+                                BackgroundColor="Blue"
+                                HorizontalOptions="Fill"/>
+                    </StackLayout>
+
+                    <!-- Reverse Owned Count Control -->
+                    <StackLayout Orientation="Horizontal"
+                                 BackgroundColor="Red"
+                                 Spacing="0"
+                                 IsVisible="{Binding ShowReverseCounter}">
+                        <Button Text="-"
+                                Command="{Binding DecrementReverseOwnedCountCommand}"
+                                TextColor="White"
+                                BackgroundColor="Red"
+                                HorizontalOptions="Fill"/>
+                        <Label Text="{Binding ReverseOwnedCount}"
+                               TextColor="White"
+                               WidthRequest="30"
+                               HorizontalOptions="FillAndExpand"
+                               HorizontalTextAlignment="Center"
+                               VerticalTextAlignment="Center"/>
+                        <Button Text="+"
+                                Command="{Binding IncrementReverseOwnedCountCommand}"
+                                TextColor="White"
+                                BackgroundColor="Red"
+                                HorizontalOptions="Fill"/>
+                    </StackLayout>
+                    
+                    <!-- Holo Owned Count Control -->
+                    <StackLayout Orientation="Horizontal"
+                                 BackgroundColor="Green"
+                                 Spacing="0"
+                                 IsVisible="{Binding ShowHoloCounter}">
+                        <Button Text="-"
+                                Command="{Binding DecrementHoloOwnedCountCommand}"
+                                TextColor="White"
+                                BackgroundColor="Green"
+                                HorizontalOptions="Fill"/>
+                        <Label Text="{Binding HoloOwnedCount}"
+                               TextColor="White"
+                               WidthRequest="30"
+                               HorizontalOptions="FillAndExpand"
+                               HorizontalTextAlignment="Center"
+                               VerticalTextAlignment="Center"/>
+                        <Button Text="+"
+                                Command="{Binding IncrementHoloOwnedCountCommand}"
+                                TextColor="White"
+                                BackgroundColor="Green"
+                                HorizontalOptions="Fill"/>
+                    </StackLayout>
                 </StackLayout>
                 
                 <!-- Related Cards Section, 2 rows -->
@@ -195,7 +246,7 @@
                               Grid.ColumnSpan="2"
                               Loop="False"
                               HorizontalOptions="Start"
-                              Margin="0, 10">
+                              Margin="-10, 0">
                     <CarouselView.ItemsLayout>
                         <LinearItemsLayout Orientation="Horizontal"
                                            SnapPointsType="Mandatory"
@@ -206,9 +257,21 @@
                             <ContentView CompressedLayout.IsHeadless="True">
                                 <Frame Padding="5"
                                        Margin="5"
-                                       HasShadow="True">
-                                    <Grid HorizontalOptions="FillAndExpand">
+                                       HasShadow="True"
+                                       CornerRadius="6">
+                                    <Grid HorizontalOptions="FillAndExpand"
+                                          RowSpacing="0"
+                                          Padding="0">
+                                        <Grid.RowDefinitions>
+                                            <RowDefinition Height="28"/>
+                                            <RowDefinition Height="26"/>
+                                            <RowDefinition Height="18"/>
+                                            <RowDefinition Height="5"/>
+                                            <RowDefinition Height="26"/>
+                                            <RowDefinition Height="18"/>
+                                        </Grid.RowDefinitions>
                                         <Label Text="{Binding Title}"
+                                               Margin="10, 0, 0, 0"
                                                FontAttributes="Bold"
                                                FontSize="18"/>
 

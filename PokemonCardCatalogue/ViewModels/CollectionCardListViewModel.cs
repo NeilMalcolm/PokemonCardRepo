@@ -275,7 +275,7 @@ namespace PokemonCardCatalogue.ViewModels
 
         private async Task AddCardToCollectionAsync(CardItem item)
         {
-            if (!_canNavigateToCard || item.OwnedCount > 0)
+            if (!_canNavigateToCard || item.Owned)
             {
                 return;
             }
@@ -287,7 +287,7 @@ namespace PokemonCardCatalogue.ViewModels
 
             try
             {
-                _ = await _collectionLogic.SetOwnedCountForCard(item);
+                _ = await _collectionLogic.QuickAddCardToCollection(item);
             }
             catch
             {

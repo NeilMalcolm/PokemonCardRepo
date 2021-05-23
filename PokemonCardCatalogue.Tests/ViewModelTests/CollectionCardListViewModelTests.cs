@@ -131,7 +131,7 @@ namespace PokemonCardCatalogue.Tests.ViewModelTests
                 (() =>
                 {
                     var newCard = FirstSetCards[0];
-                    newCard.OwnedCount += 1;
+                    newCard.NormalOwnedCount += 1;
                     return Task.FromResult(newCard);
                 });
         }
@@ -220,10 +220,10 @@ namespace PokemonCardCatalogue.Tests.ViewModelTests
             await ViewModel.LoadAsync();
 
             ViewModel.GoToCardCommand.Execute(FirstSetCards[0]);
-            var ownedCount = ViewModel.CardItemList[0].OwnedCount;
+            var ownedCount = ViewModel.CardItemList[0].NormalOwnedCount;
             await ViewModel.OnPageAppearing();
 
-            Assert.AreNotEqual(ownedCount, ViewModel.CardItemList[0].OwnedCount);
+            Assert.AreNotEqual(ownedCount, ViewModel.CardItemList[0].NormalOwnedCount);
         }
 
         [TestMethod]
