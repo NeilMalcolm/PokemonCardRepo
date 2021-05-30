@@ -83,6 +83,12 @@
                 WHERE SetId = ? 
                 ORDER BY ModifiedDate DESC 
                 LIMIT 1";
+        
+        public const string GetCardsModifiedSinceDateBySetId =
+            @"SELECT * 
+                FROM CollectionCard 
+                WHERE SetId = ? 
+                AND ModifiedDate > ?";
 
         public const string GetEstimatedCollectionMarketValue =
             @"SELECT 

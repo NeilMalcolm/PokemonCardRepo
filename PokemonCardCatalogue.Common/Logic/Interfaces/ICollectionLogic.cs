@@ -23,7 +23,7 @@ namespace PokemonCardCatalogue.Common.Logic.Interfaces
         Task<int> GetCardHoloOwnedCount(string cardId);
         Task<int> GetCardReverseOwnedCount(string cardId);
         Task<DateTime?> GetMostRecentCardModifiedDateBySetId(string setId);
-        Task<CardItem> GetMostRecentlyUpdatedCardBySetId(string setId);
+        Task<IList<CardItem>> GetMostRecentlyUpdatedCardsBySetId(string setId, DateTime changesSinceDateTime);
         Task<float> GetEstimatedCollectionMarketValue();
     }
 }

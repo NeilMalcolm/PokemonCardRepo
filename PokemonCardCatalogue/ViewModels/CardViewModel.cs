@@ -7,6 +7,7 @@ using PokemonCardCatalogue.Pages;
 using PokemonCardCatalogue.Services.Interfaces;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Input;
@@ -128,6 +129,17 @@ namespace PokemonCardCatalogue.ViewModels
                 _prices = value;
                 OnPropertyChanged();
                 OnPropertyChanged(nameof(IsPricesSectionVisible));
+            }
+        }
+        
+        private PriceDisplayViewModel _currentlyDisplayingPrice;
+        public PriceDisplayViewModel CurrentlyDisplayingPrice
+        {
+            get => _currentlyDisplayingPrice;
+            set
+            {
+                _currentlyDisplayingPrice = value;
+                OnPropertyChanged();
             }
         }
 
@@ -330,9 +342,10 @@ namespace PokemonCardCatalogue.ViewModels
         {
             try
             {
-                var cards = await GetPricesAsync(card);
+                var prices = await GetPricesAsync(card);
                 await Task.Delay(800);
-                Prices = cards;
+                Prices = prices;
+                SetCurrentlyDisplayingPrice(Prices);
             }
             catch (Exception ex)
             {
@@ -342,6 +355,16 @@ namespace PokemonCardCatalogue.ViewModels
             {
                 IsLoadingPrices = false;
             }
+        }
+
+        private void SetCurrentlyDisplayingPrice(IList<PriceDisplayViewModel> prices)
+        {
+            if (prices?.Count == 0)
+            {
+                return;
+            }
+
+            CurrentlyDisplayingPrice = prices[0];
         }
 
         private Task<List<PriceDisplayViewModel>> GetPricesAsync(Card card)

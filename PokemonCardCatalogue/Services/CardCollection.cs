@@ -155,6 +155,17 @@ namespace PokemonCardCatalogue.Services
 
             return _collectionMapper.GetCard(dbResult);
         }
+        
+        public async Task<IList<CardItem>> GetCardsByQueryAsync(string query, params object[] parameters)
+        {
+            var dbResult = await _collectionConnection.QueryAsync<CollectionCard>
+            (
+                query,
+                parameters
+            );
+
+            return _collectionMapper.GetCardList(dbResult);
+        }
 
         public Task<int> ExecuteAsync(string commandText, params object[] parameters)
         {

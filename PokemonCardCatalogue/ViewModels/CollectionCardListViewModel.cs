@@ -218,7 +218,7 @@ namespace PokemonCardCatalogue.ViewModels
 
         private async Task CheckForCardChangeOnCardPagePop()
         {
-            if (_navigatedToCardPageUtc == null)
+            if (!_navigatedToCardPageUtc.HasValue)
             {
                 return;
             }
@@ -232,29 +232,34 @@ namespace PokemonCardCatalogue.ViewModels
                 return;
             }
 
-            var cardToUpdate = await _collectionLogic.GetMostRecentlyUpdatedCardBySetId(_set.Id);
+            var cardsToUpdate = await _collectionLogic.GetMostRecentlyUpdatedCardsBySetId(_set.Id, _navigatedToCardPageUtc.Value);
 
-            if (cardToUpdate is null)
+            if (cardsToUpdate?.Count == 0)
             {
                 _navigatedToCardPageUtc = null;
                 return;
             }
 
-            // update backing store
-            var cardInList = _allCardItems.FirstOrDefault(x => x.Card.Id == cardToUpdate.Card.Id);
-            var index = _allCardItems.IndexOf(cardInList);
-
-            if (index > -1)
+            for (int i = 0; i < cardsToUpdate.Count; i++)
             {
-                _allCardItems[index] = cardToUpdate;
-            }
+                var cardToUpdate = cardsToUpdate[i];
+                // update backing store
+                var cardInList = _allCardItems.FirstOrDefault(x => x.Card.Id == cardToUpdate.Card.Id);
 
-            // update display list.
-            cardInList = CardItemList.FirstOrDefault(x => x.Card.Id == cardToUpdate.Card.Id);
+                var index = _allCardItems.IndexOf(cardInList);
 
-            if (cardInList != null)
-            {
-                CardItemList.Replace(cardInList, cardToUpdate);
+                if (index > -1)
+                {
+                    _allCardItems[index] = cardToUpdate;
+                }
+
+                // update display list.
+                cardInList = CardItemList.FirstOrDefault(x => x.Card.Id == cardToUpdate.Card.Id);
+
+                if (cardInList != null)
+                {
+                    CardItemList.Replace(cardInList, cardToUpdate);
+                }
             }
 
             _navigatedToCardPageUtc = null;

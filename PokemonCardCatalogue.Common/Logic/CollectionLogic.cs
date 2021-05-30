@@ -252,9 +252,9 @@ namespace PokemonCardCatalogue.Common.Logic
             return _cardCollection.ExecuteScalarAsync<DateTime?>(Queries.GetMostRecentModifiedDateBySetId, setId);
         }
 
-        public Task<CardItem> GetMostRecentlyUpdatedCardBySetId(string setId)
+        public Task<IList<CardItem>> GetMostRecentlyUpdatedCardsBySetId(string setId, DateTime changesSinceDateTime)
         {
-            return _cardCollection.FindCardByQueryAsync(Queries.GetMostRecentlyModifiedCardBySetId, setId);
+            return _cardCollection.GetCardsByQueryAsync(Queries.GetCardsModifiedSinceDateBySetId, setId, changesSinceDateTime);
         }
 
         public Task<float> GetEstimatedCollectionMarketValue()

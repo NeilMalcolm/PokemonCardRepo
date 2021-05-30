@@ -52,7 +52,7 @@
                         ConverterParameter='35'}"/>
                     <RowDefinition Height="{Binding IsPricesSectionVisible,
                         Converter={StaticResource BoolToGridLengthConverter},
-                        ConverterParameter='157'}"/>
+                        ConverterParameter='175'}"/>
                 </Grid.RowDefinitions>
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="*"/>
@@ -244,7 +244,134 @@
                        Style="{StaticResource CardPageSectionTitleLabelStyle}"
                        Grid.Row="9"/>
 
-                <CarouselView ItemsSource="{Binding Prices}"
+                <Frame Padding="5"
+                       Margin="5"
+                       HasShadow="True"
+                       CornerRadius="6"
+                       Grid.Row="10"
+                       Grid.ColumnSpan="2">
+                    <Grid HorizontalOptions="FillAndExpand"
+                          RowSpacing="0"
+                          Padding="0">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="50"/>
+                            <RowDefinition Height="26"/>
+                            <RowDefinition Height="18"/>
+                            <RowDefinition Height="5"/>
+                            <RowDefinition Height="26"/>
+                            <RowDefinition Height="18"/>
+                        </Grid.RowDefinitions>
+                        <!--<Label Text="{Binding CurrentlyDisplayingPrice.Title}"
+                               Margin="10, 0, 0, 0"
+                               FontAttributes="Bold"
+                               FontSize="18"/>-->
+                        <Picker ItemsSource="{Binding Prices}"
+                                ItemDisplayBinding="{Binding Title}"
+                                SelectedItem="{Binding CurrentlyDisplayingPrice}"
+                                Margin="10, 0, 0, 0"
+                                VerticalOptions="Start"
+                                FontAttributes="Bold"
+                                FontSize="18"/>
+
+                        <Label HorizontalOptions="Center"
+                               Grid.Row="1">
+                            <Label.FormattedText>
+                                <FormattedString>
+                                    <Span Text="↑ "
+                                          FontSize="20"
+                                          FontAttributes="Bold"
+                                          TextColor="#54D68F"/>
+                                    <Span Text="{Binding CurrentlyDisplayingPrice.Prices.High, 
+                                                         StringFormat='${0:0.00}'}"
+                                          Style="{StaticResource PricesCardValueLabel}"/>
+                                </FormattedString>
+                            </Label.FormattedText>
+                        </Label>
+                        <Label Text="High"
+                               HorizontalOptions="Center"
+                               Style="{StaticResource PricesCardTitleLabel}"
+                               Grid.Row="2"/>
+
+                        <Label HorizontalOptions="Center"
+                               Grid.Column="1"
+                               Grid.Row="1">
+                            <Label.FormattedText>
+                                <FormattedString>
+                                    <Span Text="－ "
+                                          FontSize="18"
+                                          FontAttributes="Bold"
+                                          TextColor="#2196F3"/>
+                                    <Span Text="{Binding CurrentlyDisplayingPrice.Prices.Mid, 
+                                                         StringFormat='${0:0.00}'}"
+                                          Style="{StaticResource PricesCardValueLabel}"/>
+                                </FormattedString>
+                            </Label.FormattedText>
+                        </Label>
+
+
+                        <Label Text="Mid"
+                               HorizontalOptions="Center"
+                               Style="{StaticResource PricesCardTitleLabel}"
+                               Grid.Column="1"
+                               Grid.Row="2"/>
+
+                        <Label HorizontalOptions="Center"
+                               Grid.Column="2"
+                               Grid.Row="1">
+                            <Label.FormattedText>
+                                <FormattedString>
+                                    <Span Text="↓ "
+                                          FontSize="20"
+                                          FontAttributes="Bold"
+                                          TextColor="#D6547B"/>
+                                    <Span Text="{Binding CurrentlyDisplayingPrice.Prices.Low, 
+                                                         StringFormat='${0:0.00}'}"
+                                          Style="{StaticResource PricesCardValueLabel}"/>
+                                </FormattedString>
+                            </Label.FormattedText>
+                        </Label>
+
+                        <Label Text="Low"
+                               HorizontalOptions="Center"
+                               Style="{StaticResource PricesCardTitleLabel}"
+                               Grid.Column="2"
+                               Grid.Row="2"/>
+
+                        <Label HorizontalOptions="Center"
+                               Grid.Row="4">
+                            <Label.FormattedText>
+                                <FormattedString>
+                                    <Span Text="⌂ "
+                                          FontSize="20"
+                                          FontAttributes="Bold"
+                                          TextColor="#D6547B"/>
+                                    <Span Text="{Binding CurrentlyDisplayingPrice.Prices.Market, 
+                                                         StringFormat='${0:0.00}'}"
+                                          Style="{StaticResource PricesCardValueLabel}"/>
+                                </FormattedString>
+                            </Label.FormattedText>
+                        </Label>
+
+                        <Label Text="Market"
+                               HorizontalOptions="Center"
+                               Style="{StaticResource PricesCardTitleLabel}"
+                               Grid.Row="5"/>
+
+                        <Label Text="{Binding CurrentlyDisplayingPrice.Prices.DirectLow, 
+                                              StringFormat='${0:0.00}'}"
+                               Grid.Row="4"
+                               Style="{StaticResource PricesCardValueLabel}"
+                               HorizontalOptions="Center"
+                               Grid.Column="1"/>
+                        <Label Text="Direction"
+                               HorizontalOptions="Center"
+                               Style="{StaticResource PricesCardTitleLabel}"
+                               Grid.Row="5"
+                               Grid.Column="1"/>
+                    </Grid>
+                </Frame>
+
+                <!--<CarouselView ItemsSource="{Binding Prices}"
                               PeekAreaInsets="10"
                               Grid.Row="10"
                               Grid.ColumnSpan="2"
@@ -379,7 +506,7 @@
                             </ContentView>
                         </DataTemplate>
                     </CarouselView.ItemTemplate>
-                </CarouselView>
+                </CarouselView>-->
 
                 <ActivityIndicator Grid.Row="10"
                                    Grid.ColumnSpan="2"
