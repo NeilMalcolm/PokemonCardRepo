@@ -8,6 +8,7 @@
              xmlns:dts="clr-namespace:PokemonCardCatalogue.TemplateSelector"
              xmlns:constants="clr-namespace:PokemonCardCatalogue.Constants"
              xmlns:pages="clr-namespace:PokemonCardCatalogue.Pages"
+             xmlns:models="clr-namespace:PokemonCardCatalogue.Common.Models;assembly=PokemonCardCatalogue.Common"
              x:Name="ThisPage">
     <Shell.TitleView>
         <ContentView>

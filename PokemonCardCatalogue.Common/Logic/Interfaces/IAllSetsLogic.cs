@@ -9,7 +9,7 @@ namespace PokemonCardCatalogue.Common.Logic.Interfaces
     {
         Task<List<ApiSetItem>> GetSetsAsync();
         Task<Set> GetSetByIdAsync(string id);
-        Task<List<ApiSetItem>> GetSetsOrderedByMostRecentAsync();
+        Task<List<ApiSetItem>> GetSetsOrderedByMostRecentAsync(bool forceWebRequest = false);
         Task<List<string>> GetSetIdsInCollectionAsync();
     }
 }

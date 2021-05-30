@@ -54,8 +54,15 @@ namespace PokemonCardCatalogue.ViewModels
             {
                 _collectionCardsEstimatedMarketTotal = value;
                 OnPropertyChanged();
+                OnPropertyChanged(nameof(ShowTotal));
             }
         }
+
+        public bool ShowTotal
+        {
+            get => _collectionCardsEstimatedMarketTotal > 0; 
+        }
+
 
         public ICommand DeleteSetCommand { get; set; }
         public ICommand GoToSetCommand { get; set; } 

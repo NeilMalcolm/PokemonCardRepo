@@ -26,14 +26,17 @@ namespace PokemonCardCatalogue.Common.Context
             _jsonSerializerOptions.Converters.Add(new DateTimeJsonConverter());
         }
 
-        public async Task<ApiResponseDataContainer<T>> FetchAsync<T>(string endpoint, QueryParameters parameters) 
+        public async Task<ApiResponseDataContainer<T>> FetchAsync<T>(string endpoint, QueryParameters parameters, bool forceWebRequest = false)
             where T : BaseObject
         {
-            var cacheResult = await _cache.GetAsync<ApiResponseDataContainer<T>>(endpoint, parameters);
-
-            if (cacheResult != null)
+            if (!forceWebRequest)
             {
-                return cacheResult;
+                var cacheResult = await _cache.GetAsync<ApiResponseDataContainer<T>>(endpoint, parameters);
+
+                if (cacheResult != null)
+                {
+                    return cacheResult;
+                }
             }
 
             var fullUrl = string.Format(endpoint, QueryHelper.BuildQuery(parameters));
@@ -42,14 +45,17 @@ namespace PokemonCardCatalogue.Common.Context
             return await HandleResponse<ApiResponseDataContainer<T>>(response, endpoint, parameters);
         }
 
-        public async Task<ApiListResponseDataContainer<T>> GetAsync<T>(string endpoint, QueryParameters parameters) 
+        public async Task<ApiListResponseDataContainer<T>> GetAsync<T>(string endpoint, QueryParameters parameters, bool forceWebRequest = false) 
             where T : BaseObject
         {
-            var cacheResult = await _cache.GetAsync<ApiListResponseDataContainer<T>>(endpoint, parameters);
-
-            if (cacheResult != null)
+            if (!forceWebRequest)
             {
-                return cacheResult;
+                var cacheResult = await _cache.GetAsync<ApiListResponseDataContainer<T>>(endpoint, parameters);
+
+                if (cacheResult != null)
+                {
+                    return cacheResult;
+                }
             }
 
             var fullUrl = string.Format("{0}{1}", endpoint, QueryHelper.BuildQuery(parameters));

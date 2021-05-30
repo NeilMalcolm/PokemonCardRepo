@@ -2,7 +2,9 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:pages="clr-namespace:PokemonCardCatalogue.Pages"
              xmlns:ff="clr-namespace:FFImageLoading.Forms;assembly=FFImageLoading.Forms"
-             xmlns:helpers="clr-namespace:PokemonCardCatalogue.Helpers"
+             xmlns:helpers="clr-namespace:PokemonCardCatalogue.Helpers" 
+             xmlns:viewmodels="clr-namespace:PokemonCardCatalogue.ViewModels" 
+             x:DataType="viewmodels:CardViewModel"
              x:Class="PokemonCardCatalogue.Pages.CardPage"
              x:Name="ThisPage">
     <pages:BaseContentPage.Resources>

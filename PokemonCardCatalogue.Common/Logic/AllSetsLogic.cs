@@ -22,15 +22,23 @@ namespace PokemonCardCatalogue.Common.Logic
 
         public async Task<List<ApiSetItem>> GetSetsAsync()
         {
-            return await GetApiSetItems(Api.GetSetsAsync());
+            return await GetApiSetItems(Api.GetSetsAsync(forceWebRequest: false));
         }
 
-        public async Task<List<ApiSetItem>> GetSetsOrderedByMostRecentAsync()
+        public async Task<List<ApiSetItem>> GetSetsOrderedByMostRecentAsync(bool forceWebRequest = false)
         {
-            return await GetApiSetItems(Api.GetSetsAsync(new QueryParameters
-            {
-                OrderBy = "-releaseDate"
-            }));
+            return await GetApiSetItems
+            (
+                Api.GetSetsAsync
+                (
+                    new QueryParameters
+                    {
+                        OrderBy = "-releaseDate",
+
+                    },
+                    forceWebRequest
+                )
+            );
         }
 
         public Task<Set> GetSetByIdAsync(string id)
