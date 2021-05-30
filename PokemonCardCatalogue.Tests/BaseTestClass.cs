@@ -1,9 +1,11 @@
-﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
+﻿using NUnit.Framework;
 
 namespace PokemonCardCatalogue.Tests
 {
-    public abstract class BaseTestClass
+    [TestFixture]
+    public abstract class BaseTestFixture
     {
+        [SetUp]
         public virtual void BeforeEachTest()
         {
             CreateMocks();
@@ -11,6 +13,7 @@ namespace PokemonCardCatalogue.Tests
             SetupData();
         }
 
+        [TearDown]
         public virtual void AfterEachTest()
         {
         }

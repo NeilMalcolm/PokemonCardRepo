@@ -1,4 +1,4 @@
-﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
+﻿using NUnit.Framework;
 using Moq;
 using PokemonCardCatalogue.Common.Logic.Interfaces;
 using PokemonCardCatalogue.Common.Models;
@@ -11,8 +11,8 @@ using System.Threading.Tasks;
 
 namespace PokemonCardCatalogue.Tests.ViewModelTests
 {
-    [TestClass]
-    public class CollectionSetsViewModelTests: BaseTestClass
+    [TestFixture]
+    public class CollectionSetsViewModelTests: BaseTestFixture
     {
         protected Mock<INavigationService> NavigationServiceMock;
         protected Mock<ICollectionLogic> CollectionLogicMock;
@@ -43,27 +43,13 @@ namespace PokemonCardCatalogue.Tests.ViewModelTests
             }
         };
 
-        private SetItem SetToAdd = new SetItem
+        private readonly SetItem SetToAdd = new SetItem
         {
             Set = new Set
             {
                 Name = "Example 3"
             }
         };
-
-        [TestInitialize]
-        public override void BeforeEachTest()
-        {
-            base.BeforeEachTest();
-        }
-
-        public override void AfterEachTest()
-        {
-            if (AllSets.Contains(SetToAdd))
-            {
-                AllSets.Remove(SetToAdd);
-            }
-        }
 
         protected override void CreateMocks()
         {
@@ -115,21 +101,21 @@ namespace PokemonCardCatalogue.Tests.ViewModelTests
             );
         }
 
-        [TestMethod]
+        [Test]
         public async Task WhenLoadDataIsCalled_ThenSetItemsIsSet()
         {
             await ViewModel.LoadAsync();
             Assert.IsTrue(ViewModel.SetItems.Count > 0);
         }
 
-        [TestMethod]
+        [Test]
         public async Task WhenLoadDataIsCalledAnd_ThenSetItemsIsSet()
         {
             await ViewModel.LoadAsync();
 
         }
 
-        [TestMethod]
+        [Test]
         public async Task WhenGoToSetCommandIsCalled_ThenNavigationGoToAsyncIsCalled()
         {
             await ViewModel.LoadAsync();
@@ -138,7 +124,7 @@ namespace PokemonCardCatalogue.Tests.ViewModelTests
             NavigationServiceMock.Verify(m => m.GoToAsync<CollectionCardListPage>(AllSets[0].Set));
         }
         
-        [TestMethod]
+        [Test]
         public async Task WhenSetIsAdded_AndPageIsReloaded_ThenSetIsAddedToSetItems()
         {
             await ViewModel.LoadAsync();
@@ -148,7 +134,7 @@ namespace PokemonCardCatalogue.Tests.ViewModelTests
             Assert.IsTrue(ViewModel.SetItems.Contains(SetToAdd));
         }
         
-        [TestMethod]
+        [Test]
         public async Task WhenCardIsAddedToSet_AndPageIsReloaded_ThenUpdateSetItemWithNewOwnedCount()
         {
             await ViewModel.LoadAsync();
@@ -163,7 +149,7 @@ namespace PokemonCardCatalogue.Tests.ViewModelTests
             Assert.AreEqual(1, AllSets[1].OwnedCount);
         }
 
-        [TestMethod]
+        [Test]
         public async Task WhenDeleteSetCommandIsCalled_ThenUserIsAskedForConfirmation()
         {
             await ViewModel.LoadAsync();
@@ -181,7 +167,7 @@ namespace PokemonCardCatalogue.Tests.ViewModelTests
             );
         }
 
-        [TestMethod]
+        [Test]
         public async Task WhenDeleteSetCommandIsCalled_AndUserDeclines_ThenSetIsNotDeleted()
         {
             await ViewModel.LoadAsync();
@@ -193,7 +179,7 @@ namespace PokemonCardCatalogue.Tests.ViewModelTests
             Assert.AreEqual(ViewModel.SetItems.Count, setcount);
         }
 
-        [TestMethod]
+        [Test]
         public async Task WhenDeleteSetCommandIsCalled_AndUserConfirmsDelete_ThenSetIsDeleted()
         {
             await ViewModel.LoadAsync();

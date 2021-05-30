@@ -244,12 +244,16 @@ namespace PokemonCardCatalogue.ViewModels
             var getOwnedCountTask = GetOwnedCountAsync(ThisCard.Id);
             var pricesTask = SetPrices(ThisCard);
 
-            ShowNormalCounter = ThisCard.TcgPlayer.Prices.Normal != null;
-            ShowReverseCounter = ThisCard.TcgPlayer.Prices.ReverseHolofoil != null;
-            ShowHoloCounter = ThisCard.TcgPlayer.Prices.Holofoil != null;
-
             await Task.WhenAll(getOwnedCountTask, loadRelatedCardsTask, pricesTask);
         }
+
+        private void SetPriceCounters()
+        {
+            ShowNormalCounter = ThisCard.TcgPlayer?.Prices?.Normal != null;
+            ShowReverseCounter = ThisCard.TcgPlayer?.Prices?.ReverseHolofoil != null;
+            ShowHoloCounter = ThisCard.TcgPlayer?.Prices?.Holofoil != null;
+        }
+
 
         private async Task DecrementHoloOwnedCount()
         {
@@ -346,6 +350,7 @@ namespace PokemonCardCatalogue.ViewModels
                 await Task.Delay(800);
                 Prices = prices;
                 SetCurrentlyDisplayingPrice(Prices);
+                SetPriceCounters();
             }
             catch (Exception ex)
             {

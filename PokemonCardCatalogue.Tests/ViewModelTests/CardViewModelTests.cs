@@ -1,4 +1,4 @@
-﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
+﻿using NUnit.Framework;
 using Moq;
 using PokemonCardCatalogue.Common.Logic.Interfaces;
 using PokemonCardCatalogue.Common.Models.Data;
@@ -12,8 +12,8 @@ using System.Threading.Tasks;
 
 namespace PokemonCardCatalogue.Tests.ViewModelTests
 {
-    [TestClass]
-    public class CardViewModelTests : BaseTestClass
+    [TestFixture]
+    public class CardViewModelTests : BaseTestFixture
     {
         protected Mock<ICardLogic> CardLogicMock;
         protected Mock<ICollectionLogic> CollectionLogicMock;
@@ -134,18 +134,6 @@ namespace PokemonCardCatalogue.Tests.ViewModelTests
             }
         }
 
-        [TestInitialize]
-        public override void BeforeEachTest()
-        {
-            base.BeforeEachTest();
-        }
-
-        [TestCleanup]
-        public override void AfterEachTest()
-        {
-            base.AfterEachTest();
-        }
-
         protected override void CreateMocks()
         {
             CardLogicMock = new Mock<ICardLogic>();
@@ -184,7 +172,7 @@ namespace PokemonCardCatalogue.Tests.ViewModelTests
             );
         }
 
-        [TestMethod]
+        [Test]
         public async Task WhenDecrementOwnedCountCommandIsExecuted_AndOwnedCountIsAlreadyZero_ThenCountNotDecreased()
         {
             ViewModel.Init(new Card());
@@ -193,7 +181,7 @@ namespace PokemonCardCatalogue.Tests.ViewModelTests
             Assert.AreEqual(ViewModel.NormalOwnedCount, 0);
         }
 
-        [TestMethod]
+        [Test]
         public async Task WhenDecrementOwnedCountCommandIsExecuted_AndOwnedCountIsGreaterThanZero_ThenCountIsDecreased()
         {
             ViewModel.Init(CardWithOwnedCount1);
@@ -202,10 +190,10 @@ namespace PokemonCardCatalogue.Tests.ViewModelTests
             Assert.AreEqual(ViewModel.NormalOwnedCount, 0);
         }
         
-        [TestMethod,
-            DataRow(1),
-            DataRow(2),
-            DataRow(5)]
+        [Test,
+            TestCase(1),
+            TestCase(2),
+            TestCase(5)]
         public async Task WhenDecrementOwnedCountCommandIsExecutedMultipleTimes_AndOwnedCountIsGreaterThanZero_ThenCountIsDecreased(int numberOfDecrements)
         {
             ViewModel.Init(CardWithOwnedCount1);
@@ -219,7 +207,7 @@ namespace PokemonCardCatalogue.Tests.ViewModelTests
             Assert.AreEqual(ViewModel.NormalOwnedCount, 0);
         }
 
-        [TestMethod]
+        [Test]
         public async Task WhenIncrementOwnedCountCommandIsExecuted_ThenCountIsIncremented()
         {
             ViewModel.Init(new Card());
@@ -228,10 +216,10 @@ namespace PokemonCardCatalogue.Tests.ViewModelTests
             Assert.AreEqual(ViewModel.NormalOwnedCount, 1);
         }
         
-        [TestMethod,
-            DataRow(1),
-            DataRow(2),
-            DataRow(5)]
+        [Test,
+            TestCase(1),
+            TestCase(2),
+            TestCase(5)]
         public async Task WhenIncrementOwnedCountCommandIsExecutedMultipleTimes_ThenCountIsIncrementedSameAmountOfTimes(int numberOfIncrements)
         {
             ViewModel.Init(new Card());
@@ -245,7 +233,7 @@ namespace PokemonCardCatalogue.Tests.ViewModelTests
             Assert.AreEqual(ViewModel.NormalOwnedCount, numberOfIncrements);
         }
 
-        [TestMethod]
+        [Test]
         public async Task WhenOnLoadAsyncIsCalled_ThenRelatedCardsAreLoaded()
         {
             ViewModel.Init(CardWithRelatedCards);
@@ -254,7 +242,7 @@ namespace PokemonCardCatalogue.Tests.ViewModelTests
             Assert.IsTrue(ViewModel.RelatedCards.Count > 0);
         }
 
-        [TestMethod]
+        [Test]
         public async Task WhenGoToRelatedCardCommandIsExecuted_ThenNavigationServiceIsCalled()
         {
             ViewModel.Init(CardWithRelatedCards);
@@ -266,7 +254,7 @@ namespace PokemonCardCatalogue.Tests.ViewModelTests
             NavigationServiceMock.Verify(m => m.GoToAsync<CardPage>(selectedRelatedCard), Times.Once);
         }
 
-        [TestMethod]
+        [Test]
         public async Task WhenOnLoadAsyncIsCalled_AndRelatedCardLoadThrowsException_ThenLoadingStopsAndPricesAndOwnedCountStillSet()
         {
             ViewModel.Init(CardWhereRelatedCardGetThrowsException);
@@ -280,7 +268,7 @@ namespace PokemonCardCatalogue.Tests.ViewModelTests
             Assert.AreEqual(ViewModel.NormalOwnedCount, 5);
         }
 
-        [TestMethod]
+        [Test]
         public async Task WhenOnLoadAsyncIsCalled_ThenOwnedCountIsLoaded()
         {
             ViewModel.Init(CardWithOwnedCount1);
@@ -289,8 +277,8 @@ namespace PokemonCardCatalogue.Tests.ViewModelTests
             Assert.AreEqual(ViewModel.NormalOwnedCount, 1);
         }
 
-        [DataTestMethod]
-        [DynamicData(nameof(PricesTestData))]
+        [Test,
+            TestCaseSource(nameof(PricesTestData))]
         public async Task WhenOnLoadAsyncIsCalled_AndCardPrices_ThenCorrectNumberOfPricesAreSet(Card card, int expectedCount)
         {
             ViewModel.Init(card);

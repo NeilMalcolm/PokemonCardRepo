@@ -1,5 +1,4 @@
-﻿using PokemonCardCatalogue.Common.Context.Interfaces;
-using PokemonCardCatalogue.Common.Logic.Interfaces;
+﻿using PokemonCardCatalogue.Common.Logic.Interfaces;
 using PokemonCardCatalogue.Common.Models;
 using PokemonCardCatalogue.Common.Models.Data;
 using System;
@@ -55,6 +54,7 @@ namespace BlazorApp.Data
             return null;
         }
 
+#pragma warning disable IDE0060 // Ignore 
         public Task<T> GetAsync<T>(string endpoint, QueryParameters parameters = null) where T : new()
         {
             return Task.FromResult(default(T));
@@ -68,6 +68,11 @@ namespace BlazorApp.Data
         public Task<List<CardItem>> GetCardItemsAsync(string setId)
         {
             return Task.FromResult(new List<CardItem>());
+        }
+
+        public Task<IList<CardItem>> GetCardsByQueryAsync(string query, params object[] parameters)
+        {
+            throw new NotImplementedException();
         }
 
         public Task<List<SetItem>> GetSetItemsAsync(bool withOwnedCount = true)

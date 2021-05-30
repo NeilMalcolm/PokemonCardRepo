@@ -1,12 +1,12 @@
-﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
+﻿using NUnit.Framework;
 using PokemonCardCatalogue.Common.Helpers;
 using PokemonCardCatalogue.Common.Models;
 using System.Collections.Generic;
 
 namespace PokemonCardCatalogue.Tests.HelperTests
 {
-    [TestClass]
-    public class QueryHelperTests : BaseTestClass
+    [TestFixture]
+    public class QueryHelperTests : BaseTestFixture
     {
         private const string OrderByString = "orderBy=";
 
@@ -54,36 +54,30 @@ namespace PokemonCardCatalogue.Tests.HelperTests
             }
         }
 
-        [TestInitialize]
-        public override void BeforeEachTest()
-        {
-            base.BeforeEachTest();
-        }
-
-        [TestMethod]
+        [Test]
         public void WhenBuildQueryIsCalled_AndQueryParametersIsNull_ThenResultIsEmptyString()
         {
             Assert.AreEqual(string.Empty, QueryHelper.BuildQuery(null));
         }
 
-        [DataTestMethod,
-            DynamicData(nameof(NoOrderByBuildQueryTestData))]
+        [Test,
+            TestCaseSource(nameof(NoOrderByBuildQueryTestData))]
         public void WhenBuildQueryIsCalled_AndOrderByIsNullOrEmpty_ThenQueryDoesNotHaveOrderBy(QueryParameters parameters)
         {
             var result = QueryHelper.BuildQuery(parameters);
             Assert.IsFalse(result.Contains(OrderByString));
         }
 
-        [DataTestMethod,
-            DynamicData(nameof(WithOrderByBuildQueryTestData))]
+        [Test,
+            TestCaseSource(nameof(WithOrderByBuildQueryTestData))]
         public void WhenBuildQueryIsCalled_AndOrderByIsPresent_ThenQueryDoesHaveOrderBy(QueryParameters parameters)
         {
             var result = QueryHelper.BuildQuery(parameters);
             Assert.IsTrue(result.Contains(OrderByString));
         }
 
-        [DataTestMethod,
-            DynamicData(nameof(WithOrderByBuildQueryTestData))]
+        [Test,
+            TestCaseSource(nameof(WithOrderByBuildQueryTestData))]
         public void WhenBuildQueryIsCalled_AndParametersAreSet_ThenQueryIsCorrect(QueryParameters parameters)
         {
             var result = QueryHelper.BuildQuery(parameters);
@@ -96,8 +90,8 @@ namespace PokemonCardCatalogue.Tests.HelperTests
             Assert.IsTrue(result.Contains(OrderByString));
         }
 
-        [TestMethod,
-            DataRow(new int[] { 12 })]
+        [Test,
+            TestCase(new int[] { 12 })]
         public void WhenGetPokedexNumberQueryIsCalled_AndHasSinglePokedexNumber_ThenOutputIsCorrect(int[] numbers)
         {
             var result = QueryHelper.GetPokedexNumberQuery(numbers);
@@ -116,10 +110,10 @@ namespace PokemonCardCatalogue.Tests.HelperTests
             }
         }
 
-        [TestMethod,
-            DataRow(new int[] { 12, 20 }),
-            DataRow(new int[] { 150, 342, 659 }),
-            DataRow(new int[] { 1, 100, 200, 300, 400, 500, 600, 700, 800, 900, 1000 })]
+        [Test,
+            TestCase(new int[] { 12, 20 }),
+            TestCase(new int[] { 150, 342, 659 }),
+            TestCase(new int[] { 1, 100, 200, 300, 400, 500, 600, 700, 800, 900, 1000 })]
         public void WhenGetPokedexNumberQueryIsCalled_AndHasMultiplePokedexNumbers_ThenOutputIsCorrect(int[] numbers)
         {
             var result = QueryHelper.GetPokedexNumberQuery(numbers);

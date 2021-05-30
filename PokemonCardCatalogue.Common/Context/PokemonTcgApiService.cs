@@ -73,6 +73,7 @@ namespace PokemonCardCatalogue.Common.Context
 
             await _cache.WriteToCacheAsync(endpoint, parameters, await response.Content.ReadAsStringAsync());
 
+            var str = await response.Content.ReadAsStringAsync();
             using var stream = await response.Content.ReadAsStreamAsync();
             return await JsonSerializer.DeserializeAsync<T>(stream, _jsonSerializerOptions);
         }
