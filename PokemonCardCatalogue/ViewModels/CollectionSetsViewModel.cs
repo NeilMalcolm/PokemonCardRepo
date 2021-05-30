@@ -46,16 +46,23 @@ namespace PokemonCardCatalogue.ViewModels
             }
         }
 
-        private float _collectionCardsMaxMarketTotal;
-        public float CollectionCardsMaxMarketTotal
+        private float _collectionCardsEstimatedMarketTotal;
+        public float CollectionCardsEstimatedMarketTotal
         {
-            get => _collectionCardsMaxMarketTotal;
+            get => _collectionCardsEstimatedMarketTotal;
             set
             {
-                _collectionCardsMaxMarketTotal = value;
+                _collectionCardsEstimatedMarketTotal = value;
                 OnPropertyChanged();
+                OnPropertyChanged(nameof(ShowTotal));
             }
         }
+
+        public bool ShowTotal
+        {
+            get => _collectionCardsEstimatedMarketTotal > 0; 
+        }
+
 
         public ICommand DeleteSetCommand { get; set; }
         public ICommand GoToSetCommand { get; set; } 
@@ -143,7 +150,7 @@ namespace PokemonCardCatalogue.ViewModels
 
         private async Task LoadCollectionCardsMaxMarketTotalAsync()
         {
-            CollectionCardsMaxMarketTotal = await _collectionLogic.GetMaxMarketValueForCollection();
+            CollectionCardsEstimatedMarketTotal = await _collectionLogic.GetEstimatedCollectionMarketValue();
         }
 
         private async Task ConfirmDeleteSet(SetItem setItem)

@@ -1,4 +1,5 @@
 ﻿using PokemonCardCatalogue.Common.Models.Data;
+using PokemonCardCatalogue.Common.Models.Enums;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
 
@@ -9,15 +10,27 @@ namespace PokemonCardCatalogue.Common.Models
         public event PropertyChangedEventHandler PropertyChanged;
 
         public int CacheId { get; set; }
-        public int OwnedCount { get; set; }
+        public int NormalOwnedCount { get; set; }
+        public int HoloOwnedCount { get; set; }
+        public int ReverseOwnedCount { get; set; }
         public Card Card { get; set; }
-        public bool Owned => OwnedCount > 0;
+        public bool Owned => NormalOwnedCount > 0
+            || HoloOwnedCount > 0
+            || ReverseOwnedCount > 0;
 
 
         public void IncrementOwnedCount()
         {
-            OwnedCount++;
-            OnPropertyChanged(nameof(OwnedCount));
+            if (Rarity.IsHolo(Card.Rarity))
+            {
+                HoloOwnedCount++;
+                OnPropertyChanged(nameof(HoloOwnedCount));
+            }
+            else
+            {
+                NormalOwnedCount++;
+                OnPropertyChanged(nameof(NormalOwnedCount));
+            }
             OnPropertyChanged(nameof(Owned));
         }
 

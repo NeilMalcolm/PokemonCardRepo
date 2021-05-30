@@ -1,4 +1,5 @@
-﻿using PokemonCardCatalogue.Common.Logic.Interfaces;
+﻿using PokemonCardCatalogue.Common.Constants;
+using PokemonCardCatalogue.Common.Logic.Interfaces;
 using PokemonCardCatalogue.Common.Models;
 using PokemonCardCatalogue.Common.Models.Data;
 using PokemonCardCatalogue.Constants;
@@ -112,7 +113,9 @@ namespace PokemonCardCatalogue.Services
         {
             var cardCollection = await GetCardCollectionById(card.Card.Id);
 
-            cardCollection.OwnedCount = card.OwnedCount;
+            cardCollection.HoloOwnedCount = card.HoloOwnedCount;
+            cardCollection.NormalOwnedCount = card.NormalOwnedCount;
+            cardCollection.ReverseHoloOwnedCount = card.ReverseOwnedCount;
             cardCollection.CreatedDate ??= DateTime.UtcNow;
             cardCollection.ModifiedDate ??= DateTime.UtcNow;
 
@@ -151,6 +154,17 @@ namespace PokemonCardCatalogue.Services
             );
 
             return _collectionMapper.GetCard(dbResult);
+        }
+        
+        public async Task<IList<CardItem>> GetCardsByQueryAsync(string query, params object[] parameters)
+        {
+            var dbResult = await _collectionConnection.QueryAsync<CollectionCard>
+            (
+                query,
+                parameters
+            );
+
+            return _collectionMapper.GetCardList(dbResult);
         }
 
         public Task<int> ExecuteAsync(string commandText, params object[] parameters)

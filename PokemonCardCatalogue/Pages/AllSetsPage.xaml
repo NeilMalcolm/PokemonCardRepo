@@ -6,93 +6,100 @@
              xmlns:helpers="using:PokemonCardCatalogue.Helpers"
              xmlns:xctk="http://xamarin.com/schemas/2020/toolkit"
              xmlns:ios="clr-namespace:Xamarin.Forms.PlatformConfiguration.iOSSpecific;assembly=Xamarin.Forms.Core"
+             xmlns:viewModels="clr-namespace:PokemonCardCatalogue.ViewModels"
+             xmlns:models="clr-namespace:PokemonCardCatalogue.Common.Models;assembly=PokemonCardCatalogue.Common"
              x:Name="ThisPage"
+             x:DataType="viewModels:AllSetsViewModel"
              Shell.NavBarIsVisible="False">
     <pages:BaseContentPage.Resources>
         <helpers:InverseBooleanConverter x:Key="InverseBoolConverter"/>
     </pages:BaseContentPage.Resources>
     <pages:BaseContentPage.Content>
-        <StackLayout Orientation="Vertical">
-            <SearchBar Text="{Binding SearchText}"
+        <RefreshView Command="{Binding ForceGetLatestCardSetsDataCommand}"
+                     IsRefreshing="{Binding IsRefreshing, 
+                                            Mode=TwoWay}">
+            <RefreshView.Content>
+                <StackLayout Orientation="Vertical">
+                    <SearchBar Text="{Binding SearchText}"
                        Placeholder="Search Sets..."
                        ios:SearchBar.SearchBarStyle="Minimal">
-                <SearchBar.Behaviors>
-                    <xctk:UserStoppedTypingBehavior Command="{Binding SearchSetsCommand}"
+                        <SearchBar.Behaviors>
+                            <xctk:UserStoppedTypingBehavior Command="{Binding SearchSetsCommand}"
                                                     ShouldDismissKeyboardAutomatically="False"
                                                     StoppedTypingTimeThreshold="400"
                                                     MinimumLengthThreshold="1"/>
-                </SearchBar.Behaviors>
-            </SearchBar>
-            <CollectionView ItemsSource="{Binding Sets}">
-                <CollectionView.ItemsLayout>
-                    <LinearItemsLayout Orientation="Vertical"
+                        </SearchBar.Behaviors>
+                    </SearchBar>
+                    <CollectionView ItemsSource="{Binding Sets}">
+                        <CollectionView.ItemsLayout>
+                            <LinearItemsLayout Orientation="Vertical"
                                    ItemSpacing="0"/>
-                </CollectionView.ItemsLayout>
-                <CollectionView.Header>
-                    <StackLayout Orientation="Vertical"
+                        </CollectionView.ItemsLayout>
+                        <CollectionView.Header>
+                            <StackLayout Orientation="Vertical"
                              Margin="0"
                              Spacing="10"
                              Padding="10, 20">
-                        <Label Text="All Sets"
+                                <Label Text="All Sets"
                                Style="{StaticResource LargeTitleViewLabelStyle}"
                                FontAttributes="Bold"
                                Margin="0"/>
-                        <Label Text="A list of all English language Pokémon sets which have been released as of XX/YY/ZZ."
+                                <Label Text="A list of all English language Pokémon sets which have been released as of XX/YY/ZZ."
                                HorizontalOptions="Center"
                                HorizontalTextAlignment="Center"
                                Margin="0"/>
-                    </StackLayout>
-                </CollectionView.Header>
-                <CollectionView.ItemTemplate>
-                    <DataTemplate>
-                        <ContentView>
-                            <Frame Style="{StaticResource SetCardFrameStyle}">
-                                <Frame.GestureRecognizers>
-                                    <TapGestureRecognizer Command="{Binding Source={x:Reference ThisPage}, 
+                            </StackLayout>
+                        </CollectionView.Header>
+                        <CollectionView.ItemTemplate>
+                            <DataTemplate x:DataType="models:ApiSetItem">
+                                <ContentView>
+                                    <Frame Style="{StaticResource SetCardFrameStyle}">
+                                        <Frame.GestureRecognizers>
+                                            <TapGestureRecognizer Command="{Binding Source={x:Reference ThisPage}, 
                                                                         Path=BindingContext.GoToSetCommand}"
                                                       CommandParameter="{Binding .}"/>
-                                </Frame.GestureRecognizers>
-                                <Grid ColumnSpacing="15"
+                                        </Frame.GestureRecognizers>
+                                        <Grid ColumnSpacing="15"
                                       RowSpacing="2.5">
-                                    <Grid.ColumnDefinitions>
-                                        <ColumnDefinition Width="105"/>
-                                        <ColumnDefinition Width="*"/>
-                                        <ColumnDefinition Width="45"/>
-                                    </Grid.ColumnDefinitions>
-                                    <Grid.RowDefinitions>
-                                        <RowDefinition Height="22"/>
-                                        <RowDefinition Height="18"/>
-                                        <RowDefinition Height="18"/>
-                                    </Grid.RowDefinitions>
-                                    <ff:CachedImage Source="{Binding Set.Images.Logo}"
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="105"/>
+                                                <ColumnDefinition Width="*"/>
+                                                <ColumnDefinition Width="45"/>
+                                            </Grid.ColumnDefinitions>
+                                            <Grid.RowDefinitions>
+                                                <RowDefinition Height="22"/>
+                                                <RowDefinition Height="18"/>
+                                                <RowDefinition Height="18"/>
+                                            </Grid.RowDefinitions>
+                                            <ff:CachedImage Source="{Binding Set.Images.Logo}"
                                                     Aspect="AspectFit"
                                                     DownsampleToViewSize="True"
                                                     Grid.RowSpan="3"/>
 
-                                    <!-- First Row -->
-                                    <Label x:Name="TitleLabel"
+                                            <!-- First Row -->
+                                            <Label x:Name="TitleLabel"
                                            Text="{Binding Set.Name}"
                                            Style="{StaticResource SetCardTitleStyle}"
                                            Grid.Column="1"/>
 
-                                    <Frame x:Name="TotalBackgroundFrame"
+                                            <Frame x:Name="TotalBackgroundFrame"
                                            Style="{StaticResource SetCardTotalBackgroundFrameStyle}"
                                            HorizontalOptions="End"
                                            VerticalOptions="Center"
                                            Grid.Column="2">
-                                        <Label x:Name="TotalLabel"
+                                                <Label x:Name="TotalLabel"
                                                Text="{Binding Set.Total}"
                                                FontSize="11"
                                                VerticalOptions="Center"/>
-                                    </Frame>
-                                    <!-- Second Row -->
-                                    <Label x:Name="SubtitleLabel"
+                                            </Frame>
+                                            <!-- Second Row -->
+                                            <Label x:Name="SubtitleLabel"
                                            Text="{Binding Set.Series}"
                                            Style="{StaticResource SetCardSubtitleStyle}"
                                            Grid.Row="1"
                                            Grid.Column="1"/>
 
-                                    <Button Text="+  Add"
+                                            <Button Text="+  Add"
                                             Style="{StaticResource SetCardAddButtonStyle}"
                                             Grid.Row="1"
                                             Grid.Column="1"
@@ -103,19 +110,19 @@
                                             Command="{Binding Source={x:Reference ThisPage}, 
                                                               Path=BindingContext.AddSetToCollectionCommand}"
                                             CommandParameter="{Binding .}">
-                                        <Button.Triggers>
-                                            <DataTrigger TargetType="Button"
+                                                <Button.Triggers>
+                                                    <DataTrigger TargetType="Button"
                                                          Binding="{Binding IsDownloading}"
                                                          Value="True">
-                                                <Setter Property="InputTransparent"
+                                                        <Setter Property="InputTransparent"
                                                         Value="True"/>
-                                                <Setter Property="Opacity"
+                                                        <Setter Property="Opacity"
                                                         Value="0"/>
-                                            </DataTrigger>
-                                        </Button.Triggers>
-                                    </Button>
+                                                    </DataTrigger>
+                                                </Button.Triggers>
+                                            </Button>
 
-                                    <ActivityIndicator Grid.Column="2"
+                                            <ActivityIndicator Grid.Column="2"
                                                        Grid.Row="1"
                                                        Grid.RowSpan="2"
                                                        InputTransparent="True"
@@ -126,7 +133,7 @@
                                                        IsVisible="{Binding IsDownloading}"
                                                        IsEnabled="{Binding IsDownloading}"/>
 
-                                    <Button Text=">  Go"
+                                            <Button Text=">  Go"
                                             Style="{StaticResource SetCardGoButtonStyle}"
                                             Grid.Row="1"
                                             Grid.Column="1"
@@ -136,18 +143,20 @@
                                             Command="{Binding Source={x:Reference ThisPage}, 
                                                               Path=BindingContext.GoToSetInCollectionCommand}"
                                             CommandParameter="{Binding .}"/>
-                                    <!-- Bottom Row  -->
-                                    <Label Text="{Binding Set.ReleaseDate, 
+                                            <!-- Bottom Row  -->
+                                            <Label Text="{Binding Set.ReleaseDate, 
                                                       StringFormat='{0:yyyy}'}"
                                            Style="{StaticResource SetCardYearLabelStyle}"
                                            Grid.Row="2"
                                            Grid.Column="1"/>
-                                </Grid>
-                            </Frame>
-                        </ContentView>
-                    </DataTemplate>
-                </CollectionView.ItemTemplate>
-            </CollectionView>
-        </StackLayout>
+                                        </Grid>
+                                    </Frame>
+                                </ContentView>
+                            </DataTemplate>
+                        </CollectionView.ItemTemplate>
+                    </CollectionView>
+                </StackLayout>
+            </RefreshView.Content>
+        </RefreshView>
     </pages:BaseContentPage.Content>
 </pages:BaseContentPage>

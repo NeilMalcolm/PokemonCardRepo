@@ -12,12 +12,18 @@ namespace PokemonCardCatalogue.Common.Logic.Interfaces
         Task<List<SetItem>> GetAllSets(bool withCount = true);
         Task<int> DeleteSetAsync(Set setToDelete);
         Task<List<CardItem>> GetCardsForSetAsync(string setId);
-        Task<int> SetOwnedCountForCard(CardItem cardItem);
-        Task<int> IncrementCardOwnedCount(string cardId);
-        Task<int> DecrementCardOwnedCount(string cardId);
-        Task<int> GetCardOwnedCount(string cardId);
+        Task<int> QuickAddCardToCollection(CardItem cardItem);
+        Task<int> IncrementCardNormalOwnedCount(string cardId);
+        Task<int> IncrementCardHoloOwnedCount(string cardId);
+        Task<int> IncrementCardReverseOwnedCount(string cardId);
+        Task<int> DecrementCardNormalOwnedCount(string cardId);
+        Task<int> DecrementCardHoloOwnedCount(string cardId);
+        Task<int> DecrementCardReverseOwnedCount(string cardId);
+        Task<int> GetCardNormalOwnedCount(string cardId);
+        Task<int> GetCardHoloOwnedCount(string cardId);
+        Task<int> GetCardReverseOwnedCount(string cardId);
         Task<DateTime?> GetMostRecentCardModifiedDateBySetId(string setId);
-        Task<CardItem> GetMostRecentlyUpdatedCardBySetId(string setId);
-        Task<float> GetMaxMarketValueForCollection();
+        Task<IList<CardItem>> GetMostRecentlyUpdatedCardsBySetId(string setId, DateTime changesSinceDateTime);
+        Task<float> GetEstimatedCollectionMarketValue();
     }
 }

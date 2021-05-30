@@ -19,6 +19,7 @@ namespace PokemonCardCatalogue.Common.Logic.Interfaces
         Task<List<T>> QueryAsync<T>(string query) where T : new();
         Task DeleteAllDataAsync();
         Task<CardItem> FindCardByQueryAsync(string query, params object[] parameters);
+        Task<IList<CardItem>> GetCardsByQueryAsync(string query, params object[] parameters);
         Task<int> ExecuteAsync(string commandText, params object[] parameters);
         Task<T> ExecuteScalarAsync<T>(string commandText, params object[] parameters);
     }

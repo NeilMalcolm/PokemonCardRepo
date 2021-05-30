@@ -48,11 +48,25 @@ namespace PokemonCardCatalogue.ViewModels
             }
         }
 
+        private bool _isRefreshing;
+
+        public bool IsRefreshing
+        {
+            get => _isRefreshing; 
+            set 
+            {
+                _isRefreshing = value;
+                OnPropertyChanged();
+            }
+        }
+
+
         public ICommand GoToSetCommand { get; set; }
         public ICommand AddSetToCollectionCommand { get; set; }
         public ICommand GoToSetInCollectionCommand { get; set; }
         public ICommand SearchSetsCommand { get; set; }
         public ICommand ClearSearchCommand { get; set; }
+        public ICommand ForceGetLatestCardSetsDataCommand { get; set; }
 
 
         public AllSetsViewModel(IAllSetsLogic allSetsLogic,
@@ -91,6 +105,7 @@ namespace PokemonCardCatalogue.ViewModels
 
             SearchSetsCommand = new Command<string>((searchText) => SearchSets(searchText));
             ClearSearchCommand = new Command<string>((searchText) => ClearSearch(searchText));
+            ForceGetLatestCardSetsDataCommand = new Command(async () => await ForceGetLatestCardSetsData(), () => !IsRefreshing);
         }
 
         /// <summary>
@@ -156,6 +171,18 @@ namespace PokemonCardCatalogue.ViewModels
             await NavigationService.SwitchTab("collection");
             await NavigationService.GoToAsync<CollectionCardListPage>(selectedSetItem.Set);
             _canGoToSet = true;
+        }
+
+        private async Task ForceGetLatestCardSetsData()
+        {
+            IsRefreshing = true;
+
+            _allSets = await _allSetsLogic.GetSetsOrderedByMostRecentAsync(true);
+            await Task.Delay(500);
+            SearchText = string.Empty;
+            Sets = _allSets;
+
+            IsRefreshing = false;
         }
     }
 }

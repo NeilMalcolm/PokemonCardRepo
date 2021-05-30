@@ -36,7 +36,6 @@ namespace PokemonCardCatalogue.iOS
             });
             global::Xamarin.Forms.Forms.Init();
             LoadApplication(new App(new DependencyHandler_iOS(new DependencyContainer())));
-            
 
             return base.FinishedLaunching(app, options);
         }

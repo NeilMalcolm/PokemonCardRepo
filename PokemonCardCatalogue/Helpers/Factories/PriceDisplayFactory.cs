@@ -9,6 +9,7 @@ namespace PokemonCardCatalogue.Helpers.Factories
         private const string HoloFoilTitle = "Holofoil";
         private const string ReverseHoloFoilTitle = "Reverse";
         private const string NormalTitle = "Normal";
+        private const string FirstEditionHoloTitle = "First Edition Holo";
 
         public static List<PriceDisplayViewModel> GetPriceDisplayViewModels(Price prices)
         {
@@ -38,6 +39,13 @@ namespace PokemonCardCatalogue.Helpers.Factories
                 priceModel.Add
                 (
                     new PriceDisplayViewModel(NormalTitle, prices.Normal)
+                );
+            }
+            if (prices.FirstEditionHolofoil != null)
+            {
+                priceModel.Add
+                (
+                    new PriceDisplayViewModel(FirstEditionHoloTitle, prices.FirstEditionHolofoil)
                 );
             }
 

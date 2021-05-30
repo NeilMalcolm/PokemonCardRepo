@@ -45,10 +45,10 @@ namespace PokemonCardCatalogue.Common.Context
             return await GetAsync<Card>(endpoint, parameters);
         }
 
-        public async Task<List<Set>> GetSetsAsync(QueryParameters parameters = null)
+        public async Task<List<Set>> GetSetsAsync(QueryParameters parameters = null, bool forceWebRequest = false)
         {
             var endpoint = ApiConstants.SetsEndpoint;
-            return await GetAsync<Set>(endpoint, parameters);
+            return await GetAsync<Set>(endpoint, parameters, forceWebRequest);
         }
 
         private async Task<T> FetchAsync<T>(string endpoint, QueryParameters parameters) where T: BaseObject
@@ -63,9 +63,9 @@ namespace PokemonCardCatalogue.Common.Context
             return deserializedWebResult?.Data;
         }
 
-        private async Task<List<T>> GetAsync<T>(string endpoint, QueryParameters parameters) where T : BaseObject
+        private async Task<List<T>> GetAsync<T>(string endpoint, QueryParameters parameters, bool forceWebRequest = false) where T : BaseObject
         {
-            var deserializedWebResult = await _apiService.GetAsync<T>(endpoint, parameters);
+            var deserializedWebResult = await _apiService.GetAsync<T>(endpoint, parameters, forceWebRequest);
 
             if (deserializedWebResult is null)
             {

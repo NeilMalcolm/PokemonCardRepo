@@ -156,10 +156,10 @@ namespace PokemonCardCatalogue.Tests.ViewModelTests
 
         protected override void SetupMocks()
         {
-            CollectionLogicMock.Setup(m => m.GetCardOwnedCount(CardWithOwnedCount1.Id))
+            CollectionLogicMock.Setup(m => m.GetCardNormalOwnedCount(CardWithOwnedCount1.Id))
                 .Returns(Task.FromResult(1));
             
-            CollectionLogicMock.Setup(m => m.GetCardOwnedCount(CardWhereRelatedCardGetThrowsException.Id))
+            CollectionLogicMock.Setup(m => m.GetCardNormalOwnedCount(CardWhereRelatedCardGetThrowsException.Id))
                 .Returns(Task.FromResult(5));
 
             CardLogicMock.Setup(m => m.GetRelatedCardsInSetAsync(CardWithRelatedCards))
@@ -189,8 +189,8 @@ namespace PokemonCardCatalogue.Tests.ViewModelTests
         {
             ViewModel.Init(new Card());
             await ViewModel.LoadAsync();
-            ViewModel.DecrementOwnedCountCommand.Execute(null);
-            Assert.AreEqual(ViewModel.OwnedCount, 0);
+            ViewModel.DecrementNormalOwnedCountCommand.Execute(null);
+            Assert.AreEqual(ViewModel.NormalOwnedCount, 0);
         }
 
         [TestMethod]
@@ -198,8 +198,8 @@ namespace PokemonCardCatalogue.Tests.ViewModelTests
         {
             ViewModel.Init(CardWithOwnedCount1);
             await ViewModel.LoadAsync();
-            ViewModel.DecrementOwnedCountCommand.Execute(null);
-            Assert.AreEqual(ViewModel.OwnedCount, 0);
+            ViewModel.DecrementNormalOwnedCountCommand.Execute(null);
+            Assert.AreEqual(ViewModel.NormalOwnedCount, 0);
         }
         
         [TestMethod,
@@ -213,10 +213,10 @@ namespace PokemonCardCatalogue.Tests.ViewModelTests
 
             for (int i = 0; i < numberOfDecrements; i++)
             {
-                ViewModel.DecrementOwnedCountCommand.Execute(null);
+                ViewModel.DecrementNormalOwnedCountCommand.Execute(null);
             }
 
-            Assert.AreEqual(ViewModel.OwnedCount, 0);
+            Assert.AreEqual(ViewModel.NormalOwnedCount, 0);
         }
 
         [TestMethod]
@@ -224,8 +224,8 @@ namespace PokemonCardCatalogue.Tests.ViewModelTests
         {
             ViewModel.Init(new Card());
             await ViewModel.LoadAsync();
-            ViewModel.IncrementOwnedCountCommand.Execute(null);
-            Assert.AreEqual(ViewModel.OwnedCount, 1);
+            ViewModel.IncrementNormalOwnedCountCommand.Execute(null);
+            Assert.AreEqual(ViewModel.NormalOwnedCount, 1);
         }
         
         [TestMethod,
@@ -239,10 +239,10 @@ namespace PokemonCardCatalogue.Tests.ViewModelTests
 
             for (int i = 0; i < numberOfIncrements; i++)
             {
-                ViewModel.IncrementOwnedCountCommand.Execute(null);
+                ViewModel.IncrementNormalOwnedCountCommand.Execute(null);
             }
 
-            Assert.AreEqual(ViewModel.OwnedCount, numberOfIncrements);
+            Assert.AreEqual(ViewModel.NormalOwnedCount, numberOfIncrements);
         }
 
         [TestMethod]
@@ -273,11 +273,11 @@ namespace PokemonCardCatalogue.Tests.ViewModelTests
             await ViewModel.LoadAsync();
 
             CardLogicMock.Verify(m => m.GetRelatedCardsInSetAsync(CardWhereRelatedCardGetThrowsException), Times.Once);
-            CollectionLogicMock.Verify(m => m.GetCardOwnedCount(CardWhereRelatedCardGetThrowsException.Id), Times.Once);
+            CollectionLogicMock.Verify(m => m.GetCardNormalOwnedCount(CardWhereRelatedCardGetThrowsException.Id), Times.Once);
 
             Assert.IsNotNull(ViewModel.Prices);
             Assert.AreEqual(ViewModel.Prices.Count, 1);
-            Assert.AreEqual(ViewModel.OwnedCount, 5);
+            Assert.AreEqual(ViewModel.NormalOwnedCount, 5);
         }
 
         [TestMethod]
@@ -286,7 +286,7 @@ namespace PokemonCardCatalogue.Tests.ViewModelTests
             ViewModel.Init(CardWithOwnedCount1);
             await ViewModel.LoadAsync();
 
-            Assert.AreEqual(ViewModel.OwnedCount, 1);
+            Assert.AreEqual(ViewModel.NormalOwnedCount, 1);
         }
 
         [DataTestMethod]

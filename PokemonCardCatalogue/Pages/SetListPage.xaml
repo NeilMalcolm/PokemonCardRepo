@@ -16,7 +16,8 @@
         </ContentView>
     </Shell.TitleView>
     <pages:BaseContentPage.Content>
-        <CollectionView ItemsSource="{Binding CardList}">
+        <CollectionView x:Name="CardListCollectionView" 
+                        ItemsSource="{Binding CardList}">
             <CollectionView.ItemsLayout>
                 <LinearItemsLayout Orientation="Vertical"
                                    ItemSpacing="0"/>

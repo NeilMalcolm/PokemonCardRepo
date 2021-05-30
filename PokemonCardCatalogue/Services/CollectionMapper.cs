@@ -146,7 +146,7 @@ namespace PokemonCardCatalogue.Services
                 collectionCard.NormalDirectLow = card.TcgPlayer?.Prices?.Normal?.DirectLow ?? null;
             }
 
-            if (card.TcgPlayer?.Prices?.Normal != null)
+            if (card.TcgPlayer?.Prices?.ReverseHolofoil != null)
             {
                 // ReverseHolofoil
                 collectionCard.ReverseHolofoilLow = card.TcgPlayer?.Prices?.ReverseHolofoil?.Low ?? float.MaxValue;
@@ -154,6 +154,16 @@ namespace PokemonCardCatalogue.Services
                 collectionCard.ReverseHolofoilHigh = card.TcgPlayer?.Prices?.ReverseHolofoil?.High ?? float.MinValue;
                 collectionCard.ReverseHolofoilMarket = card.TcgPlayer?.Prices?.ReverseHolofoil?.Market ?? null;
                 collectionCard.ReverseHolofoilDirectLow = card.TcgPlayer?.Prices?.ReverseHolofoil?.DirectLow ?? null;
+            }
+            
+            if (card.TcgPlayer?.Prices?.FirstEditionHolofoil != null)
+            {
+                // ReverseHolofoil
+                collectionCard.FirstEditionHolofoilLow = card.TcgPlayer?.Prices?.FirstEditionHolofoil?.Low ?? float.MaxValue;
+                collectionCard.FirstEditionHolofoilMid = card.TcgPlayer?.Prices?.FirstEditionHolofoil?.Mid ?? null;
+                collectionCard.FirstEditionHolofoilHigh = card.TcgPlayer?.Prices?.FirstEditionHolofoil?.High ?? float.MinValue;
+                collectionCard.FirstEditionHolofoilMarket = card.TcgPlayer?.Prices?.FirstEditionHolofoil?.Market ?? null;
+                collectionCard.FirstEditionHolofoilDirectLow = card.TcgPlayer?.Prices?.FirstEditionHolofoil?.DirectLow ?? null;
             }
 
             return collectionCard;
@@ -164,7 +174,9 @@ namespace PokemonCardCatalogue.Services
             return new CardItem
             {
                 CacheId = collectionCard.CacheId,
-                OwnedCount =  collectionCard.OwnedCount,
+                HoloOwnedCount =  collectionCard.HoloOwnedCount,
+                ReverseOwnedCount =  collectionCard.ReverseHoloOwnedCount,
+                NormalOwnedCount =  collectionCard.NormalOwnedCount,
                 Card = new Card
                 {
                     Id = collectionCard.Id,
