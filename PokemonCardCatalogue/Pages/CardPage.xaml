@@ -5,6 +5,8 @@
              xmlns:helpers="clr-namespace:PokemonCardCatalogue.Helpers" 
              xmlns:viewmodels="clr-namespace:PokemonCardCatalogue.ViewModels" 
              x:DataType="viewmodels:CardViewModel"
+             xmlns:models="clr-namespace:PokemonCardCatalogue.Models"
+             xmlns:models1="clr-namespace:PokemonCardCatalogue.Common.Models.Data;assembly=PokemonCardCatalogue.Common.Models"
              x:Class="PokemonCardCatalogue.Pages.CardPage"
              x:Name="ThisPage">
     <pages:BaseContentPage.Resources>
@@ -78,7 +80,7 @@
                         <FormattedString>
                             <Span Text="{Binding ThisCard.Number}"/>
                             <Span Text="/"/>
-                            <Span Text="{Binding ThisCard.Total}"/>
+                            <Span Text="{Binding ThisCard.Set.Total}"/>
                         </FormattedString>
                     </Label.FormattedText>
                 </Label>
@@ -94,7 +96,7 @@
                         <FormattedString>
                             <Span Text="{Binding ThisCard.Number}"/>
                             <Span Text="/"/>
-                            <Span Text="{Binding ThisCard.Total}"/>
+                            <Span Text="{Binding ThisCard.Set.Total}"/>
                         </FormattedString>
                     </Label.FormattedText>
                 </Label>
@@ -214,7 +216,7 @@
                                            ItemSpacing="0"/>
                     </CollectionView.ItemsLayout>
                     <CollectionView.ItemTemplate>
-                        <DataTemplate>
+                        <DataTemplate x:DataType="models1:Card">
                             <ff:CachedImage Source="{Binding Images.Large}"
                                             DownsampleToViewSize="True"
                                             WidthRequest="130"
@@ -255,7 +257,7 @@
                                            SnapPointsAlignment="Start"/>
                     </CarouselView.ItemsLayout>
                     <CarouselView.ItemTemplate>
-                        <DataTemplate>
+                        <DataTemplate x:DataType="models:PriceDisplayViewModel">
                             <ContentView CompressedLayout.IsHeadless="True">
                                 <Frame Padding="5"
                                        Margin="5"

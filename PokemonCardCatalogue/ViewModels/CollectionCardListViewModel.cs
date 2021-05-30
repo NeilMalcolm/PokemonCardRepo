@@ -269,6 +269,7 @@ namespace PokemonCardCatalogue.ViewModels
 
             _canNavigateToCard = false;
             _navigatedToCardPageUtc = DateTime.UtcNow;
+            cardItem.Card.Set = this._set;
             await NavigationService.GoToAsync<CardPage>(cardItem.Card);
             _canNavigateToCard = true;
         }
