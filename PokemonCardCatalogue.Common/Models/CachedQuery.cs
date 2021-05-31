@@ -4,7 +4,7 @@ using System;
 namespace PokemonCardCatalogue.Common.Models
 {
     [Table("cached_query")]
-    internal class CachedQuery
+    public class CachedQuery
     {
         [PrimaryKey, AutoIncrement]
         [Column("id")]

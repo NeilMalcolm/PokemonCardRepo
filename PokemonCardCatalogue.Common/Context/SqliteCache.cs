@@ -12,20 +12,26 @@ namespace PokemonCardCatalogue.Common.Context
 {
     public class SqliteCache : ICache
     {
-        private readonly DateTime ReturnAllResultsDateTime = DateTime.MaxValue;
-        private TimeSpan _defaultCacheDuration;
+        private readonly IDatabaseService _databaseService;
+
+        private readonly DateTime ReturnAllResultsDateTime = DateTime.MinValue;
         private const string DefaultCacheFile = "ApiCache.db";
 
+        private TimeSpan _cacheDuration;
         private JsonSerializerOptions _jsonSerializerOptions;
-        SQLiteAsyncConnection _sqliteAsyncConnection;
+
+        public SqliteCache(IDatabaseService databaseService)
+        {
+            _databaseService = databaseService;
+        }
 
         public void Init(string filePath = null, TimeSpan? defaultCacheDuration = null)
         {
             string fileName = Path.Combine(filePath ?? Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), DefaultCacheFile);
-            _defaultCacheDuration = defaultCacheDuration ?? new TimeSpan(24, 0, 0);
-            
-            _sqliteAsyncConnection = new SQLiteAsyncConnection(fileName ?? DefaultCacheFile);
-            _sqliteAsyncConnection.CreateTableAsync<CachedQuery>();
+            _cacheDuration = defaultCacheDuration ?? new TimeSpan(24, 0, 0);
+
+            _databaseService.Init(fileName, _cacheDuration);
+            _databaseService.CreateTableAsync<CachedQuery>();
 
             _jsonSerializerOptions = new JsonSerializerOptions();
             _jsonSerializerOptions.Converters.Add(new DateTimeJsonConverter());
@@ -48,7 +54,7 @@ namespace PokemonCardCatalogue.Common.Context
                     CreatedDate = DateTime.UtcNow
                 };
 
-                await _sqliteAsyncConnection.InsertAsync(cachedQuery);
+                await _databaseService.InsertAsync(cachedQuery);
                 return;
             }
 
@@ -56,7 +62,7 @@ namespace PokemonCardCatalogue.Common.Context
             existingValue.LastAccessed = DateTime.UtcNow;
             existingValue.Expiry = GetExpiry(cacheDuration);
 
-            await _sqliteAsyncConnection.UpdateAsync(existingValue);
+            await _databaseService.UpdateAsync(existingValue);
         }
 
         public async Task<T> GetAsync<T>(string endpoint, QueryParameters parameters = null) where T : new()
@@ -65,6 +71,11 @@ namespace PokemonCardCatalogue.Common.Context
             var cachedItem = queryResult.Item1;
 
             if(cachedItem is null)
+            {
+                return default;
+            }
+
+            if (string.IsNullOrWhiteSpace(cachedItem.JsonPayload))
             {
                 return default;
             }
@@ -80,8 +91,7 @@ namespace PokemonCardCatalogue.Common.Context
             DateTime dateToCheck = getExpired ? ReturnAllResultsDateTime : DateTime.UtcNow;
             return 
             (
-                await _sqliteAsyncConnection.Table<CachedQuery>()
-                   .FirstOrDefaultAsync(x => x.Endpoint == endpoint
+                await _databaseService.FirstOrDefaultAsync<CachedQuery>(x => x.Endpoint == endpoint
                        && x.Parameters == paramString
                        && x.Expiry > dateToCheck)
                 , paramString
@@ -90,12 +100,12 @@ namespace PokemonCardCatalogue.Common.Context
 
         private DateTime GetExpiry(TimeSpan? cacheDuration)
         {
-            return DateTime.UtcNow.Add(cacheDuration ?? _defaultCacheDuration);
+            return DateTime.UtcNow.Add(cacheDuration ?? _cacheDuration);
         }
 
         public Task ClearAllCacheAsync()
         {
-            return _sqliteAsyncConnection.DeleteAllAsync<CachedQuery>();
+            return _databaseService.DeleteAllAsync<CachedQuery>();
         }
     }
 }
