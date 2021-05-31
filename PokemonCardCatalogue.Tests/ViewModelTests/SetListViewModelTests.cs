@@ -1,4 +1,4 @@
-﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
+﻿using NUnit.Framework;
 using Moq;
 using PokemonCardCatalogue.Common.Logic.Interfaces;
 using PokemonCardCatalogue.Common.Models.Data;
@@ -10,8 +10,8 @@ using System.Threading.Tasks;
 
 namespace PokemonCardCatalogue.Tests.ViewModelTests
 {
-    [TestClass]
-    public class SetListViewModelTests : BaseTestClass
+    [TestFixture]
+    public class SetListViewModelTests : BaseTestFixture
     {
         protected Mock<INavigationService> NavigationServiceMock;
         protected Mock<ISetListLogic> SetListLogicMock;
@@ -25,7 +25,7 @@ namespace PokemonCardCatalogue.Tests.ViewModelTests
             }
         };
 
-        private List<Card> FirstSetCards = new List<Card>
+        private readonly List<Card> FirstSetCards = new List<Card>
         {
             new Card
             {
@@ -38,17 +38,6 @@ namespace PokemonCardCatalogue.Tests.ViewModelTests
         };
 
         public SetListViewModel ViewModel { get; set; }
-
-        [TestInitialize]
-        public override void BeforeEachTest()
-        {
-            base.BeforeEachTest();
-        }
-
-        public override void AfterEachTest()
-        {
-            base.AfterEachTest();
-        }
 
         protected override void CreateMocks()
         {
@@ -74,7 +63,7 @@ namespace PokemonCardCatalogue.Tests.ViewModelTests
             );
         }
 
-        [TestMethod]
+        [Test]
         public async Task WhenOnLoadAsyncIsCalled_ThenCardListIsSet()
         {
             ViewModel.Init(FirstSet);
@@ -84,7 +73,7 @@ namespace PokemonCardCatalogue.Tests.ViewModelTests
         }
 
 
-        [TestMethod]
+        [Test]
         public async Task WhenGoToCardAsyncIsCalled_ThenNavigationServiceIsCalled()
         {
             ViewModel.Init(FirstSet);

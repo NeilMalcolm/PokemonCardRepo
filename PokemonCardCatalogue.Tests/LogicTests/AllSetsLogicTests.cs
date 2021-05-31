@@ -1,4 +1,4 @@
-﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
+﻿using NUnit.Framework;
 using Moq;
 using PokemonCardCatalogue.Common.Constants;
 using PokemonCardCatalogue.Common.Context.Interfaces;
@@ -6,16 +6,14 @@ using PokemonCardCatalogue.Common.Logic;
 using PokemonCardCatalogue.Common.Logic.Interfaces;
 using PokemonCardCatalogue.Common.Models;
 using PokemonCardCatalogue.Common.Models.Data;
-using PokemonCardCatalogue.Constants;
-using PokemonCardCatalogue.Models.Collection;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
 namespace PokemonCardCatalogue.Tests.LogicTests
 {
-    [TestClass]
-    public class AllSetsLogicTests : BaseTestClass
+    [TestFixture]
+    public class AllSetsLogicTests : BaseTestFixture
     {
         protected Mock<ICardCollection> CardCollectionMock;
         protected Mock<IApi> ApiMock;
@@ -38,17 +36,6 @@ namespace PokemonCardCatalogue.Tests.LogicTests
             new IdResult { Id = "3" }
         };
 
-        [TestInitialize]
-        public override void BeforeEachTest()
-        {
-            base.BeforeEachTest();
-        }
-
-        public override void AfterEachTest()
-        {
-            base.AfterEachTest();
-        }
-
         protected override void CreateMocks()
         {
             CardCollectionMock = new Mock<ICardCollection>();
@@ -57,7 +44,7 @@ namespace PokemonCardCatalogue.Tests.LogicTests
 
         protected override void SetupMocks()
         {
-            ApiMock.Setup(m => m.GetSetsAsync(It.IsAny<QueryParameters>()))
+            ApiMock.Setup(m => m.GetSetsAsync(It.IsAny<QueryParameters>(), It.IsAny<bool>()))
                 .Returns(Task.FromResult(SetsApiResponse));
 
             CardCollectionMock.Setup(m => m.QueryAsync<IdResult>(Queries.GetAllSetIdsInCollection))
@@ -73,7 +60,7 @@ namespace PokemonCardCatalogue.Tests.LogicTests
             );
         }
 
-        [TestMethod]
+        [Test]
         public async Task WhenGetSetsAsyncIsCalled_AndThereAreMatchingSetsInCollection_ThenAllApiSetResultsAreReturned()
         {
             var allSets = await Logic.GetSetsAsync();
@@ -81,14 +68,14 @@ namespace PokemonCardCatalogue.Tests.LogicTests
             Assert.AreEqual(SetsApiResponse.Count, allSets.Count);
         }
 
-        [TestMethod]
+        [Test]
         public async Task WhenGetSetsAsyncIsCalled_AndThereAreMatchingSetsInCollection_ThenIsInCollectionIsSet()
         {
             var allSets = await Logic.GetSetsAsync();
 
             Assert.AreEqual(CollectionSetIds.Count, allSets.Where(x => x.IsInCollection).Count());
         }
-        [TestMethod]
+        [Test]
         public async Task WhenGetSetsOrderedByMostRecentAsyncIsCalled_AndThereAreMatchingSetsInCollection_ThenAllApiSetResultsAreReturned()
         {
             var allSets = await Logic.GetSetsAsync();
@@ -96,7 +83,7 @@ namespace PokemonCardCatalogue.Tests.LogicTests
             Assert.AreEqual(SetsApiResponse.Count, allSets.Count);
         }
 
-        [TestMethod]
+        [Test]
         public async Task WhenGetSetsOrderedByMostRecentAsyncIsCalled_AndThereAreMatchingSetsInCollection_ThenIsInCollectionIsSet()
         {
             var allSets = await Logic.GetSetsAsync();

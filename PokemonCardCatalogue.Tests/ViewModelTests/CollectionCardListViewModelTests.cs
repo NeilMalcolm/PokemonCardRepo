@@ -1,4 +1,4 @@
-﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
+﻿using NUnit.Framework;
 using Moq;
 using PokemonCardCatalogue.Common.Logic.Interfaces;
 using PokemonCardCatalogue.Common.Models;
@@ -15,8 +15,8 @@ using System.Threading.Tasks;
 
 namespace PokemonCardCatalogue.Tests.ViewModelTests
 {
-    [TestClass]
-    public class CollectionCardListViewModelTests : BaseTestClass
+    [TestFixture]
+    public class CollectionCardListViewModelTests : BaseTestFixture
     {
         private const int _secondSetCardCount = 125;
 
@@ -90,18 +90,6 @@ namespace PokemonCardCatalogue.Tests.ViewModelTests
 
         public List<CardItem> SecondSetCards;
 
-        [TestInitialize]
-        public override void BeforeEachTest()
-        {
-            base.BeforeEachTest();
-        }
-
-        [TestCleanup]
-        public override void AfterEachTest()
-        {
-            base.AfterEachTest();
-        }
-
         protected override void CreateMocks()
         {
             CollectionLogicMock = new Mock<ICollectionLogic>();
@@ -126,13 +114,14 @@ namespace PokemonCardCatalogue.Tests.ViewModelTests
                 (
                     Task.FromResult<DateTime?>(DateTime.UtcNow.AddMinutes(1))
                 );
-            CollectionLogicMock.Setup(m => m.GetMostRecentlyUpdatedCardBySetId(FirstSet.Id))
+            CollectionLogicMock.Setup(m => m.GetMostRecentlyUpdatedCardsBySetId(FirstSet.Id, It.IsAny<DateTime>()))
                 .Returns
                 (() =>
                 {
                     var newCard = FirstSetCards[0];
                     newCard.NormalOwnedCount += 1;
-                    return Task.FromResult(newCard);
+                    var result = new List<CardItem> { newCard };
+                    return Task.FromResult((IList<CardItem>)result);
                 });
         }
 
@@ -146,7 +135,7 @@ namespace PokemonCardCatalogue.Tests.ViewModelTests
             );
         }
 
-        [TestMethod]
+        [Test]
         public async Task WhenOnLoadAsyncIsCalled_ThenDisplayListIsSet()
         {
             ViewModel.Init(FirstSet);
@@ -155,7 +144,7 @@ namespace PokemonCardCatalogue.Tests.ViewModelTests
             Assert.AreEqual(ViewModel.AllCardItems.Count, FirstSetCards.Count);
         }
 
-        [TestMethod]
+        [Test]
         public async Task WhenSetDisplayListIsCalled_AndModeIsSetButSearchTextIsNull_ThenResultsAreSorted()
         {
             ViewModel.Init(FirstSet);
@@ -167,7 +156,7 @@ namespace PokemonCardCatalogue.Tests.ViewModelTests
             Assert.AreEqual(ViewModel.AllCardItems.First(), ViewModel.CardItemList.Last());
         }
 
-        [TestMethod]
+        [Test]
         public async Task WhenSetDisplayListIsCalled_AndModeIsDefaultAndSearchTextIsSet_ThenResultsAreSortedAndSearched()
         {
             ViewModel.Init(FirstSet);
@@ -183,7 +172,7 @@ namespace PokemonCardCatalogue.Tests.ViewModelTests
             );
         }
 
-        [TestMethod]
+        [Test]
         public async Task WhenSetDisplayListIsCalled_AndModeIsSetAndSearchTextIsSet_ThenResultsAreSortedAndSearched()
         {
             ViewModel.Init(FirstSet);
@@ -202,7 +191,7 @@ namespace PokemonCardCatalogue.Tests.ViewModelTests
             Assert.IsTrue(ViewModel.CardItemList[2].Card.Name == "Charmander");
         }
 
-        [TestMethod]
+        [Test]
         public async Task WhenGoToCardAsyncIsCalled_ThenNavigationToCardPageIsDone()
         {
             ViewModel.Init(FirstSet);
@@ -213,7 +202,7 @@ namespace PokemonCardCatalogue.Tests.ViewModelTests
             NavigationServiceMock.Verify(m => m.GoToAsync<CardPage>(FirstSetCards[0].Card));
         }
 
-        [TestMethod]
+        [Test]
         public async Task WhenOnPageAppearingIsCalled_AndCardPageWasNavigatedTo_ThenReloadUpdatedCard()
         {
             ViewModel.Init(FirstSet);
@@ -226,7 +215,7 @@ namespace PokemonCardCatalogue.Tests.ViewModelTests
             Assert.AreNotEqual(ownedCount, ViewModel.CardItemList[0].NormalOwnedCount);
         }
 
-        [TestMethod]
+        [Test]
         public async Task WhenLoadMoreCardItemsCommandIsCalled_AndMoreCanBeLoaded_ThenCardItemListCoundIncreases()
         {
             ViewModel.Init(SecondSet);
@@ -239,7 +228,7 @@ namespace PokemonCardCatalogue.Tests.ViewModelTests
             Assert.IsTrue(newCount > initialCount);
         }
         
-        [TestMethod]
+        [Test]
         public async Task WhenLoadMoreCardItemsCommandIsCalled_AndRemainingCardsIsLessThanLimit_AllCardsAreLoadedAndNoExceptions()
         {
             ViewModel.Init(SecondSet);

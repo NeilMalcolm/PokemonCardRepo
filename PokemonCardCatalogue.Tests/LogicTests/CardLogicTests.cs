@@ -1,4 +1,4 @@
-﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
+﻿using NUnit.Framework;
 using Moq;
 using PokemonCardCatalogue.Common.Context;
 using PokemonCardCatalogue.Common.Context.Interfaces;
@@ -18,8 +18,8 @@ using PokemonCardCatalogue.Common;
 
 namespace PokemonCardCatalogue.Tests.LogicTests
 {
-    [TestClass]
-    public class CardLogicTests : BaseTestClass
+    [TestFixture]
+    public class CardLogicTests : BaseTestFixture
     {
         private const string HttpClientBaseAddress = "http://127.0.0.1";
 
@@ -122,18 +122,6 @@ namespace PokemonCardCatalogue.Tests.LogicTests
             }
         }
 
-
-        [TestInitialize]
-        public override void BeforeEachTest()
-        {
-            base.BeforeEachTest();
-        }
-
-        public override void AfterEachTest()
-        {
-            base.AfterEachTest();
-        }
-
         protected override void CreateMocks()
         {
             HttpClientHandlerMock = new Mock<HttpClientHandler>();
@@ -192,8 +180,8 @@ namespace PokemonCardCatalogue.Tests.LogicTests
             );
         }
 
-        [DataTestMethod,
-            DataRow(null)]
+        [Test,
+            TestCase(null)]
         public async Task WhenGetRelatedCardsInSetAsyncIsCalled_AndCardIsNull_ThenApiReturnsEmptyList(Card card)
         {
             var result = await Logic.GetRelatedCardsInSetAsync(card);
@@ -202,22 +190,22 @@ namespace PokemonCardCatalogue.Tests.LogicTests
             Assert.AreEqual(0, result.Count);
         }
 
-        [DataTestMethod,
-            DynamicData(nameof(GetPokemonRelatedCardRequestCardsAndExpectedUrls))]
+        [Test,
+            TestCaseSource(nameof(GetPokemonRelatedCardRequestCardsAndExpectedUrls))]
         public Task WhenGetPokemonRelatedCardsInSetAsyncIsCalled_ThenApiCallsExpectedUrl(Card card, string expectedRequestUrl)
         {
             return GetExpectedRelatedCardResults(card, expectedRequestUrl);
         }
 
-        [DataTestMethod,
-            DynamicData(nameof(GetNonPokemonRelatedCardRequestCardsAndExpectedUrls))]
+        [Test,
+            TestCaseSource(nameof(GetNonPokemonRelatedCardRequestCardsAndExpectedUrls))]
         public Task WhenGetNonPokemonRelatedCardsInSetAsyncIsCalled_ThenApiCallsExpectedUrl(Card card, string expectedRequestUrl)
         {
             return GetExpectedRelatedCardResults(card, expectedRequestUrl);
         }
 
-        [DataTestMethod,
-            DynamicData(nameof(PokemonInCache))]
+        [Test,
+            TestCaseSource(nameof(PokemonInCache))]
         public async Task WhenGetNonPokemonRelatedCardsInSetAsyncIsCalled_AndExistsInCache_ThenApiIsNeverCalled(Card card)
         {
             var result = await Logic.GetRelatedCardsInSetAsync(card);

@@ -1,7 +1,9 @@
-﻿using System.Text.Json.Serialization;
+﻿using System.Runtime.Serialization;
+using System.Text.Json.Serialization;
 
 namespace PokemonCardCatalogue.Common.Models.Data
 {
+    [KnownType(typeof(Card))]
     public class Card : BaseObject
     {
         [JsonPropertyName("supertype")]

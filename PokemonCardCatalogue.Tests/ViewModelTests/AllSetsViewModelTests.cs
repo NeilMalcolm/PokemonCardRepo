@@ -1,4 +1,4 @@
-﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
+﻿using NUnit.Framework;
 using Moq;
 using PokemonCardCatalogue.Common.Logic.Interfaces;
 using PokemonCardCatalogue.Common.Models;
@@ -12,15 +12,15 @@ using System.Threading.Tasks;
 
 namespace PokemonCardCatalogue.Tests.ViewModelTests
 {
-    [TestClass]
-    public class AllSetsViewModelTests : BaseTestClass
+    [TestFixture]
+    public class AllSetsViewModelTests : BaseTestFixture
     {
         protected Mock<IAllSetsLogic> AllSetsLogicMock;
         protected Mock<ICollectionLogic> CollectionLogicMock;
         protected Mock<INavigationService> NavigationServiceMock;
         protected AllSetsViewModel ViewModel;
 
-        private List<ApiSetItem> _apiSetItems = new List<ApiSetItem>
+        private readonly List<ApiSetItem> _apiSetItems = new List<ApiSetItem>
         {
             new ApiSetItem
             {
@@ -52,13 +52,11 @@ namespace PokemonCardCatalogue.Tests.ViewModelTests
             }
         };
 
-        [TestInitialize]
         public override void BeforeEachTest()
         {
             base.BeforeEachTest();
         }
 
-        [TestCleanup]
         public override void AfterEachTest()
         {
         }
@@ -72,7 +70,7 @@ namespace PokemonCardCatalogue.Tests.ViewModelTests
 
         protected override void SetupMocks()
         {
-            AllSetsLogicMock.Setup(m => m.GetSetsOrderedByMostRecentAsync())
+            AllSetsLogicMock.Setup(m => m.GetSetsOrderedByMostRecentAsync(false))
                 .Returns(() => Task.FromResult(_apiSetItems));
         }
         protected override void SetupData()
@@ -87,7 +85,7 @@ namespace PokemonCardCatalogue.Tests.ViewModelTests
         }
 
 
-        [TestMethod]
+        [Test]
         public async Task WhenLoadDataAsyncIsCalled_ThenSetsIsSetToAllSetsOrderedByDate()
         {
             await ViewModel.LoadAsync();
@@ -95,10 +93,9 @@ namespace PokemonCardCatalogue.Tests.ViewModelTests
             Assert.AreEqual(ViewModel.Sets.Count, _apiSetItems.Count);
         }
 
-        [TestMethod,
-            DataRow(""),
-            DataRow(null)
-        ]
+        [Test,
+            TestCase(""),
+            TestCase(null)]
         public async Task WhenSearchTextIsSetToEmptyStringOrNull_ThenSetsCountMatchesDbResult(string value)
         {
             await ViewModel.LoadAsync();
@@ -107,9 +104,9 @@ namespace PokemonCardCatalogue.Tests.ViewModelTests
             Assert.AreEqual(ViewModel.Sets.Count, 4);
         }
         
-        [TestMethod,
-            DataRow("Example one"),
-            DataRow("Example two")]
+        [Test,
+            TestCase("Example one"),
+            TestCase("Example two")]
         public async Task WhenSearchTextIsSetToNonNullOrEmptyValue_ThenDisplaySetListIsNotChanged(string value)
         {
             await ViewModel.LoadAsync();
@@ -119,7 +116,7 @@ namespace PokemonCardCatalogue.Tests.ViewModelTests
             Assert.AreEqual(ViewModel.Sets.Count, count);
         }
 
-        [TestMethod]
+        [Test]
         public async Task WhenSearchSetsCommandIsExecuted_ThenSetsOnlyContainsResultsWithMatchingSetName()
         {
             await ViewModel.LoadAsync();
@@ -128,7 +125,7 @@ namespace PokemonCardCatalogue.Tests.ViewModelTests
             Assert.AreEqual(ViewModel.Sets.Count, 3);
         }
 
-        [TestMethod]
+        [Test]
         public async Task WhenClearSearchCommandIsExecuted_ThenAllSetsIsEqualToBackingStore()
         {
             await ViewModel.LoadAsync();
@@ -137,7 +134,7 @@ namespace PokemonCardCatalogue.Tests.ViewModelTests
             Assert.AreEqual(ViewModel.Sets.Count, 4);
         }
 
-        [TestMethod]
+        [Test]
         public async Task WhenAddSetToCollectionCommandIsExecuted_ThenCollectionLogicAddSetAndCardsIsCalledForSet()
         {
             await ViewModel.LoadAsync();
@@ -147,7 +144,7 @@ namespace PokemonCardCatalogue.Tests.ViewModelTests
             CollectionLogicMock.Verify(m => m.AddSetAndCardsToCollection(selectedItem.Set), Times.Once);
         }
 
-        [TestMethod]
+        [Test]
         public async Task WhenAddSetToCollectionCommandIsExecutedSeveralTimes_ThenCollectionLogicAddSetAndCardsIsCalledForSet_ExactlyOnce()
         {
             await ViewModel.LoadAsync();
@@ -160,7 +157,7 @@ namespace PokemonCardCatalogue.Tests.ViewModelTests
             CollectionLogicMock.Verify(m => m.AddSetAndCardsToCollection(selectedItem.Set), Times.AtMostOnce);
         }
 
-        [TestMethod]
+        [Test]
         public async Task WhenGoToSetInCollectionCommandIsExecuted_ThenTabIsSwitchedAndNavigatesToCollectionCardListPage()
         {
             await ViewModel.LoadAsync();
@@ -171,7 +168,7 @@ namespace PokemonCardCatalogue.Tests.ViewModelTests
             NavigationServiceMock.Verify(m => m.GoToAsync<CollectionCardListPage>(selectedItem.Set), Times.Once);
         }
 
-        [TestMethod]
+        [Test]
         public async Task WhenGoToSetCommandIsExecuted_ThenGoToSetIsCalled()
         {
             await ViewModel.LoadAsync();
