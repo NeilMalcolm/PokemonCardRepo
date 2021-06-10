@@ -1,13 +1,11 @@
 ﻿using PokemonCardCatalogue.Common.Logic.Interfaces;
 using PokemonCardCatalogue.Common.Models.Data;
-using PokemonCardCatalogue.Common.Models.Enums;
 using PokemonCardCatalogue.Helpers.Factories;
 using PokemonCardCatalogue.Models;
 using PokemonCardCatalogue.Pages;
 using PokemonCardCatalogue.Services.Interfaces;
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Input;
@@ -40,8 +38,8 @@ namespace PokemonCardCatalogue.ViewModels
         private int _normalOwnedCount;
         public int NormalOwnedCount
         {
-            get => _normalOwnedCount; 
-            set 
+            get => _normalOwnedCount;
+            set
             {
                 _normalOwnedCount = value;
                 OnPropertyChanged();
@@ -52,8 +50,8 @@ namespace PokemonCardCatalogue.ViewModels
         private int _holoOwnedCount;
         public int HoloOwnedCount
         {
-            get => _holoOwnedCount; 
-            set 
+            get => _holoOwnedCount;
+            set
             {
                 _holoOwnedCount = value;
                 OnPropertyChanged();
@@ -64,8 +62,8 @@ namespace PokemonCardCatalogue.ViewModels
         private int _reverseOwnedCount;
         public int ReverseOwnedCount
         {
-            get => _reverseOwnedCount; 
-            set 
+            get => _reverseOwnedCount;
+            set
             {
                 _reverseOwnedCount = value;
                 OnPropertyChanged();
@@ -76,8 +74,8 @@ namespace PokemonCardCatalogue.ViewModels
         private bool _showNormalCounter;
         public bool ShowNormalCounter
         {
-            get => _showNormalCounter; 
-            set 
+            get => _showNormalCounter;
+            set
             {
                 _showNormalCounter = value;
                 OnPropertyChanged();
@@ -87,8 +85,8 @@ namespace PokemonCardCatalogue.ViewModels
         private bool _showReverseCounter;
         public bool ShowReverseCounter
         {
-            get => _showReverseCounter; 
-            set 
+            get => _showReverseCounter;
+            set
             {
                 _showReverseCounter = value;
                 OnPropertyChanged();
@@ -98,8 +96,8 @@ namespace PokemonCardCatalogue.ViewModels
         private bool _showHoloCounter;
         public bool ShowHoloCounter
         {
-            get => _showHoloCounter; 
-            set 
+            get => _showHoloCounter;
+            set
             {
                 _showHoloCounter = value;
                 OnPropertyChanged();
@@ -118,7 +116,7 @@ namespace PokemonCardCatalogue.ViewModels
             }
         }
 
-        public bool IsRelatedCardsSectionVisible => RelatedCards?.Count > 0;
+        public bool IsRelatedCardsSectionVisible => _relatedCards?.Count > 0;
 
         private List<PriceDisplayViewModel> _prices;
         public List<PriceDisplayViewModel> Prices
@@ -143,7 +141,7 @@ namespace PokemonCardCatalogue.ViewModels
             }
         }
 
-        public bool IsPricesSectionVisible => Prices?.Count > 0;
+        public bool IsPricesSectionVisible => _prices?.Count > 0;
 
         private bool _isLoadingRelatedCards;
 
@@ -337,9 +335,11 @@ namespace PokemonCardCatalogue.ViewModels
 
         private async Task GetOwnedCountAsync(string id)
         {
-            NormalOwnedCount = await _collectionLogic.GetCardNormalOwnedCount(id);
-            HoloOwnedCount = await _collectionLogic.GetCardHoloOwnedCount(id);
-            ReverseOwnedCount = await _collectionLogic.GetCardReverseOwnedCount(id);
+            var cardOwnedCounts = await _collectionLogic.GetCardOwnedCounts(id); 
+
+            NormalOwnedCount = cardOwnedCounts.NormalCount;
+            HoloOwnedCount = cardOwnedCounts.HoloCount;
+            ReverseOwnedCount = cardOwnedCounts.ReverseCount;
         }
 
         private async Task SetPrices(Card card)

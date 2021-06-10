@@ -54,6 +54,14 @@
                   ModifiedDate = ? 
               WHERE Id = ?";
 
+        public const string GetCardOwnedCountsById =
+            @"SELECT NormalOwnedCount as NormalCount, 
+                     HoloOwnedCount as HoloCount, 
+                     ReverseHoloOwnedCount as ReverseCount
+              FROM CollectionCard 
+              WHERE Id = ?
+              LIMIT 1";
+
         public const string GetNormalCardOwnedCountById =
             @"SELECT NormalOwnedCount 
               FROM CollectionCard 
