@@ -19,9 +19,7 @@ namespace PokemonCardCatalogue.Common.Logic.Interfaces
         Task<int> DecrementCardNormalOwnedCount(string cardId);
         Task<int> DecrementCardHoloOwnedCount(string cardId);
         Task<int> DecrementCardReverseOwnedCount(string cardId);
-        Task<int> GetCardNormalOwnedCount(string cardId);
-        Task<int> GetCardHoloOwnedCount(string cardId);
-        Task<int> GetCardReverseOwnedCount(string cardId);
+        Task<OwnedCounter> GetCardOwnedCounts(string cardId);
         Task<DateTime?> GetMostRecentCardModifiedDateBySetId(string setId);
         Task<IList<CardItem>> GetMostRecentlyUpdatedCardsBySetId(string setId, DateTime changesSinceDateTime);
         Task<float> GetEstimatedCollectionMarketValue();

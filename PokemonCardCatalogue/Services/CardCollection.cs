@@ -2,7 +2,6 @@
 using PokemonCardCatalogue.Common.Logic.Interfaces;
 using PokemonCardCatalogue.Common.Models;
 using PokemonCardCatalogue.Common.Models.Data;
-using PokemonCardCatalogue.Constants;
 using PokemonCardCatalogue.Models.Collection;
 using PokemonCardCatalogue.Services.Interfaces;
 using SQLite;
@@ -137,6 +136,11 @@ namespace PokemonCardCatalogue.Services
         public Task<List<T>> QueryAsync<T>(string query) where T : new()
         {
             return _collectionConnection.QueryAsync<T>(query);
+        }
+        
+        public Task<T> FindAsync<T>(string query, params object[] parameters) where T : new()
+        {
+            return _collectionConnection.FindWithQueryAsync<T>(query, parameters);
         }
 
         public async Task DeleteAllDataAsync()

@@ -17,6 +17,7 @@ namespace PokemonCardCatalogue.Common.Logic.Interfaces
         Task<List<SetItem>> GetSetItemsAsync(bool withOwnedCount = true); 
         Task<int> DeleteSetAndCardsAsync(Set set);
         Task<List<T>> QueryAsync<T>(string query) where T : new();
+        Task<T> FindAsync<T>(string query, params object[] parameters) where T : new();
         Task DeleteAllDataAsync();
         Task<CardItem> FindCardByQueryAsync(string query, params object[] parameters);
         Task<IList<CardItem>> GetCardsByQueryAsync(string query, params object[] parameters);

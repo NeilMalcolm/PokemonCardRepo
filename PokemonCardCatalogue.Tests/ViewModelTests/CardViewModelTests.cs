@@ -9,6 +9,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using PokemonCardCatalogue.Common.Models;
 
 namespace PokemonCardCatalogue.Tests.ViewModelTests
 {
@@ -144,11 +145,17 @@ namespace PokemonCardCatalogue.Tests.ViewModelTests
 
         protected override void SetupMocks()
         {
-            CollectionLogicMock.Setup(m => m.GetCardNormalOwnedCount(CardWithOwnedCount1.Id))
-                .Returns(Task.FromResult(1));
+            CollectionLogicMock.Setup(m => m.GetCardOwnedCounts(CardWithOwnedCount1.Id))
+                .ReturnsAsync(new OwnedCounter
+                {
+                    NormalCount = 1
+                });
             
-            CollectionLogicMock.Setup(m => m.GetCardNormalOwnedCount(CardWhereRelatedCardGetThrowsException.Id))
-                .Returns(Task.FromResult(5));
+            CollectionLogicMock.Setup(m => m.GetCardOwnedCounts(CardWhereRelatedCardGetThrowsException.Id))
+                .ReturnsAsync(new OwnedCounter
+                {
+                    NormalCount = 5
+                });
 
             CardLogicMock.Setup(m => m.GetRelatedCardsInSetAsync(CardWithRelatedCards))
                 .Returns(Task.FromResult(new List<Card>
@@ -261,7 +268,7 @@ namespace PokemonCardCatalogue.Tests.ViewModelTests
             await ViewModel.LoadAsync();
 
             CardLogicMock.Verify(m => m.GetRelatedCardsInSetAsync(CardWhereRelatedCardGetThrowsException), Times.Once);
-            CollectionLogicMock.Verify(m => m.GetCardNormalOwnedCount(CardWhereRelatedCardGetThrowsException.Id), Times.Once);
+            CollectionLogicMock.Verify(m => m.GetCardOwnedCounts(CardWhereRelatedCardGetThrowsException.Id), Times.Once);
 
             Assert.IsNotNull(ViewModel.Prices);
             Assert.AreEqual(ViewModel.Prices.Count, 1);

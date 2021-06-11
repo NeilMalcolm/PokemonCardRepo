@@ -1,6 +1,5 @@
 ﻿using PokemonCardCatalogue.Common.Constants;
 using PokemonCardCatalogue.Common.Context.Interfaces;
-using PokemonCardCatalogue.Common.Logic;
 using PokemonCardCatalogue.Common.Logic.Interfaces;
 using PokemonCardCatalogue.Common.Models;
 using PokemonCardCatalogue.Common.Models.Data;
@@ -221,24 +220,14 @@ namespace PokemonCardCatalogue.Common.Logic
 
         #region Get Owned Count
 
-        public Task<int> GetCardNormalOwnedCount(string cardId)
+        public Task<OwnedCounter> GetCardOwnedCounts(string cardId)
         {
-            return GetCardOwnedCount(cardId, Queries.GetNormalCardOwnedCountById);
+            return ExecuteGetCardOwnedCount(cardId, Queries.GetCardOwnedCountsById);
         }
         
-        public Task<int> GetCardHoloOwnedCount(string cardId)
+        private Task<OwnedCounter> ExecuteGetCardOwnedCount(string cardId, string query)
         {
-            return GetCardOwnedCount(cardId, Queries.GetHoloCardOwnedCountById);
-        }
-        
-        public Task<int> GetCardReverseOwnedCount(string cardId)
-        {
-            return GetCardOwnedCount(cardId, Queries.GetReverseCardOwnedCountById);
-        }
-        
-        private Task<int> GetCardOwnedCount(string cardId, string query)
-        {
-            return _cardCollection.ExecuteScalarAsync<int>
+            return _cardCollection.FindAsync<OwnedCounter>
             (
                 query,
                 cardId
