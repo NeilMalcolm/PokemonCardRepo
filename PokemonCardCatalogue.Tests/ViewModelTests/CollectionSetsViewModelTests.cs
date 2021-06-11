@@ -1,5 +1,5 @@
-﻿using NUnit.Framework;
-using Moq;
+﻿using Moq;
+using NUnit.Framework;
 using PokemonCardCatalogue.Common.Logic.Interfaces;
 using PokemonCardCatalogue.Common.Models;
 using PokemonCardCatalogue.Common.Models.Data;
@@ -43,13 +43,27 @@ namespace PokemonCardCatalogue.Tests.ViewModelTests
             }
         };
 
-        private readonly SetItem SetToAdd = new SetItem
+        private SetItem SetToAdd = new SetItem
         {
             Set = new Set
             {
                 Name = "Example 3"
             }
         };
+
+        [SetUp]
+        public override void BeforeEachTest()
+        {
+            base.BeforeEachTest();
+        }
+
+        public override void AfterEachTest()
+        {
+            if (AllSets.Contains(SetToAdd))
+            {
+                AllSets.Remove(SetToAdd);
+            }
+        }
 
         protected override void CreateMocks()
         {

@@ -1,6 +1,4 @@
-﻿using PokemonCardCatalogue.Models.Settings;
-
-namespace PokemonCardCatalogue.Models.Settings
+﻿namespace PokemonCardCatalogue.Models.Settings
 {
     public abstract class BaseSetting
     {

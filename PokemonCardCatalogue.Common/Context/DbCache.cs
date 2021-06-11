@@ -2,7 +2,6 @@
 using PokemonCardCatalogue.Common.Models;
 using System;
 using System.Threading.Tasks;
-using SQLite;
 using System.Text.Json;
 using System.IO;
 using System.Text;
@@ -10,7 +9,7 @@ using PokemonCardCatalogue.Common.Helpers;
 
 namespace PokemonCardCatalogue.Common.Context
 {
-    public class SqliteCache : ICache
+    public class DbCache : ICache
     {
         private readonly IDatabaseService _databaseService;
 
@@ -20,7 +19,7 @@ namespace PokemonCardCatalogue.Common.Context
         private TimeSpan _cacheDuration;
         private JsonSerializerOptions _jsonSerializerOptions;
 
-        public SqliteCache(IDatabaseService databaseService)
+        public DbCache(IDatabaseService databaseService)
         {
             _databaseService = databaseService;
         }

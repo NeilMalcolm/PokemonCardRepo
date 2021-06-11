@@ -3,9 +3,11 @@
              x:Class="PokemonCardCatalogue.Pages.CollectionSetsPage"
              xmlns:pages="clr-namespace:PokemonCardCatalogue.Pages"
              xmlns:ff="clr-namespace:FFImageLoading.Forms;assembly=FFImageLoading.Forms"
-             xmlns:xctk="http://xamarin.com/schemas/2020/toolkit"
+             xmlns:viewmodels="clr-namespace:PokemonCardCatalogue.ViewModels"
              x:Name="ThisPage"
-             Shell.NavBarIsVisible="False">
+             Shell.NavBarIsVisible="False"
+             xmlns:models="clr-namespace:PokemonCardCatalogue.Common.Models;assembly=PokemonCardCatalogue.Common"
+             x:DataType="viewmodels:CollectionSetsViewModel">
     <pages:BaseContentPage.Content>
         <RefreshView Command="{Binding RefreshCommand}"
                      IsRefreshing="{Binding IsRefreshing}">
@@ -33,7 +35,7 @@
                     </StackLayout>
                 </CollectionView.Header>
                 <CollectionView.ItemTemplate>
-                    <DataTemplate>
+                    <DataTemplate x:DataType="models:SetItem">
                         <ContentView>
                             <Frame Style="{StaticResource CollectionSetListCardFrameStyle}">
                                     <Frame.GestureRecognizers>

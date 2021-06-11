@@ -1,10 +1,9 @@
-﻿using NUnit.Framework;
-using Moq;
+﻿using Moq;
+using NUnit.Framework;
 using PokemonCardCatalogue.Common.Logic.Interfaces;
 using PokemonCardCatalogue.Common.Models;
 using PokemonCardCatalogue.Common.Models.Data;
 using PokemonCardCatalogue.Constants;
-using PokemonCardCatalogue.Models;
 using PokemonCardCatalogue.Pages;
 using PokemonCardCatalogue.Services.Interfaces;
 using PokemonCardCatalogue.ViewModels;
@@ -115,13 +114,15 @@ namespace PokemonCardCatalogue.Tests.ViewModelTests
                     Task.FromResult<DateTime?>(DateTime.UtcNow.AddMinutes(1))
                 );
             CollectionLogicMock.Setup(m => m.GetMostRecentlyUpdatedCardsBySetId(FirstSet.Id, It.IsAny<DateTime>()))
-                .Returns
+                .ReturnsAsync
                 (() =>
                 {
                     var newCard = FirstSetCards[0];
                     newCard.NormalOwnedCount += 1;
-                    var result = new List<CardItem> { newCard };
-                    return Task.FromResult((IList<CardItem>)result);
+                    return new List<CardItem>
+                    {
+                        newCard
+                    };
                 });
         }
 

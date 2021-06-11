@@ -61,7 +61,7 @@ namespace PokemonCardCatalogue.ViewModels
         protected override async Task OnLoadAsync()
         {
             var allCards = await _setListLogic.GetAllCardsForSetAsync(_set.Id);
-            await Task.Delay(1000);
+            await Task.Delay(500);
             CardList = allCards;
         }
 

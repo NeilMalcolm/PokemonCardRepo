@@ -1,5 +1,5 @@
-﻿using NUnit.Framework;
-using Moq;
+﻿using Moq;
+using NUnit.Framework;
 using PokemonCardCatalogue.Common.Logic.Interfaces;
 using PokemonCardCatalogue.Common.Models;
 using PokemonCardCatalogue.Common.Models.Data;
@@ -20,7 +20,7 @@ namespace PokemonCardCatalogue.Tests.ViewModelTests
         protected Mock<INavigationService> NavigationServiceMock;
         protected AllSetsViewModel ViewModel;
 
-        private readonly List<ApiSetItem> _apiSetItems = new List<ApiSetItem>
+        private List<ApiSetItem> _apiSetItems = new List<ApiSetItem>
         {
             new ApiSetItem
             {
@@ -52,11 +52,13 @@ namespace PokemonCardCatalogue.Tests.ViewModelTests
             }
         };
 
+        [SetUp]
         public override void BeforeEachTest()
         {
             base.BeforeEachTest();
         }
 
+        [TearDown]
         public override void AfterEachTest()
         {
         }
@@ -95,7 +97,8 @@ namespace PokemonCardCatalogue.Tests.ViewModelTests
 
         [Test,
             TestCase(""),
-            TestCase(null)]
+            TestCase(null)
+        ]
         public async Task WhenSearchTextIsSetToEmptyStringOrNull_ThenSetsCountMatchesDbResult(string value)
         {
             await ViewModel.LoadAsync();

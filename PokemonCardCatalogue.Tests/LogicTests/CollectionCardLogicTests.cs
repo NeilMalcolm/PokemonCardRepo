@@ -1,5 +1,5 @@
-﻿using NUnit.Framework;
-using Moq;
+﻿using Moq;
+using NUnit.Framework;
 using PokemonCardCatalogue.Common.Context.Interfaces;
 using PokemonCardCatalogue.Common.Logic;
 using PokemonCardCatalogue.Common.Logic.Interfaces;
@@ -18,6 +18,11 @@ namespace PokemonCardCatalogue.Tests.LogicTests
         {
             ApiMock = new Mock<IApi>();
             CardCollectionMock = new Mock<ICardCollection>();
+        }
+
+        protected override void SetupMocks()
+        {
+            base.SetupMocks();
         }
 
         protected override void SetupData()

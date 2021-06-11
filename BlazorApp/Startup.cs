@@ -26,21 +26,25 @@ namespace BlazorApp
         // For more information on how to configure your application, visit https://go.microsoft.com/fwlink/?LinkID=398940
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddRazorPages();
-            services.AddServerSideBlazor();
-            services.AddSingleton<WeatherForecastService>();
+            _ = services.AddRazorPages();
+            _ =services.AddServerSideBlazor();
 
-            services.AddSingleton<HttpClient>((s) => new HttpClient
-            {
-                BaseAddress = new Uri($"https://api.pokemontcg.io/v2/")
-            });
-            services.AddSingleton<ICache>(ConfigureCache());
-            services.AddSingleton<IApiService, PokemonTcgApiService>();
-            services.AddSingleton<IApi, PokemonTcgApi>();
-            services.AddSingleton<ICardCollection, DoNothingCardCollection>();
-            services.AddSingleton<ICardLogic, CardLogic>();
-            services.AddSingleton<IAllSetsLogic, AllSetsLogic>();
-            services.AddSingleton<ISetListLogic, SetListLogic>();
+            _ = services.AddSingleton<WeatherForecastService>()
+                .AddSingleton((s) => new HttpClient
+                {
+                    BaseAddress = new Uri($"https://api.pokemontcg.io/v2/")
+                })
+                .AddSingleton<IDatabaseService, SqliteDatabaseService>()
+                .AddSingleton<ICache, DbCache>()
+                .AddSingleton<IApiService, PokemonTcgApiService>()
+                .AddSingleton<IApi, PokemonTcgApi>()
+                .AddSingleton<ICardCollection, DoNothingCardCollection>()
+                .AddSingleton<ICardLogic, CardLogic>()
+                .AddSingleton<IAllSetsLogic, AllSetsLogic>()
+                .AddSingleton<ISetListLogic, SetListLogic>();
+
+            Configuration.Get<ICache>()
+                .Init();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -66,14 +70,6 @@ namespace BlazorApp
             });
 
             PokemonCardCatalogue.Common.Self.SetApikey("8f8d3be5-5801-482e-97c0-4b7953b461fa");
-
-        }
-
-        private ICache ConfigureCache()
-        {
-            var sqliteCache = new SqliteCache();
-            sqliteCache.Init();
-            return sqliteCache;
         }
     }
 }

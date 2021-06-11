@@ -1,5 +1,5 @@
-﻿using NUnit.Framework;
-using Moq;
+﻿using Moq;
+using NUnit.Framework;
 using PokemonCardCatalogue.Common.Logic.Interfaces;
 using PokemonCardCatalogue.Common.Models.Data;
 using PokemonCardCatalogue.Pages;
@@ -25,7 +25,7 @@ namespace PokemonCardCatalogue.Tests.ViewModelTests
             }
         };
 
-        private readonly List<Card> FirstSetCards = new List<Card>
+        private List<Card> FirstSetCards = new List<Card>
         {
             new Card
             {
@@ -38,6 +38,17 @@ namespace PokemonCardCatalogue.Tests.ViewModelTests
         };
 
         public SetListViewModel ViewModel { get; set; }
+
+        [SetUp]
+        public override void BeforeEachTest()
+        {
+            base.BeforeEachTest();
+        }
+
+        public override void AfterEachTest()
+        {
+            base.AfterEachTest();
+        }
 
         protected override void CreateMocks()
         {
