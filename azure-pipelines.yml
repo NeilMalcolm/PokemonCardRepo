@@ -8,7 +8,7 @@ trigger:
 
 pool:
   vmImage: 'macos-latest'
-
+  
 variables:
   buildConfiguration: 'Release'
   outputDirectory: '$(build.binariesDirectory)/$(buildConfiguration)'
@@ -26,6 +26,7 @@ steps:
   inputs:
     packageType: 'sdk'
     version: '5.0.x'
+    vsVersion: '16.10.x'
 
 - task: NuGetToolInstaller@1
 
