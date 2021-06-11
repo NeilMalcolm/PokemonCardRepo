@@ -20,7 +20,7 @@ namespace PokemonCardCatalogue.Tests.ViewModelTests
         protected Mock<INavigationService> NavigationServiceMock;
         protected AllSetsViewModel ViewModel;
 
-        private List<ApiSetItem> _apiSetItems = new List<ApiSetItem>
+        private readonly List<ApiSetItem> _apiSetItems = new List<ApiSetItem>
         {
             new ApiSetItem
             {

@@ -6,8 +6,8 @@ namespace PokemonCardCatalogue.TemplateSelector
 {
     public class CollectionCardViewTemplateSelector : DataTemplateSelector
     {
-        private DataTemplate OwnedCardTemplate = new CollectionCardTemplate();
-        private DataTemplate UnownedCardTemplate = new UnownedCollectionCardTemplate();
+        private readonly DataTemplate OwnedCardTemplate = new CollectionCardTemplate();
+        private readonly DataTemplate UnownedCardTemplate = new UnownedCollectionCardTemplate();
 
         protected override DataTemplate OnSelectTemplate(object item, BindableObject container)
         {

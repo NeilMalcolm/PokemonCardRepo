@@ -25,41 +25,47 @@
                                    ItemSpacing="0"/>
             </CollectionView.ItemsLayout>
             <CollectionView.EmptyView>
-                <StackLayout Padding="15"
-                             Spacing="12.5">
-                    <controls:SkeletonView HeightRequest="85"
+                <Grid>
+                    <StackLayout Padding="15"
+                             Spacing="12.5"
+                             IsVisible="{Binding IsLoading}">
+                        <controls:SkeletonView HeightRequest="85"
                                            WidthRequest="150"
                                            CornerRadius="12"
                                            HorizontalOptions="FillAndExpand"/>
-                    <controls:SkeletonView HeightRequest="85"
+                        <controls:SkeletonView HeightRequest="85"
                                            WidthRequest="150"
                                            CornerRadius="12"
                                            HorizontalOptions="FillAndExpand"/>
-                    <controls:SkeletonView HeightRequest="85"
+                        <controls:SkeletonView HeightRequest="85"
                                            WidthRequest="150"
                                            CornerRadius="12"
                                            HorizontalOptions="FillAndExpand"/>
-                    <controls:SkeletonView HeightRequest="85"
+                        <controls:SkeletonView HeightRequest="85"
                                            WidthRequest="150"
                                            CornerRadius="12"
                                            HorizontalOptions="FillAndExpand"/>
-                    <controls:SkeletonView HeightRequest="85"
+                        <controls:SkeletonView HeightRequest="85"
                                            WidthRequest="150"
                                            CornerRadius="12"
                                            HorizontalOptions="FillAndExpand"/>
-                    <controls:SkeletonView HeightRequest="85"
+                        <controls:SkeletonView HeightRequest="85"
                                            WidthRequest="150"
                                            CornerRadius="12"
                                            HorizontalOptions="FillAndExpand"/>
-                    <controls:SkeletonView HeightRequest="85"
+                        <controls:SkeletonView HeightRequest="85"
                                            WidthRequest="150"
                                            CornerRadius="12"
                                            HorizontalOptions="FillAndExpand"/>
-                    <controls:SkeletonView HeightRequest="85"
+                        <controls:SkeletonView HeightRequest="85"
                                            WidthRequest="150"
                                            CornerRadius="12"
                                            HorizontalOptions="FillAndExpand"/>
-                </StackLayout>
+                    </StackLayout>
+                    <Label Text="{Binding EmptyListMessage}"
+                           VerticalOptions="Center"
+                           HorizontalOptions="Center"/>
+                </Grid>
             </CollectionView.EmptyView>
             <CollectionView.ItemTemplate>
                 <DataTemplate x:DataType="models:Card">

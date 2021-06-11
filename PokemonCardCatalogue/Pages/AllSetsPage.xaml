@@ -9,6 +9,7 @@
              xmlns:viewModels="clr-namespace:PokemonCardCatalogue.ViewModels"
              xmlns:models="clr-namespace:PokemonCardCatalogue.Common.Models;assembly=PokemonCardCatalogue.Common"
              x:Name="ThisPage"
+             xmlns:controls="clr-namespace:PokemonCardCatalogue.Controls"
              x:DataType="viewModels:AllSetsViewModel"
              Shell.NavBarIsVisible="False">
     <pages:BaseContentPage.Resources>
@@ -25,29 +26,29 @@
                        ios:SearchBar.SearchBarStyle="Minimal">
                         <SearchBar.Behaviors>
                             <xctk:UserStoppedTypingBehavior Command="{Binding SearchSetsCommand}"
-                                                    ShouldDismissKeyboardAutomatically="False"
-                                                    StoppedTypingTimeThreshold="400"
-                                                    MinimumLengthThreshold="1"/>
+                                                            ShouldDismissKeyboardAutomatically="False"
+                                                            StoppedTypingTimeThreshold="400"
+                                                            MinimumLengthThreshold="1"/>
                         </SearchBar.Behaviors>
                     </SearchBar>
                     <CollectionView ItemsSource="{Binding Sets}">
                         <CollectionView.ItemsLayout>
                             <LinearItemsLayout Orientation="Vertical"
-                                   ItemSpacing="0"/>
+                                               ItemSpacing="0"/>
                         </CollectionView.ItemsLayout>
                         <CollectionView.Header>
                             <StackLayout Orientation="Vertical"
-                             Margin="0"
-                             Spacing="10"
-                             Padding="10, 20">
+                                         Margin="0"
+                                         Spacing="10"
+                                         Padding="10, 20">
                                 <Label Text="All Sets"
-                               Style="{StaticResource LargeTitleViewLabelStyle}"
-                               FontAttributes="Bold"
-                               Margin="0"/>
+                                       Style="{StaticResource LargeTitleViewLabelStyle}"
+                                       FontAttributes="Bold"
+                                       Margin="0"/> 
                                 <Label Text="A list of all English language Pokémon sets which have been released as of XX/YY/ZZ."
-                               HorizontalOptions="Center"
-                               HorizontalTextAlignment="Center"
-                               Margin="0"/>
+                                       HorizontalOptions="Center"
+                                       HorizontalTextAlignment="Center"
+                                       Margin="0"/>
                             </StackLayout>
                         </CollectionView.Header>
                         <CollectionView.ItemTemplate>
@@ -57,10 +58,10 @@
                                         <Frame.GestureRecognizers>
                                             <TapGestureRecognizer Command="{Binding Source={x:Reference ThisPage}, 
                                                                         Path=BindingContext.GoToSetCommand}"
-                                                      CommandParameter="{Binding .}"/>
+                                                                  CommandParameter="{Binding .}"/>
                                         </Frame.GestureRecognizers>
                                         <Grid ColumnSpacing="15"
-                                      RowSpacing="2.5">
+                                              RowSpacing="2.5">
                                             <Grid.ColumnDefinitions>
                                                 <ColumnDefinition Width="105"/>
                                                 <ColumnDefinition Width="*"/>
@@ -72,88 +73,131 @@
                                                 <RowDefinition Height="18"/>
                                             </Grid.RowDefinitions>
                                             <ff:CachedImage Source="{Binding Set.Images.Logo}"
-                                                    Aspect="AspectFit"
-                                                    DownsampleToViewSize="True"
-                                                    Grid.RowSpan="3"/>
+                                                            Aspect="AspectFit"
+                                                            DownsampleToViewSize="True"
+                                                            Grid.RowSpan="3"/>
 
                                             <!-- First Row -->
                                             <Label x:Name="TitleLabel"
-                                           Text="{Binding Set.Name}"
-                                           Style="{StaticResource SetCardTitleStyle}"
-                                           Grid.Column="1"/>
+                                                   Text="{Binding Set.Name}"
+                                                   Style="{StaticResource SetCardTitleStyle}"
+                                                   Grid.Column="1"/>
 
                                             <Frame x:Name="TotalBackgroundFrame"
-                                           Style="{StaticResource SetCardTotalBackgroundFrameStyle}"
-                                           HorizontalOptions="End"
-                                           VerticalOptions="Center"
-                                           Grid.Column="2">
+                                                   Style="{StaticResource SetCardTotalBackgroundFrameStyle}"
+                                                   HorizontalOptions="End"
+                                                   VerticalOptions="Center"
+                                                   Grid.Column="2">
                                                 <Label x:Name="TotalLabel"
-                                               Text="{Binding Set.Total}"
-                                               FontSize="11"
-                                               VerticalOptions="Center"/>
+                                                       Text="{Binding Set.Total}"
+                                                       FontSize="11"
+                                                       VerticalOptions="Center"/>
                                             </Frame>
                                             <!-- Second Row -->
                                             <Label x:Name="SubtitleLabel"
-                                           Text="{Binding Set.Series}"
-                                           Style="{StaticResource SetCardSubtitleStyle}"
-                                           Grid.Row="1"
-                                           Grid.Column="1"/>
+                                                   Text="{Binding Set.Series}"
+                                                   Style="{StaticResource SetCardSubtitleStyle}"
+                                                   Grid.Row="1"
+                                                   Grid.Column="1"/>
 
                                             <Button Text="+  Add"
-                                            Style="{StaticResource SetCardAddButtonStyle}"
-                                            Grid.Row="1"
-                                            Grid.Column="1"
-                                            Grid.RowSpan="2"
-                                            Grid.ColumnSpan="2"
-                                            IsVisible="{Binding IsInCollection, 
-                                                                Converter={StaticResource InverseBoolConverter}}"
-                                            Command="{Binding Source={x:Reference ThisPage}, 
-                                                              Path=BindingContext.AddSetToCollectionCommand}"
-                                            CommandParameter="{Binding .}">
+                                                    Style="{StaticResource SetCardAddButtonStyle}"
+                                                    Grid.Row="1"
+                                                    Grid.Column="1"
+                                                    Grid.RowSpan="2"
+                                                    Grid.ColumnSpan="2"
+                                                    IsVisible="{Binding IsInCollection, 
+                                                                        Converter={StaticResource InverseBoolConverter}}"
+                                                    Command="{Binding Source={x:Reference ThisPage}, 
+                                                                      Path=BindingContext.AddSetToCollectionCommand}"
+                                                    CommandParameter="{Binding .}">
                                                 <Button.Triggers>
                                                     <DataTrigger TargetType="Button"
-                                                         Binding="{Binding IsDownloading}"
-                                                         Value="True">
+                                                                 Binding="{Binding IsDownloading}"
+                                                                 Value="True">
                                                         <Setter Property="InputTransparent"
-                                                        Value="True"/>
+                                                                Value="True"/>
                                                         <Setter Property="Opacity"
-                                                        Value="0"/>
+                                                                Value="0"/>
                                                     </DataTrigger>
                                                 </Button.Triggers>
                                             </Button>
 
                                             <ActivityIndicator Grid.Column="2"
-                                                       Grid.Row="1"
-                                                       Grid.RowSpan="2"
-                                                       InputTransparent="True"
-                                                       HorizontalOptions="Center"
-                                                       VerticalOptions="End"
-                                                       HeightRequest="25"
-                                                       IsRunning="{Binding IsDownloading}"
-                                                       IsVisible="{Binding IsDownloading}"
-                                                       IsEnabled="{Binding IsDownloading}"/>
+                                                               Grid.Row="1"
+                                                               Grid.RowSpan="2"
+                                                               InputTransparent="True"
+                                                               HorizontalOptions="Center"
+                                                               VerticalOptions="End"
+                                                               HeightRequest="25"
+                                                               IsRunning="{Binding IsDownloading}"
+                                                               IsVisible="{Binding IsDownloading}"
+                                                               IsEnabled="{Binding IsDownloading}"/>
 
                                             <Button Text=">  Go"
-                                            Style="{StaticResource SetCardGoButtonStyle}"
-                                            Grid.Row="1"
-                                            Grid.Column="1"
-                                            Grid.RowSpan="2"
-                                            Grid.ColumnSpan="2"
-                                            IsVisible="{Binding IsInCollection}"
-                                            Command="{Binding Source={x:Reference ThisPage}, 
-                                                              Path=BindingContext.GoToSetInCollectionCommand}"
-                                            CommandParameter="{Binding .}"/>
+                                                    Style="{StaticResource SetCardGoButtonStyle}"
+                                                    Grid.Row="1"
+                                                    Grid.Column="1"
+                                                    Grid.RowSpan="2"
+                                                    Grid.ColumnSpan="2"
+                                                    IsVisible="{Binding IsInCollection}"
+                                                    Command="{Binding Source={x:Reference ThisPage}, 
+                                                                      Path=BindingContext.GoToSetInCollectionCommand}"
+                                                    CommandParameter="{Binding .}"/>
                                             <!-- Bottom Row  -->
                                             <Label Text="{Binding Set.ReleaseDate, 
-                                                      StringFormat='{0:yyyy}'}"
-                                           Style="{StaticResource SetCardYearLabelStyle}"
-                                           Grid.Row="2"
-                                           Grid.Column="1"/>
+                                                                  StringFormat='{0:yyyy}'}"
+                                                   Style="{StaticResource SetCardYearLabelStyle}"
+                                                   Grid.Row="2"
+                                                   Grid.Column="1"/>
                                         </Grid>
                                     </Frame>
                                 </ContentView>
                             </DataTemplate>
                         </CollectionView.ItemTemplate>
+                        <CollectionView.EmptyView>
+                            <Grid>
+                                <StackLayout Padding="15"
+                                             Spacing="12.5"
+                                             IsVisible="{Binding IsLoading}">
+                                    <controls:SkeletonView HeightRequest="85"
+                                                           WidthRequest="150"
+                                                           CornerRadius="12"
+                                                           HorizontalOptions="FillAndExpand"/>
+                                    <controls:SkeletonView HeightRequest="85"
+                                                           WidthRequest="150"
+                                                           CornerRadius="12"
+                                                           HorizontalOptions="FillAndExpand"/>
+                                    <controls:SkeletonView HeightRequest="85"
+                                                           WidthRequest="150"
+                                                           CornerRadius="12"
+                                                           HorizontalOptions="FillAndExpand"/>
+                                    <controls:SkeletonView HeightRequest="85"
+                                                           WidthRequest="150"
+                                                           CornerRadius="12"
+                                                           HorizontalOptions="FillAndExpand"/>
+                                    <controls:SkeletonView HeightRequest="85"
+                                                           WidthRequest="150"
+                                                           CornerRadius="12"
+                                                           HorizontalOptions="FillAndExpand"/>
+                                    <controls:SkeletonView HeightRequest="85"
+                                                           WidthRequest="150"
+                                                           CornerRadius="12"
+                                                           HorizontalOptions="FillAndExpand"/>
+                                    <controls:SkeletonView HeightRequest="85"
+                                                           WidthRequest="150"
+                                                           CornerRadius="12"
+                                                           HorizontalOptions="FillAndExpand"/>
+                                    <controls:SkeletonView HeightRequest="85"
+                                                           WidthRequest="150"
+                                                           CornerRadius="12"
+                                                           HorizontalOptions="FillAndExpand"/>
+                                </StackLayout>
+                                <Label Text="{Binding EmptyListMessage}"
+                                       VerticalOptions="Center"
+                                       HorizontalOptions="Center"/>
+                            </Grid>
+                        </CollectionView.EmptyView>
                     </CollectionView>
                 </StackLayout>
             </RefreshView.Content>

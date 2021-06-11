@@ -1,5 +1,6 @@
 ﻿using PokemonCardCatalogue.Common.Logic.Interfaces;
 using PokemonCardCatalogue.Common.Models;
+using PokemonCardCatalogue.Constants;
 using PokemonCardCatalogue.Pages;
 using PokemonCardCatalogue.Services.Interfaces;
 using System.Collections.Generic;
@@ -60,6 +61,16 @@ namespace PokemonCardCatalogue.ViewModels
             }
         }
 
+        private string _emptyListMessage;
+        public string EmptyListMessage
+        {
+            get => _emptyListMessage;
+            set
+            {
+                _emptyListMessage = value;
+                OnPropertyChanged();
+            }
+        }
 
         public ICommand GoToSetCommand { get; set; }
         public ICommand AddSetToCollectionCommand { get; set; }
@@ -80,9 +91,16 @@ namespace PokemonCardCatalogue.ViewModels
 
         protected override async Task OnLoadAsync()
         {
-            _allSets = await _allSetsLogic.GetSetsOrderedByMostRecentAsync();
-            SetDisplayList();
-            _canGoToSet = true;
+            try
+            {
+                _allSets = await _allSetsLogic.GetSetsOrderedByMostRecentAsync();
+                SetDisplayList();
+                _canGoToSet = true;
+            }
+            catch
+            {
+                EmptyListMessage = ErrorMessages.SetList.CollectionViewWebRequestTimeoutMessage;
+            }
         }
 
         protected override void SetUpCommands()
@@ -93,7 +111,7 @@ namespace PokemonCardCatalogue.ViewModels
 
             AddSetToCollectionCommand = new Command<ApiSetItem>
             (
-                async (apiSetItem) => await AddSetToCollection(apiSetItem), 
+                async (apiSetItem) => await AddSetToCollection(apiSetItem),
                 (apiSetItem) => !apiSetItem?.IsDownloading ?? false
             );
 
@@ -160,9 +178,20 @@ namespace PokemonCardCatalogue.ViewModels
 
             selectedSetItem.IsDownloading = true;
             System.Diagnostics.Debug.WriteLine($"Adding {selectedSetItem.Set.Name} to collection.");
-            await _collectionLogic.AddSetAndCardsToCollection(selectedSetItem.Set);
-            selectedSetItem.IsInCollection = true;
-            selectedSetItem.IsDownloading = false;
+
+            try
+            {
+                await _collectionLogic.AddSetAndCardsToCollection(selectedSetItem.Set);
+                selectedSetItem.IsInCollection = true;
+            }
+            catch
+            {
+                // handle error and show to user
+            }
+            finally
+            {
+                selectedSetItem.IsDownloading = false;
+            }
         }
 
         private async Task GoToSetInCollection(ApiSetItem selectedSetItem)
@@ -177,12 +206,21 @@ namespace PokemonCardCatalogue.ViewModels
         {
             IsRefreshing = true;
 
-            _allSets = await _allSetsLogic.GetSetsOrderedByMostRecentAsync(true);
-            await Task.Delay(500);
-            SearchText = string.Empty;
-            Sets = _allSets;
-
-            IsRefreshing = false;
+            try
+            {
+                _allSets = await _allSetsLogic.GetSetsOrderedByMostRecentAsync(true);
+                await Task.Delay(500);
+                SearchText = string.Empty;
+                Sets = _allSets;
+            }
+            catch
+            {
+                // handle error and show user 
+            }
+            finally
+            {
+                IsRefreshing = false;
+            }
         }
     }
 }

@@ -43,7 +43,7 @@ namespace PokemonCardCatalogue.Tests.ViewModelTests
             }
         };
 
-        private SetItem SetToAdd = new SetItem
+        private readonly SetItem SetToAdd = new SetItem
         {
             Set = new Set
             {

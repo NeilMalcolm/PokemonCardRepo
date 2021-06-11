@@ -39,6 +39,7 @@ namespace PokemonCardCatalogue.Services
         {
             _dependencyContainer.Register(_dependencyContainer);
             _dependencyContainer.Register<IApi>(PokemonTcgApi.Instance);
+            _dependencyContainer.Register<INetworkConnectivityService, NetworkConnectivityService>(true);
 
             _dependencyContainer.Register<IViewModelResolver, ViewModelResolver>(true);
             _dependencyContainer.Register<INavigationService, NavigationService>(true);

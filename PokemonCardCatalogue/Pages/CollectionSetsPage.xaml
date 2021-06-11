@@ -34,6 +34,20 @@
                                IsVisible="{Binding ShowTotal}"/>
                     </StackLayout>
                 </CollectionView.Header>
+                <CollectionView.EmptyView>
+                    <ContentView>
+                        <StackLayout VerticalOptions="Center"
+                                     Spacing="15">
+                            <Label Text="{Binding EmptyMessage}"
+                                   HorizontalTextAlignment="Center"
+                                   HorizontalOptions="CenterAndExpand"/>
+                            <Button Text="Add some sets"
+                                    Command="{Binding Path=BindingContext.GoToAllSetsCommand,
+                                                      Source={x:Reference ThisPage}}"
+                                    HorizontalOptions="CenterAndExpand"/>
+                        </StackLayout>
+                    </ContentView>
+                </CollectionView.EmptyView>
                 <CollectionView.ItemTemplate>
                     <DataTemplate x:DataType="models:SetItem">
                         <ContentView>

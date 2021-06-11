@@ -33,8 +33,10 @@ namespace PokemonCardCatalogue.Common
 
         private static HttpClient CreateDefaultHttpClient()
         {
-            var httpclient = new HttpClient();
-            httpclient.Timeout = TimeSpan.FromSeconds(10);
+            var httpclient = new HttpClient
+            {
+                Timeout = TimeSpan.FromSeconds(10)
+            };
 
             return httpclient;
         }

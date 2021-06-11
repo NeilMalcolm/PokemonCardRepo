@@ -25,7 +25,7 @@ namespace PokemonCardCatalogue.Tests.ViewModelTests
             }
         };
 
-        private List<Card> FirstSetCards = new List<Card>
+        private readonly List<Card> FirstSetCards = new List<Card>
         {
             new Card
             {

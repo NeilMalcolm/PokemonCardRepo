@@ -1,5 +1,6 @@
 ﻿using PokemonCardCatalogue.Common.Logic.Interfaces;
 using PokemonCardCatalogue.Common.Models;
+using PokemonCardCatalogue.Constants;
 using PokemonCardCatalogue.Pages;
 using PokemonCardCatalogue.Services.Interfaces;
 using System;
@@ -58,14 +59,23 @@ namespace PokemonCardCatalogue.ViewModels
             }
         }
 
-        public bool ShowTotal
+        private string _emptyMessage;
+
+        public string EmptyMessage
         {
-            get => _collectionCardsEstimatedMarketTotal > 0; 
+            get => _emptyMessage;
+            set
+            {
+                _emptyMessage = value;
+                OnPropertyChanged();
+            }
         }
 
+        public bool ShowTotal => _collectionCardsEstimatedMarketTotal > 0;
 
         public ICommand DeleteSetCommand { get; set; }
         public ICommand GoToSetCommand { get; set; } 
+        public ICommand GoToAllSetsCommand { get; set; } 
 
         public CollectionSetsViewModel(INavigationService navigationService,
             ICollectionLogic collectionLogic,
@@ -92,6 +102,11 @@ namespace PokemonCardCatalogue.ViewModels
                 async (setItem) => await GoToSetAsync(setItem),
                 (setItem) => _canGoToSet
             );
+            GoToAllSetsCommand = new Command
+            (
+                async () => await GoToAllSets(),
+                () => _canGoToSet
+            );
         }
 
         protected override Task OnLoadAsync()
@@ -116,12 +131,19 @@ namespace PokemonCardCatalogue.ViewModels
             }
         }
 
-        private Task LoadAllData()
+        private async Task LoadAllData()
         {
+            EmptyMessage = string.Empty;
+
             var allSetsTask = LoadSetsAsync();
             var totalPriceTask = LoadCollectionCardsMaxMarketTotalAsync();
 
-            return Task.WhenAll(allSetsTask, totalPriceTask);
+            await Task.WhenAll(allSetsTask, totalPriceTask);
+
+            if (SetItems?.Count == 0)
+            {
+                EmptyMessage = ErrorMessages.CollectionSets.CollectionViewNoSetsInCollectionMessage;
+            }
         }
 
         private async Task LoadSetsAsync()
@@ -176,6 +198,13 @@ namespace PokemonCardCatalogue.ViewModels
             _canGoToSet = false;
             _previouslyNavigatedToSetItem = item;
             await NavigationService.GoToAsync<CollectionCardListPage>(item.Set);
+            _canGoToSet = true;
+        }
+        
+        private async Task GoToAllSets()
+        {
+            _canGoToSet = false;
+            await NavigationService.SwitchTab("home");
             _canGoToSet = true;
         }
 

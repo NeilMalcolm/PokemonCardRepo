@@ -1,7 +1,9 @@
 ﻿using PokemonCardCatalogue.Common.Logic.Interfaces;
 using PokemonCardCatalogue.Common.Models.Data;
+using PokemonCardCatalogue.Constants;
 using PokemonCardCatalogue.Pages;
 using PokemonCardCatalogue.Services.Interfaces;
+using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using System.Windows.Input;
@@ -28,9 +30,21 @@ namespace PokemonCardCatalogue.ViewModels
             }
         }
 
+        private string _emptyListMessage;
+        public string EmptyListMessage
+        {
+            get => _emptyListMessage;
+            set
+            {
+                _emptyListMessage = value;
+                OnPropertyChanged();
+            }
+        }
+
         public string SetImageUrl { get; set; }
 
         public ICommand GoToCardCommand { get; set; }
+
 
         public SetListViewModel(ISetListLogic setListLogic,
             INavigationService navigationService)
@@ -41,6 +55,8 @@ namespace PokemonCardCatalogue.ViewModels
 
         public override void Init(object parameter)
         {
+            EmptyListMessage = string.Empty;
+
             if (parameter is Set set)
             {
                 _set = set;
@@ -60,9 +76,16 @@ namespace PokemonCardCatalogue.ViewModels
 
         protected override async Task OnLoadAsync()
         {
-            var allCards = await _setListLogic.GetAllCardsForSetAsync(_set.Id);
-            await Task.Delay(500);
-            CardList = allCards;
+            try
+            {
+                var allCards = await _setListLogic.GetAllCardsForSetAsync(_set.Id);
+                await Task.Delay(500);
+                CardList = allCards;
+            }
+            catch
+            {
+                EmptyListMessage = ErrorMessages.SetList.CollectionViewWebRequestTimeoutMessage;
+            }
         }
 
         private async Task GoToCardAsync(Card card)
