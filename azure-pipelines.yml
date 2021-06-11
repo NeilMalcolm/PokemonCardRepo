@@ -22,11 +22,21 @@ steps:
   displayName: 'Select the Xamarin SDK version'
   enabled: false
 
+- task: UseDotNet@2
+  inputs:
+    packageType: 'sdk'
+    version: '5.0.x'
+
 - task: NuGetToolInstaller@1
 
 - task: NuGetCommand@2
   inputs:
     restoreSolution: '**/*.sln'
+
+- task: UseDotNet@2
+  inputs:
+    packageType: 'sdk'
+    version: '5.0.0'
 
 - task: XamariniOS@2
   inputs:
@@ -44,6 +54,11 @@ steps:
     projectFile: '**/*droid*.csproj'
     outputDirectory: '$(outputDirectory)'
     configuration: '$(buildConfiguration)'
+
+- task: UseDotNet@2
+  inputs:
+    packageType: 'sdk'
+    version: '3.1.0'
 
 - task: DotNetCoreCLI@2
   inputs:
