@@ -39,8 +39,10 @@ steps:
   inputs:
     solutionFile: '**/*.sln'
     configuration: 'Release'
-    buildForSimulator: true
     packageApp: false
+    buildForSimulator: true
+    runNugetRestore: false
+    args: '-target:PokemonCardCatalogue.iOS'
 # Xamarin.Android
 # Build a Xamarin.Android project.
 # Add steps that test, sign, and distribute an app, save build artifacts, and more:
@@ -51,6 +53,8 @@ steps:
     projectFile: '**/*droid*.csproj'
     outputDirectory: '$(outputDirectory)'
     configuration: '$(buildConfiguration)'
+    msbuildArguments: '-target:PokemonCardCatalogue.Android'
+    jdkOption: 'JDKVersion'
 
 - task: UseDotNet@2
   inputs:
