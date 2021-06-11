@@ -27,6 +27,7 @@ steps:
     packageType: 'sdk'
     version: '5.0.x'
     vsVersion: '16.10.x'
+    includePreviewVersions: true
 
 - task: NuGetToolInstaller@1
 
