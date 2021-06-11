@@ -6,6 +6,12 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="Views\Sets\**" />
+    <EmbeddedResource Remove="Views\Sets\**" />
+    <None Remove="Views\Sets\**" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="AutoMapper" Version="10.1.1" />
     <PackageReference Include="AutoMapper.Collection" Version="7.0.1" />
     <PackageReference Include="LightInject" Version="6.4.0" />
@@ -64,9 +70,5 @@
     <EmbeddedResource Update="Views\Settings\ActionSettingDataTemplate.xaml">
       <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
     </EmbeddedResource>
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="Views\Sets\" />
   </ItemGroup>
 </Project>

@@ -1,5 +1,4 @@
-﻿using NUnit.Framework;
-using Moq;
+﻿using Moq;
 using PokemonCardCatalogue.Common.Context;
 using PokemonCardCatalogue.Common.Context.Interfaces;
 using PokemonCardCatalogue.Common.Logic.Interfaces;
@@ -15,6 +14,7 @@ using System.Net;
 using System.Threading;
 using PokemonCardCatalogue.Common.Models;
 using PokemonCardCatalogue.Common;
+using NUnit.Framework;
 
 namespace PokemonCardCatalogue.Tests.LogicTests
 {
@@ -120,6 +120,18 @@ namespace PokemonCardCatalogue.Tests.LogicTests
                     },
                 };
             }
+        }
+
+
+        [SetUp]
+        public override void BeforeEachTest()
+        {
+            base.BeforeEachTest();
+        }
+
+        public override void AfterEachTest()
+        {
+            base.AfterEachTest();
         }
 
         protected override void CreateMocks()

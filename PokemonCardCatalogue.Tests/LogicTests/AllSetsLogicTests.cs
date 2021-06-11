@@ -1,5 +1,5 @@
-﻿using NUnit.Framework;
-using Moq;
+﻿using Moq;
+using NUnit.Framework;
 using PokemonCardCatalogue.Common.Constants;
 using PokemonCardCatalogue.Common.Context.Interfaces;
 using PokemonCardCatalogue.Common.Logic;
@@ -36,6 +36,17 @@ namespace PokemonCardCatalogue.Tests.LogicTests
             new IdResult { Id = "3" }
         };
 
+        [SetUp]
+        public override void BeforeEachTest()
+        {
+            base.BeforeEachTest();
+        }
+
+        public override void AfterEachTest()
+        {
+            base.AfterEachTest();
+        }
+
         protected override void CreateMocks()
         {
             CardCollectionMock = new Mock<ICardCollection>();
@@ -44,7 +55,7 @@ namespace PokemonCardCatalogue.Tests.LogicTests
 
         protected override void SetupMocks()
         {
-            ApiMock.Setup(m => m.GetSetsAsync(It.IsAny<QueryParameters>(), It.IsAny<bool>()))
+            ApiMock.Setup(m => m.GetSetsAsync(It.IsAny<QueryParameters>(), false))
                 .Returns(Task.FromResult(SetsApiResponse));
 
             CardCollectionMock.Setup(m => m.QueryAsync<IdResult>(Queries.GetAllSetIdsInCollection))

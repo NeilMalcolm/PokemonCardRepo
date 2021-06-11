@@ -11,7 +11,7 @@ namespace PokemonCardCatalogue.Common
 
         internal static string BaseAddress { get; set; }
         internal static HttpClient GlobalHttpClient { get; set; }
-            = new HttpClient();
+            = CreateDefaultHttpClient();
 
         public static void SetCustomHttpClient(HttpClient customHttpClient)
         {
@@ -29,6 +29,14 @@ namespace PokemonCardCatalogue.Common
             client.BaseAddress = new Uri($"https://{ApiConstants.BaseUrl}");
             client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
             client.DefaultRequestHeaders.Add("X-Api-key", ApiKey);
+        }
+
+        private static HttpClient CreateDefaultHttpClient()
+        {
+            var httpclient = new HttpClient();
+            httpclient.Timeout = TimeSpan.FromSeconds(10);
+
+            return httpclient;
         }
     }
 }
