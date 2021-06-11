@@ -33,11 +33,6 @@ steps:
   inputs:
     restoreSolution: '**/*.sln'
 
-- task: UseDotNet@2
-  inputs:
-    packageType: 'sdk'
-    version: '5.0.0'
-
 - task: XamariniOS@2
   inputs:
     solutionFile: '**/*.sln'
