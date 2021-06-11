@@ -49,6 +49,11 @@ namespace BlazorApp.Data
             return null;
         }
 
+        public Task<T> FindAsync<T>(string query, params object[] parameters) where T : new()
+        {
+            throw new NotImplementedException();
+        }
+
         public Task<CardItem> FindCardByQueryAsync(string query, params object[] parameters)
         {
             return null;

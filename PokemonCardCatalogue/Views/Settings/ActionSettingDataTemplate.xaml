@@ -1,5 +1,7 @@
 ﻿<DataTemplate xmlns="http://xamarin.com/schemas/2014/forms" 
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:models="clr-namespace:PokemonCardCatalogue.Models.Settings"
+             x:DataType="models:ActionSetting"
              x:Class="PokemonCardCatalogue.Views.Settings.ActionSettingDataTemplate">
     <StackLayout Padding="15, 5">
         <StackLayout.GestureRecognizers>

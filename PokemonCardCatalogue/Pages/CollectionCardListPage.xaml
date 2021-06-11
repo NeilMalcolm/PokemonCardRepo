@@ -9,7 +9,6 @@
              xmlns:constants="clr-namespace:PokemonCardCatalogue.Constants"
              xmlns:pages="clr-namespace:PokemonCardCatalogue.Pages"
              xmlns:viewmodels="clr-namespace:PokemonCardCatalogue.ViewModels"
-             xmlns:models="clr-namespace:PokemonCardCatalogue.Common.Models;assembly=PokemonCardCatalogue.Common"
              x:DataType="viewmodels:CollectionCardListViewModel"
              x:Name="ThisPage">
     <Shell.TitleView>

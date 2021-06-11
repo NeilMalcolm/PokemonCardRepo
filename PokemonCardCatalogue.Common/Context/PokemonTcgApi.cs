@@ -11,7 +11,7 @@ namespace PokemonCardCatalogue.Common.Context
     public class PokemonTcgApi : IApi
     {
         private static ICache _cache 
-            = new SqliteCache(new SqliteDatabaseService());
+            = new DbCache(new SqliteDatabaseService());
         
         private readonly IApiService _apiService;
 

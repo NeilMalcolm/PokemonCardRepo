@@ -3,8 +3,10 @@
              xmlns:pages="clr-namespace:PokemonCardCatalogue.Pages"
              xmlns:controls="clr-namespace:PokemonCardCatalogue.Controls"
              xmlns:ff="clr-namespace:FFImageLoading.Forms;assembly=FFImageLoading.Forms"
-             xmlns:xctk="http://xamarin.com/schemas/2020/toolkit"
+             xmlns:models="clr-namespace:PokemonCardCatalogue.Common.Models.Data;assembly=PokemonCardCatalogue.Common.Models"
              x:Class="PokemonCardCatalogue.Pages.SetListPage"
+             xmlns:viewmodels="clr-namespace:PokemonCardCatalogue.ViewModels"
+             x:DataType="viewmodels:SetListViewModel"
              x:Name="ThisPage">
     <Shell.TitleView>
         <ContentView>
@@ -60,7 +62,7 @@
                 </StackLayout>
             </CollectionView.EmptyView>
             <CollectionView.ItemTemplate>
-                <DataTemplate>
+                <DataTemplate x:DataType="models:Card">
                     <ContentView>
                         <Frame Style="{StaticResource SetListCardFrameStyle}">
                             <Frame.GestureRecognizers>

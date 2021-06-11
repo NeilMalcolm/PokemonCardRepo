@@ -36,7 +36,7 @@ namespace PokemonCardCatalogue.Tests.ServiceTests.CacheTests
 
         private List<CachedQuery> CachedQueryData;
 
-        protected SqliteCache Cache;
+        protected DbCache Cache;
         protected Mock<IDatabaseService> DatabaseServiceMock;
 
         protected override void SetupMocks()
@@ -71,7 +71,7 @@ namespace PokemonCardCatalogue.Tests.ServiceTests.CacheTests
                     );
                 });
 
-            Cache = new SqliteCache
+            Cache = new DbCache
             (
                 DatabaseServiceMock.Object
             );

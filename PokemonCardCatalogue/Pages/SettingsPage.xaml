@@ -3,6 +3,8 @@
              xmlns:pages="clr-namespace:PokemonCardCatalogue.Pages"
              xmlns:dts="clr-namespace:PokemonCardCatalogue.TemplateSelector"
              x:Class="PokemonCardCatalogue.Pages.SettingsPage"
+             xmlns:viewmodels="clr-namespace:PokemonCardCatalogue.ViewModels"
+             x:DataType="viewmodels:SettingsViewModel"
              Title="Settings">
     <pages:BaseContentPage.Resources>
         <dts:SettingTemplateSelector x:Key="SettingDataTemplateSelector"/>
