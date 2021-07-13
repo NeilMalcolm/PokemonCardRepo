@@ -18,6 +18,7 @@ namespace PokemonCardCatalogue.Tests.ViewModelTests
         protected Mock<IAllSetsLogic> AllSetsLogicMock;
         protected Mock<ICollectionLogic> CollectionLogicMock;
         protected Mock<INavigationService> NavigationServiceMock;
+        protected Mock<ILog> LogMock;
         protected AllSetsViewModel ViewModel;
 
         private readonly List<ApiSetItem> _apiSetItems = new List<ApiSetItem>
@@ -68,6 +69,7 @@ namespace PokemonCardCatalogue.Tests.ViewModelTests
             AllSetsLogicMock = new Mock<IAllSetsLogic>();
             CollectionLogicMock = new Mock<ICollectionLogic>();
             NavigationServiceMock = new Mock<INavigationService>();
+            LogMock = new Mock<ILog>();
         }
 
         protected override void SetupMocks()
@@ -82,7 +84,8 @@ namespace PokemonCardCatalogue.Tests.ViewModelTests
             (
                 AllSetsLogicMock.Object,
                 CollectionLogicMock.Object,
-                NavigationServiceMock.Object
+                NavigationServiceMock.Object,
+                LogMock.Object
             );
         }
 

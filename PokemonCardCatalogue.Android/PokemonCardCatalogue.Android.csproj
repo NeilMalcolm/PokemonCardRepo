@@ -16,7 +16,6 @@
     <AndroidManifest>Properties\AndroidManifest.xml</AndroidManifest>
     <MonoAndroidResourcePrefix>Resources</MonoAndroidResourcePrefix>
     <MonoAndroidAssetsPrefix>Assets</MonoAndroidAssetsPrefix>
-    <AndroidUseLatestPlatformSdk>false</AndroidUseLatestPlatformSdk>
     <TargetFrameworkVersion>v10.0</TargetFrameworkVersion>
     <AndroidEnableSGenConcurrent>true</AndroidEnableSGenConcurrent>
     <AndroidUseAapt2>true</AndroidUseAapt2>
@@ -117,7 +116,7 @@
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\PokemonCardCatalogue\PokemonCardCatalogue.csproj">
-      <Project>{059D6728-D513-43CD-988B-E43EFB948AA8}</Project>
+      <Project>{09482A55-B737-4FC3-AB1B-11439CE43F69}</Project>
       <Name>PokemonCardCatalogue</Name>
     </ProjectReference>
   </ItemGroup>

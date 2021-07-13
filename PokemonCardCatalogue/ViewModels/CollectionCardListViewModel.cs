@@ -89,12 +89,12 @@ namespace PokemonCardCatalogue.ViewModels
         public ICommand SetDisplayListCommand { get; set; }
 
         public CollectionCardListViewModel
-            (
-                INavigationService navigationService,
-                ICollectionLogic collectionLogic,
-                IVibrationService vibrationService
-            ) 
-            : base(navigationService)
+        (
+            INavigationService navigationService,
+            ICollectionLogic collectionLogic,
+            IVibrationService vibrationService,
+            ILog log
+        ) : base(navigationService, log)
         {
             _collectionLogic = collectionLogic;
             _vibrationService = vibrationService;
@@ -295,9 +295,9 @@ namespace PokemonCardCatalogue.ViewModels
             {
                 _ = await _collectionLogic.QuickAddCardToCollection(item);
             }
-            catch
+            catch (Exception ex)
             {
-
+                Log.Exception(ex);
             }
             finally
             {

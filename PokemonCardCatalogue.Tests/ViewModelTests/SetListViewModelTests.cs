@@ -15,6 +15,7 @@ namespace PokemonCardCatalogue.Tests.ViewModelTests
     {
         protected Mock<INavigationService> NavigationServiceMock;
         protected Mock<ISetListLogic> SetListLogicMock;
+        protected Mock<ILog> LogMock;
 
         public Set FirstSet = new Set
         {
@@ -54,6 +55,7 @@ namespace PokemonCardCatalogue.Tests.ViewModelTests
         {
             NavigationServiceMock = new Mock<INavigationService>();
             SetListLogicMock = new Mock<ISetListLogic>();
+            LogMock = new Mock<ILog>();
         }
 
         protected override void SetupMocks()
@@ -70,7 +72,8 @@ namespace PokemonCardCatalogue.Tests.ViewModelTests
             ViewModel = new SetListViewModel
             (
                 SetListLogicMock.Object,
-                NavigationServiceMock.Object
+                NavigationServiceMock.Object,
+                LogMock.Object
             );
         }
 

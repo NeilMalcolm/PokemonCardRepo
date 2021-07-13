@@ -267,7 +267,8 @@
                                 Margin="10, 0, 0, 0"
                                 VerticalOptions="Start"
                                 FontAttributes="Bold"
-                                FontSize="18"/>
+                                FontSize="18"
+                                IsEnabled="{Binding HasOtherRarities}"/>
 
                         <Label HorizontalOptions="Center"
                                Grid.Row="1">

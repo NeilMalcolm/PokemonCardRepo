@@ -46,9 +46,12 @@ namespace PokemonCardCatalogue.ViewModels
         public ICommand GoToCardCommand { get; set; }
 
 
-        public SetListViewModel(ISetListLogic setListLogic,
-            INavigationService navigationService)
-            : base(navigationService)
+        public SetListViewModel
+        (
+            ISetListLogic setListLogic,
+            INavigationService navigationService,
+            ILog log
+        ) : base(navigationService, log)
         {
             _setListLogic = setListLogic;
         }
@@ -82,8 +85,10 @@ namespace PokemonCardCatalogue.ViewModels
                 await Task.Delay(500);
                 CardList = allCards;
             }
-            catch
+            catch (Exception ex)
             {
+                Log.Exception(ex);
+
                 EmptyListMessage = ErrorMessages.SetList.CollectionViewWebRequestTimeoutMessage;
             }
         }

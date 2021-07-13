@@ -18,6 +18,7 @@ namespace PokemonCardCatalogue.Tests.ViewModelTests
         protected Mock<ICollectionLogic> CollectionLogicMock;
         protected Mock<IAlertService> AlertServiceMock;
         protected Mock<ISetListLogic> SetListLogicMock;
+        protected Mock<ILog> LogMock;
 
         private bool AlertResponse { get; set; }
 
@@ -71,6 +72,7 @@ namespace PokemonCardCatalogue.Tests.ViewModelTests
             CollectionLogicMock = new Mock<ICollectionLogic>();
             AlertServiceMock = new Mock<IAlertService>();
             SetListLogicMock = new Mock<ISetListLogic>();
+            LogMock = new Mock<ILog>();
         }
 
         protected override void SetupMocks()
@@ -111,7 +113,8 @@ namespace PokemonCardCatalogue.Tests.ViewModelTests
                 NavigationServiceMock.Object,
                 CollectionLogicMock.Object,
                 AlertServiceMock.Object,
-                SetListLogicMock.Object
+                SetListLogicMock.Object,
+                LogMock.Object
             );
         }
 

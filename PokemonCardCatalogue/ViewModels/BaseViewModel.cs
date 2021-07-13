@@ -11,7 +11,8 @@ namespace PokemonCardCatalogue.ViewModels
     {
         public bool ReloadDataOnAppearing { get; protected set; } = false;
 
-        protected INavigationService NavigationService;
+        protected readonly INavigationService NavigationService;
+        protected readonly ILog Log;
 
         public event PropertyChangedEventHandler PropertyChanged;
 
@@ -41,9 +42,12 @@ namespace PokemonCardCatalogue.ViewModels
 
         public ICommand RefreshCommand { get; set; }
 
-        public BaseViewModel(INavigationService navigationService)
+        public BaseViewModel(INavigationService navigationService,
+            ILog log)
         {
             NavigationService = navigationService;
+            Log = log;
+
             SetUpCommands();
         }
 

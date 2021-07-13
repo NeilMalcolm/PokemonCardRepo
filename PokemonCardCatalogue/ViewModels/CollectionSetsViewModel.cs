@@ -77,11 +77,14 @@ namespace PokemonCardCatalogue.ViewModels
         public ICommand GoToSetCommand { get; set; } 
         public ICommand GoToAllSetsCommand { get; set; } 
 
-        public CollectionSetsViewModel(INavigationService navigationService,
+        public CollectionSetsViewModel
+        (
+            INavigationService navigationService,
             ICollectionLogic collectionLogic,
             IAlertService alertService,
-            ISetListLogic setListLogic) 
-            : base(navigationService)
+            ISetListLogic setListLogic,
+            ILog log
+        ) : base(navigationService, log)
         {
             _collectionLogic = collectionLogic;
             _alertService = alertService;
@@ -123,7 +126,7 @@ namespace PokemonCardCatalogue.ViewModels
             }
             catch (Exception ex)
             {
-                System.Diagnostics.Debug.WriteLine(ex);
+                Log.Exception(ex);
             }
             finally
             {

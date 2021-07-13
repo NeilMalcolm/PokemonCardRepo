@@ -40,9 +40,12 @@ namespace PokemonCardCatalogue.ViewModels
             }
         }
 
-        public AppShellViewModel(IViewModelResolver viewModelResolver,
-            INavigationService navigationService)
-            : base (navigationService)
+        public AppShellViewModel
+        (
+            IViewModelResolver viewModelResolver,
+            INavigationService navigationService,
+            ILog log
+        ) : base (navigationService, log)
         {
             _viewModelResolver = viewModelResolver;
         }

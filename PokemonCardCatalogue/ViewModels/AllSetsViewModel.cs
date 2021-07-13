@@ -3,6 +3,7 @@ using PokemonCardCatalogue.Common.Models;
 using PokemonCardCatalogue.Constants;
 using PokemonCardCatalogue.Pages;
 using PokemonCardCatalogue.Services.Interfaces;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -32,7 +33,6 @@ namespace PokemonCardCatalogue.ViewModels
         }
 
         private string _searchText;
-
         public string SearchText
         {
             get => _searchText;
@@ -50,7 +50,6 @@ namespace PokemonCardCatalogue.ViewModels
         }
 
         private bool _isRefreshing;
-
         public bool IsRefreshing
         {
             get => _isRefreshing; 
@@ -79,11 +78,13 @@ namespace PokemonCardCatalogue.ViewModels
         public ICommand ClearSearchCommand { get; set; }
         public ICommand ForceGetLatestCardSetsDataCommand { get; set; }
 
-
-        public AllSetsViewModel(IAllSetsLogic allSetsLogic,
+        public AllSetsViewModel
+        (
+            IAllSetsLogic allSetsLogic,
             ICollectionLogic collectionLogic,
-            INavigationService navigationService)
-            : base(navigationService)
+            INavigationService navigationService,
+            ILog log
+        ) : base(navigationService, log)
         {
             _allSetsLogic = allSetsLogic;
             _collectionLogic = collectionLogic;
@@ -97,8 +98,10 @@ namespace PokemonCardCatalogue.ViewModels
                 SetDisplayList();
                 _canGoToSet = true;
             }
-            catch
+            catch (Exception ex)
             {
+                Log.Exception(ex);
+                
                 EmptyListMessage = ErrorMessages.SetList.CollectionViewWebRequestTimeoutMessage;
             }
         }
@@ -184,9 +187,9 @@ namespace PokemonCardCatalogue.ViewModels
                 await _collectionLogic.AddSetAndCardsToCollection(selectedSetItem.Set);
                 selectedSetItem.IsInCollection = true;
             }
-            catch
+            catch (Exception ex)
             {
-                // handle error and show to user
+                Log.Exception(ex);
             }
             finally
             {
@@ -213,9 +216,9 @@ namespace PokemonCardCatalogue.ViewModels
                 SearchText = string.Empty;
                 Sets = _allSets;
             }
-            catch
+            catch (Exception ex)
             {
-                // handle error and show user 
+                Log.Exception(ex);
             }
             finally
             {

@@ -34,11 +34,14 @@ namespace PokemonCardCatalogue.ViewModels
             }
         }
 
-        public SettingsViewModel(INavigationService navigationService,
+        public SettingsViewModel
+        (
+            INavigationService navigationService,
             IApi api,
             IAlertService alertService,
-            ICardCollection cardCollection)
-            : base(navigationService)
+            ICardCollection cardCollection,
+            ILog log
+        ) : base(navigationService, log)
         {
             Title = "Settings";
             _api = api;

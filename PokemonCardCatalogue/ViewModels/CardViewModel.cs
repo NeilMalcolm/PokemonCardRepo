@@ -167,6 +167,11 @@ namespace PokemonCardCatalogue.ViewModels
             }
         }
 
+        public bool HasOtherRarities
+        {
+            get => Prices?.Count > 1;
+        }
+
         public ICommand GoToRelatedCardCommand { get; set; }
         public Command DecrementNormalOwnedCountCommand { get; set; }
         public Command DecrementHoloOwnedCountCommand { get; set; }
@@ -178,8 +183,9 @@ namespace PokemonCardCatalogue.ViewModels
         public CardViewModel(INavigationService navigationService,
             ICardLogic cardLogic,
             ICollectionLogic collectionLogic,
-            IVibrationService vibrationService) 
-            : base(navigationService)
+            IVibrationService vibrationService,
+            ILog log
+        ) : base(navigationService, log)
         {
             _cardLogic = cardLogic;
             _collectionLogic = collectionLogic;
@@ -283,6 +289,11 @@ namespace PokemonCardCatalogue.ViewModels
                 await onDecrement;
                 return ownedCount;
             }
+            catch (Exception ex)
+            {
+                Log.Exception(ex);
+                return 0;
+            }
             finally
             {
                 if (semaphore.CurrentCount == 0)
@@ -316,6 +327,12 @@ namespace PokemonCardCatalogue.ViewModels
                 _vibrationService.PerformSelectionFeedbackVibration();
                 await onDecrement;
                 return ownedCount;
+            }
+            catch (Exception ex)
+            {
+                Log.Exception(ex);
+
+                return 0;
             }
             finally
             {
@@ -354,11 +371,12 @@ namespace PokemonCardCatalogue.ViewModels
             }
             catch (Exception ex)
             {
-                System.Diagnostics.Debug.WriteLine(ex);
+                Log.Exception(ex);
             }
             finally
             {
                 IsLoadingPrices = false;
+                OnPropertyChanged(nameof(HasOtherRarities));
             }
         }
 
@@ -390,7 +408,7 @@ namespace PokemonCardCatalogue.ViewModels
             }
             catch (Exception ex)
             {
-                System.Diagnostics.Debug.WriteLine(ex);
+                Log.Exception(ex);
             }
             finally
             {

@@ -20,6 +20,7 @@ namespace PokemonCardCatalogue.Tests.ViewModelTests
         protected Mock<ICollectionLogic> CollectionLogicMock;
         protected Mock<IVibrationService> VibrationServiceMock;
         protected Mock<INavigationService> NavigationServiceMock;
+        protected Mock<ILog> LogMock;
         protected CardViewModel ViewModel;
 
 
@@ -141,6 +142,7 @@ namespace PokemonCardCatalogue.Tests.ViewModelTests
             CollectionLogicMock = new Mock<ICollectionLogic>();
             VibrationServiceMock = new Mock<IVibrationService>();
             NavigationServiceMock = new Mock<INavigationService>();
+            LogMock = new Mock<ILog>();
         }
 
         protected override void SetupMocks()
@@ -175,7 +177,8 @@ namespace PokemonCardCatalogue.Tests.ViewModelTests
                 NavigationServiceMock.Object,
                 CardLogicMock.Object,
                 CollectionLogicMock.Object,
-                VibrationServiceMock.Object
+                VibrationServiceMock.Object,
+                LogMock.Object
             );
         }
 
